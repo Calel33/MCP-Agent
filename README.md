@@ -1,18 +1,30 @@
-# 🚀 Multiple MCP Servers General Purpose Agent
+# 🚀 Multiple MCP Servers General Purpose Agent - Beautiful macOS Interface
 
-A TypeScript-based AI agent that connects to multiple MCP (Model Context Protocol) servers using the mcp-use library, with intelligent server selection and OpenAI integration for natural language processing.
+A complete MCP Multi-Agent system with stunning macOS ChatGPT-style interface. Features TypeScript-based AI agent that connects to multiple MCP (Model Context Protocol) servers with intelligent server selection, OpenAI integration, and a beautiful production-ready web interface.
+
+**🌐 LIVE APPLICATION**: [http://localhost:3000/chat](http://localhost:3000/chat) - Beautiful macOS ChatGPT interface with real MCP integration!
 
 ## ✨ Features
 
+### 🖥️ **Beautiful macOS ChatGPT Interface** ✅ **PRODUCTION READY**
+- **macOS Window Design**: Traffic light controls and professional dark theme
+- **Sidebar Layout**: Conversation history, user profile, and MCP status monitoring
+- **Real-time Streaming**: Beautiful message bubbles with word-by-word AI responses
+- **Auto-scroll & Animations**: Smooth typing indicators and auto-scroll behavior
+- **Keyboard Shortcuts**: Enter to send, Shift+Enter for new lines
+- **Professional Typography**: Inter font via Next.js optimization
+- **Responsive Design**: Desktop-optimized with macOS aesthetics
+
+### 🔧 **Powerful MCP Backend**
 - **Multi-Server Support**: Connect to multiple MCP servers concurrently
 - **Advanced Server Manager**: Performance optimization with connection pooling and load balancing
 - **Intelligent Server Selection**: Automatic server selection based on task requirements and load
 - **OpenAI Integration**: GPT-4 integration with AI SDK for natural language processing
-- **TypeScript**: Full type safety and modern TypeScript features
-- **Production-Ready CLI**: Complete command-line interface with query, server, and config commands ✅ **NEW!**
+- **Production-Ready CLI**: Complete command-line interface with query, server, and config commands
 - **Health Monitoring**: Real-time server health checks and automatic reconnection
 - **Circuit Breaker**: Fault tolerance with graceful degradation
 - **Performance Metrics**: Real-time monitoring of server performance and resource usage
+- **TypeScript**: Full type safety and modern TypeScript features
 - **Error Handling**: Robust error handling and recovery mechanisms
 
 ## 🛠️ Prerequisites
@@ -42,12 +54,20 @@ cp .env.example .env
 
 ## 🚀 Quick Start
 
-### Development Mode
+### 🌐 **Beautiful macOS Interface** (Recommended)
+```bash
+cd mcp-agent-ui
+npm install
+npm run dev
+```
+**Open**: [http://localhost:3000/chat](http://localhost:3000/chat) - Beautiful macOS ChatGPT interface!
+
+### 🔧 **Backend Development Mode**
 ```bash
 npm run dev
 ```
 
-### Build and Run
+### 📦 **Build and Run**
 ```bash
 npm run build
 npm start
@@ -73,22 +93,28 @@ npm run cli -- --help
 npm run cli -- query --help
 ```
 
-### Interactive Chat Mode (Coming Soon)
+### 🎨 **Interactive macOS Chat Interface** ✅ **AVAILABLE NOW**
 ```bash
-npm run dev -- --chat
+cd mcp-agent-ui && npm run dev
+# Open http://localhost:3000/chat for beautiful macOS ChatGPT interface
 ```
 
 ## 📁 Project Structure
 
 ```
-src/
-├── agent/              # Core agent implementation
-├── config/             # Configuration files
-├── llm/               # OpenAI LLM integration
-├── cli/               # Command-line interface
-├── monitoring/        # Server health monitoring
-├── utils/             # Utility functions
-└── index.ts           # Main entry point
+├── mcp-agent-ui/       # 🖥️ Beautiful macOS ChatGPT Interface
+│   ├── src/app/chat/   # Main chat interface with macOS design
+│   ├── src/components/ # Custom macOS UI components
+│   └── src/app/api/    # API routes for MCP integration
+├── src/
+│   ├── agent/          # Core agent implementation
+│   ├── config/         # Configuration files
+│   ├── llm/           # OpenAI LLM integration
+│   ├── cli/           # Command-line interface
+│   ├── monitoring/    # Server health monitoring
+│   ├── utils/         # Utility functions
+│   └── index.ts       # Main entry point
+└── docs/              # 📚 Complete documentation
 ```
 
 ## ⚙️ Configuration

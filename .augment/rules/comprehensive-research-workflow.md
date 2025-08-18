@@ -1,9 +1,7 @@
 ---
-alwaysApply: true
-type: "mandatory_enforcement"
+type: "agent_requested"
 description: "Comprehensive Research Workflow Rule - MANDATORY BEFORE ANY CODE"
 ---
-
 ⚠️ **CRITICAL ENFORCEMENT RULE:**
 For *every* user request that involves writing, modifying, or implementing code (of any language, framework, or domain), the assistant's *first* action **must** be to complete the comprehensive research workflow below.
 

@@ -10,15 +10,15 @@ This guide provides comprehensive information for developers who want to contrib
 
 **The system is already fully operational!**
 
-**🌐 Live Application**: http://localhost:3001
-**Status**: ✅ Production MCP Multi-Agent UI with real backend
+**🌐 Live Application**: http://localhost:3000/chat
+**Status**: ✅ Beautiful macOS ChatGPT-style UI with real MCP backend
 
 ### **Quick Development Access**
 
-**Frontend Development** (Next.js 15 UI):
+**Frontend Development** (macOS ChatGPT UI):
 ```bash
 cd mcp-agent-ui
-npm run dev  # Starts development server
+npm run dev  # Starts beautiful macOS interface at localhost:3000/chat
 ```
 
 **Backend Development** (MCP Multi-Agent):
@@ -29,7 +29,7 @@ npm run build  # Build TypeScript backend
 
 **Health Monitoring**:
 ```bash
-curl http://localhost:3001/api/health  # Check system status
+curl http://localhost:3000/api/health  # Check system status
 ```
 
 ### **Development Prerequisites** (if extending)

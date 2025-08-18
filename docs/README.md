@@ -6,8 +6,9 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 
 **New to the project?** Start here:
 
-1. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - Live application at http://localhost:3001 ✅ **NEW!**
-2. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide ✅ **NEW!**
+1. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - Beautiful macOS ChatGPT-style interface at http://localhost:3000/chat ✅ **NEW!**
+2. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide ✅ **NEW!**
+3. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
 3. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
 4. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
 5. **[API Reference](./API_REFERENCE.md)** - Comprehensive API documentation
@@ -20,7 +21,8 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 |----------|-------------|-------------|
 | **[User Guide](./USER_GUIDE.md)** | Complete setup, configuration, and usage guide | Setting up and using the agent |
 | **[API Reference](./API_REFERENCE.md)** | Comprehensive API documentation with examples | Integrating the agent into your code |
-| **[🎉 Production MCP UI Guide](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** | Complete production MCP integration with real filesystem server ✅ **NEW!** | Using the live MCP Multi-Agent UI |
+| **[🎉 macOS UI Implementation Guide](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** | Complete macOS ChatGPT-style interface implementation ✅ **NEW!** | Understanding the beautiful new interface |
+| **[🎉 Production MCP UI Guide](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** | Complete production MCP integration with backend functionality | Using the live MCP Multi-Agent backend |
 | **[CLI Implementation Guide](./CLI_IMPLEMENTATION_COMPLETION_HANDOFF.md)** | Complete CLI interface documentation and usage | Using the command-line interface |
 | **[Health Monitoring Guide](./HEALTH_MONITORING_GUIDE.md)** | Complete health monitoring and troubleshooting guide | Setting up monitoring and handling server issues |
 | **[Product Brief](./PRODUCT_BRIEF.md)** | Project overview, features, and architecture | Understanding what the project does |

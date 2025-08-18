@@ -4,23 +4,26 @@
 
 The Multiple MCP Servers General Purpose Agent is a TypeScript-based AI agent that connects to multiple Model Context Protocol (MCP) servers simultaneously, providing intelligent server selection and OpenAI integration for natural language processing.
 
-## 🚀 Quick Start - PRODUCTION READY!
+## 🚀 Quick Start - BEAUTIFUL MACOS INTERFACE!
 
-### 🎉 **LIVE APPLICATION READY**
+### 🎉 **STUNNING MACOS CHATGPT INTERFACE READY**
 
-**Access the production MCP Multi-Agent UI immediately:**
+**Access the beautiful macOS-style MCP Multi-Agent UI immediately:**
 
-**🌐 Open**: http://localhost:3001
-**Status**: ✅ Live with real MCP filesystem server
-**Features**: Production chat interface with actual tool execution
+**🌐 Open**: http://localhost:3000/chat
+**Status**: ✅ Live with beautiful macOS ChatGPT-style interface
+**Features**: Professional macOS design with real MCP filesystem server integration
 
 ### **Instant Usage - No Setup Required**
 
 The application is already running with:
-- ✅ Real MCP filesystem server connected
-- ✅ OpenAI GPT-4o integration active
-- ✅ Professional UI with streaming chat
-- ✅ Live tool execution and file operations
+- ✅ **Beautiful macOS ChatGPT-style interface** with traffic light controls
+- ✅ **Professional dark theme** with sophisticated gray color palette
+- ✅ **Sidebar layout** with conversation history and user profile
+- ✅ **Real MCP filesystem server** connected for actual file operations
+- ✅ **OpenAI GPT-4o integration** with streaming responses
+- ✅ **Auto-scroll behavior** and smooth typing animations
+- ✅ **Keyboard shortcuts** (Enter to send, Shift+Enter for new lines)
 
 **Try these interactions right now:**
 ```

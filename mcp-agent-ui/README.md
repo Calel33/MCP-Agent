@@ -1,24 +1,29 @@
-# MCP Multi-Agent UI
+# MCP Multi-Agent UI - Beautiful macOS ChatGPT Interface
 
-A modern web interface for the Multiple MCP Servers General Purpose Agent, built with Next.js 15, React 19, and AI SDK UI elements.
+A stunning macOS-style ChatGPT interface for the Multiple MCP Servers General Purpose Agent, built with Next.js 15, React 19, and custom macOS UI components.
 
 ## 🚀 Features
 
-- **Modern AI Chat Interface**: Built with AI SDK UI components for streaming conversations
-- **Next.js 15 + React 19**: Latest versions with App Router and Server Components
-- **Real-time Streaming**: Powered by AI SDK's `useChat` hook and streaming responses
-- **Responsive Design**: Tailwind CSS for mobile-first responsive design
-- **MCP Integration Ready**: Prepared for integration with MCP Multi-Agent backend
-- **TypeScript**: Full type safety throughout the application
+- **🖥️ macOS ChatGPT Interface**: Beautiful ChatGPT-style design with traffic light window controls
+- **🎨 Professional Dark Theme**: Sophisticated gray color palette matching macOS aesthetics
+- **📱 Sidebar Layout**: Conversation history, user profile, and MCP status monitoring
+- **⌨️ Enhanced Input**: Auto-resizing textarea with Enter/Shift+Enter keyboard shortcuts
+- **🔄 Smooth Animations**: Typing indicators, auto-scroll behavior, and fluid transitions
+- **🎯 Real-time Streaming**: Live AI responses with word-by-word streaming
+- **🔧 MCP Integration**: Full integration with MCP Multi-Agent backend and filesystem server
+- **📱 Responsive Design**: Desktop-optimized with macOS feel and professional typography
+- **⚡ Next.js 15 + React 19**: Latest versions with App Router and Server Components
+- **🔒 TypeScript**: Full type safety throughout the application
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 15 with App Router
-- **UI Library**: React 19 with AI SDK UI elements
-- **Styling**: Tailwind CSS v4
+- **Framework**: Next.js 15 with App Router and Turbopack
+- **UI Components**: Custom macOS ChatGPT-style React components
+- **Styling**: Tailwind CSS with custom macOS design system
+- **Typography**: Inter font via Next.js font optimization
 - **AI Integration**: AI SDK (`@ai-sdk/react`, `@ai-sdk/rsc`, `@ai-sdk/openai`)
 - **MCP Bridge**: `mcp-use` library for MCP server integration
-- **Language**: TypeScript
+- **Language**: TypeScript with full type safety
 - **Package Manager**: npm
 
 ## 📦 Installation
@@ -49,24 +54,28 @@ A modern web interface for the Multiple MCP Servers General Purpose Agent, built
    ```
 
 5. **Open your browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3000/chat](http://localhost:3000/chat) for the beautiful macOS ChatGPT interface
 
 ## 🎯 Usage
 
-### Basic Chat Interface
+### Beautiful macOS ChatGPT Interface
 
-The application provides a clean, modern chat interface where you can:
+The application provides a stunning macOS-style ChatGPT interface where you can:
 
-- **Start conversations** with the AI assistant
-- **Stream responses** in real-time using AI SDK
-- **View conversation history** with proper message threading
-- **Responsive design** that works on desktop and mobile
+- **🖥️ macOS Window Design**: Traffic light controls and professional dark theme
+- **💬 Natural Conversations**: Chat with AI assistant in familiar ChatGPT-style interface
+- **⚡ Real-time Streaming**: Watch responses appear word-by-word with typing indicators
+- **📱 Sidebar Navigation**: Access conversation history and user profile
+- **⌨️ Keyboard Shortcuts**: Enter to send, Shift+Enter for new lines
+- **🔄 Auto-scroll**: Messages automatically scroll to bottom with smooth animations
+- **🔧 MCP Integration**: Real file operations and tool execution through MCP servers
 
 ### Key Components
 
-- **`/chat`**: Main chat interface with streaming support
-- **`/api/chat`**: API route handling OpenAI integration
-- **AI SDK Integration**: Real-time streaming with `useChat` hook
+- **`/chat`**: Beautiful macOS ChatGPT interface with sidebar and conversation history
+- **`/api/chat`**: API route handling OpenAI integration and MCP server communication
+- **Custom macOS UI**: Traffic light controls, dark theme, and professional typography
+- **MCP Integration**: Real-time file operations and tool execution capabilities
 
 ## 🔧 Development
 

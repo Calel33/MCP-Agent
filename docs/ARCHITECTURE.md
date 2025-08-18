@@ -16,12 +16,13 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 🎉 PRODUCTION MCP MULTI-AGENT              │
+│           🎉 PRODUCTION MCP MULTI-AGENT WITH MACOS UI       │
 ├─────────────────────────────────────────────────────────────┤
-│  🌐 Next.js 15 UI (http://localhost:3001) ✅ LIVE          │
-│  - AI SDK Streaming Chat                                   │
-│  - Real-time MCP Status Monitoring                         │
-│  - Professional Responsive Design                          │
+│  🖥️ macOS ChatGPT UI (http://localhost:3000/chat) ✅ LIVE   │
+│  - Beautiful macOS-style Interface with Traffic Lights     │
+│  - Professional Dark Theme & Sidebar Layout                │
+│  - Auto-scroll, Typing Indicators & Smooth Animations      │
+│  - Inter Font Typography & Responsive Design               │
 ├─────────────────────────────────────────────────────────────┤
 │  🔧 CLI Interface (Commander.js) ✅ COMPLETE               │
 │  - Query, Server, Config Commands                          │

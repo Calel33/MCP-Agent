@@ -1,7 +1,7 @@
 ---
-type: "always_apply"
+type: "agent_requested"
+description: "Example description"
 ---
-
 {
   "system_rule": {
     "name": "Memory Folder Management System Rule",
