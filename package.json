@@ -1,0 +1,75 @@
+{
+  "name": "mcp-multi-agent",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A TypeScript-based AI agent that connects to multiple MCP servers using the mcp-use library, with intelligent server selection and OpenAI integration",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "dev:test-env": "tsx src/config/test-env.ts",
+    "dev:test-integration": "tsx src/config/test-integration.ts",
+    "start": "node dist/index.js",
+    "cli": "tsx src/cli/index.ts",
+    "mcp-agent": "tsx src/cli/index.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:health-monitoring": "tsx src/monitoring/test-health-monitoring.ts",
+    "test:health-monitoring:basic": "tsx src/monitoring/test-health-monitoring.ts basic",
+    "test:health-monitoring:failures": "tsx src/monitoring/test-health-monitoring.ts failures",
+    "test:error-handling": "tsx src/utils/test-error-handling.ts",
+    "test:error-handling:verbose": "tsx src/utils/test-error-handling.ts --verbose",
+    "test:cli": "bash src/cli/test-cli.sh",
+    "validate:cli": "node src/cli/validate-cli.cjs",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean"
+  },
+  "keywords": [
+    "MCP",
+    "Model Context Protocol",
+    "AI",
+    "agent",
+    "TypeScript",
+    "OpenAI",
+    "multi-server",
+    "mcp-use"
+  ],
+  "author": "MCP Multi-Agent Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/user/mcp-multi-agent.git"
+  },
+  "dependencies": {
+    "mcp-use": "^0.1.15",
+    "openai": "^4.67.3",
+    "@ai-sdk/openai": "^1.0.2",
+    "ai": "^4.0.12",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.9",
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.2",
+    "eslint": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.10.0",
+    "vitest": "^2.1.3",
+    "@types/commander": "^2.12.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
