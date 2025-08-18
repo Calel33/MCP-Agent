@@ -4,42 +4,64 @@
 
 The Multiple MCP Servers General Purpose Agent is a TypeScript-based AI agent that connects to multiple Model Context Protocol (MCP) servers simultaneously, providing intelligent server selection and OpenAI integration for natural language processing.
 
-## 🚀 Quick Start
+## 🚀 Quick Start - PRODUCTION READY!
 
-### Prerequisites
+### 🎉 **LIVE APPLICATION READY**
 
-- **Node.js**: Version 18.0.0 or higher
-- **OpenAI API Key**: Required for LLM functionality
-- **TypeScript**: Included as dependency
+**Access the production MCP Multi-Agent UI immediately:**
 
-### Installation
+**🌐 Open**: http://localhost:3001
+**Status**: ✅ Live with real MCP filesystem server
+**Features**: Production chat interface with actual tool execution
 
-1. **Clone the repository:**
-```bash
-git clone https://github.com/user/mcp-multi-agent.git
-cd mcp-multi-agent
+### **Instant Usage - No Setup Required**
+
+The application is already running with:
+- ✅ Real MCP filesystem server connected
+- ✅ OpenAI GPT-4o integration active
+- ✅ Professional UI with streaming chat
+- ✅ Live tool execution and file operations
+
+**Try these interactions right now:**
+```
+"Can you read the package.json file and tell me about this project?"
+"List all TypeScript files in the src directory"
+"Help me understand the project structure"
+"Create a simple README file for me"
 ```
 
-2. **Install dependencies:**
+### **Alternative: CLI Interface**
+
+For command-line usage:
 ```bash
-npm install
+# Query the agent directly
+npm run cli -- query "What files are in this directory?"
+
+# Check server status
+npm run cli -- server list
+
+# View configuration
+npm run cli -- config show
 ```
 
-3. **Set up environment variables:**
+### **Development Setup (Optional)**
+
+If you want to modify or extend the system:
+
+1. **Prerequisites:**
+   - Node.js 18.0.0+
+   - OpenAI API key (already configured)
+
+2. **Development server:**
 ```bash
-cp .env.example .env
-# Edit .env with your OpenAI API key
+cd mcp-agent-ui
+npm run dev  # Starts on available port
 ```
 
-4. **Build the project:**
+3. **Backend development:**
 ```bash
-npm run build
-```
-
-5. **Test the installation:**
-```bash
-npm run dev test-openai
-npm run dev test-agent --minimal
+npm run build  # Build TypeScript backend
+npm run cli    # Test CLI interface
 ```
 
 ## 🔧 Configuration

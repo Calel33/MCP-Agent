@@ -1,0 +1,78 @@
+{
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "apiKey": "${OPENAI_API_KEY}",
+    "temperature": 0.1,
+    "maxTokens": 4096
+  },
+  "agent": {
+    "maxSteps": 10,
+    "timeout": 60000,
+    "autoInitialize": true,
+    "verbose": true
+  },
+  "serverManager": {
+    "enabled": true,
+    "maxConcurrentServers": 3,
+    "serverStartupTimeout": 30,
+    "healthMonitoring": true,
+    "healthCheckInterval": 30000,
+    "autoReconnect": true
+  },
+  "servers": [
+    {
+      "id": "filesystem",
+      "name": "File System Server",
+      "description": "Provides file system operations like reading, writing, and listing files",
+      "connectionType": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem", "/Users/kyla/new project"],
+      "enabled": true,
+      "priority": 8,
+      "tags": ["filesystem", "files", "io"],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "web-browser",
+      "name": "Web Browser Server", 
+      "description": "Provides web browsing capabilities",
+      "connectionType": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-puppeteer"],
+      "enabled": false,
+      "priority": 3,
+      "tags": ["web", "browser", "scraping"],
+      "timeout": 45000,
+      "retry": {
+        "maxAttempts": 2,
+        "delayMs": 2000
+      }
+    },
+    {
+      "id": "sqlite",
+      "name": "SQLite Database Server",
+      "description": "Provides SQLite database operations", 
+      "connectionType": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-sqlite", "database.db"],
+      "enabled": false,
+      "priority": 4,
+      "tags": ["database", "sqlite", "storage"],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500
+      }
+    }
+  ],
+  "logging": {
+    "level": "info",
+    "format": "text"
+  }
+}

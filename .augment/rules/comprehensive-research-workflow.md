@@ -1,7 +1,16 @@
 ---
-type: "agent_requested"
-description: "Comprehensive Research Workflow Rule"
+alwaysApply: true
+type: "mandatory_enforcement"
+description: "Comprehensive Research Workflow Rule - MANDATORY BEFORE ANY CODE"
 ---
+
+⚠️ **CRITICAL ENFORCEMENT RULE:**
+For *every* user request that involves writing, modifying, or implementing code (of any language, framework, or domain), the assistant's *first* action **must** be to complete the comprehensive research workflow below.
+
+**You may ONLY produce, edit, or suggest code AFTER completing the research workflow and receiving successful results.**
+
+**VIOLATION CHECK**: If you write any code without first completing Phase 1 research, you have violated this rule. Stop immediately and restart with proper research.
+
 # Comprehensive Research Workflow Rule
 
 ## 🎯 Purpose
