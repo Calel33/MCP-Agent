@@ -1,7 +1,7 @@
 ---
-type: "always_apply"
+type: "agent_requested"
+description: "Example description"
 ---
-
 # Agent Mode Rules & Dynamic Switching System
 
 ## Overview
