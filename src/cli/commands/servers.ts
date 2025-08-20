@@ -20,6 +20,8 @@ export function createServerCommands(): Command {
   serverCommand.addCommand(createStatusCommand());
   serverCommand.addCommand(createTestCommand());
   serverCommand.addCommand(createInfoCommand());
+  serverCommand.addCommand(createEnableCommand());
+  serverCommand.addCommand(createDisableCommand());
 
   return serverCommand;
 }
@@ -106,6 +108,44 @@ Examples:
 `);
 }
 
+/**
+ * Create the 'enable' subcommand
+ */
+function createEnableCommand(): Command {
+  return new Command('enable')
+    .description('enable one or more MCP servers')
+    .argument('<server-ids...>', 'server IDs to enable')
+    .option('--config <path>', 'path to configuration file')
+    .action(async (serverIds: string[], options: EnableDisableOptions) => {
+      await handleEnableCommand(serverIds, options);
+    })
+    .addHelpText('after', `
+Examples:
+  $ mcp-agent server enable playwright-mcp
+  $ mcp-agent server enable filesystem sqlite
+  $ mcp-agent server enable playwright-mcp --config ./custom-config.json
+`);
+}
+
+/**
+ * Create the 'disable' subcommand
+ */
+function createDisableCommand(): Command {
+  return new Command('disable')
+    .description('disable one or more MCP servers')
+    .argument('<server-ids...>', 'server IDs to disable')
+    .option('--config <path>', 'path to configuration file')
+    .action(async (serverIds: string[], options: EnableDisableOptions) => {
+      await handleDisableCommand(serverIds, options);
+    })
+    .addHelpText('after', `
+Examples:
+  $ mcp-agent server disable playwright-mcp
+  $ mcp-agent server disable filesystem sqlite
+  $ mcp-agent server disable playwright-mcp --config ./custom-config.json
+`);
+}
+
 // Command option interfaces
 interface ListOptions {
   enabledOnly?: boolean;
@@ -129,6 +169,10 @@ interface InfoOptions {
   server?: string;
   tools?: boolean;
   format?: 'table' | 'json';
+}
+
+interface EnableDisableOptions {
+  config?: string;
 }
 
 /**
@@ -339,5 +383,117 @@ function displayServerInfo(serverInfo: any, options: InfoOptions): void {
         console.log(chalk.gray(`  └─ ${server.toolCount} tools available`));
       }
     });
+  }
+}
+
+/**
+ * Handle the 'enable' command
+ */
+async function handleEnableCommand(serverIds: string[], options: EnableDisableOptions): Promise<void> {
+  try {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+
+    const configPath = options.config || 'mcp-config.json';
+    const agentConfigPath = options.config || 'mcp-agent.config.json';
+
+    console.log(chalk.blue(`🔧 Enabling servers: ${serverIds.join(', ')}`));
+
+    // Update main config
+    await updateServerEnabledStatus(configPath, serverIds, true);
+
+    // Update agent config if it exists and is different
+    if (configPath !== agentConfigPath) {
+      try {
+        await fs.access(agentConfigPath);
+        await updateServerEnabledStatus(agentConfigPath, serverIds, true);
+      } catch {
+        // Agent config doesn't exist, skip
+      }
+    }
+
+    console.log(chalk.green(`✅ Successfully enabled servers: ${serverIds.join(', ')}`));
+    console.log(chalk.gray('💡 Restart the application to apply changes'));
+
+  } catch (error) {
+    console.error(chalk.red('Failed to enable servers:'), error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle the 'disable' command
+ */
+async function handleDisableCommand(serverIds: string[], options: EnableDisableOptions): Promise<void> {
+  try {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+
+    const configPath = options.config || 'mcp-config.json';
+    const agentConfigPath = options.config || 'mcp-agent.config.json';
+
+    console.log(chalk.blue(`🔧 Disabling servers: ${serverIds.join(', ')}`));
+
+    // Update main config
+    await updateServerEnabledStatus(configPath, serverIds, false);
+
+    // Update agent config if it exists and is different
+    if (configPath !== agentConfigPath) {
+      try {
+        await fs.access(agentConfigPath);
+        await updateServerEnabledStatus(agentConfigPath, serverIds, false);
+      } catch {
+        // Agent config doesn't exist, skip
+      }
+    }
+
+    console.log(chalk.green(`✅ Successfully disabled servers: ${serverIds.join(', ')}`));
+    console.log(chalk.gray('💡 Restart the application to apply changes'));
+
+  } catch (error) {
+    console.error(chalk.red('Failed to disable servers:'), error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+/**
+ * Update server enabled status in configuration file
+ */
+async function updateServerEnabledStatus(configPath: string, serverIds: string[], enabled: boolean): Promise<void> {
+  const fs = await import('fs/promises');
+
+  try {
+    const configContent = await fs.readFile(configPath, 'utf-8');
+    const config = JSON.parse(configContent);
+
+    let updatedCount = 0;
+
+    if (config.servers && Array.isArray(config.servers)) {
+      config.servers.forEach((server: any) => {
+        if (serverIds.includes(server.id)) {
+          server.enabled = enabled;
+          updatedCount++;
+        }
+      });
+    }
+
+    if (updatedCount === 0) {
+      throw new Error(`No servers found with IDs: ${serverIds.join(', ')}`);
+    }
+
+    if (updatedCount < serverIds.length) {
+      const foundIds = config.servers.filter((s: any) => serverIds.includes(s.id)).map((s: any) => s.id);
+      const notFoundIds = serverIds.filter(id => !foundIds.includes(id));
+      console.warn(chalk.yellow(`⚠️  Servers not found: ${notFoundIds.join(', ')}`));
+    }
+
+    await fs.writeFile(configPath, JSON.stringify(config, null, 2));
+    console.log(chalk.gray(`📝 Updated ${configPath}`));
+
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('ENOENT')) {
+      throw new Error(`Configuration file not found: ${configPath}`);
+    }
+    throw error;
   }
 }

@@ -173,6 +173,38 @@ Examples:
   $ mcp-agent server info --format json
 `);
 
+  // Add enable subcommand
+  serverCommand
+    .command('enable')
+    .description('enable one or more MCP servers')
+    .argument('<server-ids...>', 'server IDs to enable')
+    .option('--config <path>', 'path to configuration file')
+    .action(async (serverIds: string[], options: any) => {
+      await handleServerEnableCommand(serverIds, options);
+    })
+    .addHelpText('after', `
+Examples:
+  $ mcp-agent server enable playwright-mcp
+  $ mcp-agent server enable filesystem sqlite
+  $ mcp-agent server enable playwright-mcp --config ./custom-config.json
+`);
+
+  // Add disable subcommand
+  serverCommand
+    .command('disable')
+    .description('disable one or more MCP servers')
+    .argument('<server-ids...>', 'server IDs to disable')
+    .option('--config <path>', 'path to configuration file')
+    .action(async (serverIds: string[], options: any) => {
+      await handleServerDisableCommand(serverIds, options);
+    })
+    .addHelpText('after', `
+Examples:
+  $ mcp-agent server disable playwright-mcp
+  $ mcp-agent server disable filesystem sqlite
+  $ mcp-agent server disable playwright-mcp --config ./custom-config.json
+`);
+
   program.addCommand(serverCommand);
 }
 
@@ -380,10 +412,8 @@ async function handleServerListCommand(options: any): Promise<void> {
   try {
     console.log(chalk.blue('📡 Retrieving server list...'));
 
-    // Load configuration to get server list
-    const { loadConfig } = await import('@/config/loader.js');
-    const config = loadConfig();
-
+    // Load configuration from file
+    const config = await loadConfigFromFile();
     const servers = config.servers;
     const filteredServers = options.enabledOnly
       ? servers.filter((s: any) => s.enabled)
@@ -440,10 +470,8 @@ async function handleServerStatusCommand(options: any): Promise<void> {
   try {
     console.log(chalk.blue('🔍 Checking server status...'));
 
-    // Load configuration
-    const { loadConfig } = await import('@/config/loader.js');
-    const config = loadConfig();
-
+    // Load configuration from file
+    const config = await loadConfigFromFile();
     const servers = config.servers;
     const targetServers = options.server
       ? servers.filter((s: any) => s.id === options.server)
@@ -489,16 +517,149 @@ async function handleServerStatusCommand(options: any): Promise<void> {
 }
 
 /**
+ * Handle server enable command
+ */
+async function handleServerEnableCommand(serverIds: string[], options: any): Promise<void> {
+  try {
+    const fs = await import('fs/promises');
+
+    const configPath = options.config || 'mcp-config.json';
+    const agentConfigPath = options.config || 'mcp-agent.config.json';
+
+    console.log(chalk.blue(`🔧 Enabling servers: ${serverIds.join(', ')}`));
+
+    // Update main config
+    await updateServerEnabledStatus(configPath, serverIds, true);
+
+    // Update agent config if it exists and is different
+    if (configPath !== agentConfigPath) {
+      try {
+        await fs.access(agentConfigPath);
+        await updateServerEnabledStatus(agentConfigPath, serverIds, true);
+      } catch {
+        // Agent config doesn't exist, skip
+      }
+    }
+
+    console.log(chalk.green(`✅ Successfully enabled servers: ${serverIds.join(', ')}`));
+    console.log(chalk.gray('💡 Restart the application to apply changes'));
+
+  } catch (error) {
+    console.error(chalk.red('Failed to enable servers:'), error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+/**
+ * Handle server disable command
+ */
+async function handleServerDisableCommand(serverIds: string[], options: any): Promise<void> {
+  try {
+    const fs = await import('fs/promises');
+
+    const configPath = options.config || 'mcp-config.json';
+    const agentConfigPath = options.config || 'mcp-agent.config.json';
+
+    console.log(chalk.blue(`🔧 Disabling servers: ${serverIds.join(', ')}`));
+
+    // Update main config
+    await updateServerEnabledStatus(configPath, serverIds, false);
+
+    // Update agent config if it exists and is different
+    if (configPath !== agentConfigPath) {
+      try {
+        await fs.access(agentConfigPath);
+        await updateServerEnabledStatus(agentConfigPath, serverIds, false);
+      } catch {
+        // Agent config doesn't exist, skip
+      }
+    }
+
+    console.log(chalk.green(`✅ Successfully disabled servers: ${serverIds.join(', ')}`));
+    console.log(chalk.gray('💡 Restart the application to apply changes'));
+
+  } catch (error) {
+    console.error(chalk.red('Failed to disable servers:'), error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+/**
+ * Load configuration from file (prioritizing mcp-config.json)
+ */
+async function loadConfigFromFile(): Promise<any> {
+  const fs = await import('fs/promises');
+
+  // Try mcp-config.json first, then mcp-agent.config.json
+  const configPaths = ['mcp-config.json', 'mcp-agent.config.json'];
+
+  for (const configPath of configPaths) {
+    try {
+      const configContent = await fs.readFile(configPath, 'utf-8');
+      const config = JSON.parse(configContent);
+      return config;
+    } catch (error) {
+      // Continue to next file if this one doesn't exist or is invalid
+      continue;
+    }
+  }
+
+  // If no config files found, use default configuration
+  const { loadConfig } = await import('@/config/loader.js');
+  return loadConfig();
+}
+
+/**
+ * Update server enabled status in configuration file
+ */
+async function updateServerEnabledStatus(configPath: string, serverIds: string[], enabled: boolean): Promise<void> {
+  const fs = await import('fs/promises');
+
+  try {
+    const configContent = await fs.readFile(configPath, 'utf-8');
+    const config = JSON.parse(configContent);
+
+    let updatedCount = 0;
+
+    if (config.servers && Array.isArray(config.servers)) {
+      config.servers.forEach((server: any) => {
+        if (serverIds.includes(server.id)) {
+          server.enabled = enabled;
+          updatedCount++;
+        }
+      });
+    }
+
+    if (updatedCount === 0) {
+      throw new Error(`No servers found with IDs: ${serverIds.join(', ')}`);
+    }
+
+    if (updatedCount < serverIds.length) {
+      const foundIds = config.servers.filter((s: any) => serverIds.includes(s.id)).map((s: any) => s.id);
+      const notFoundIds = serverIds.filter(id => !foundIds.includes(id));
+      console.warn(chalk.yellow(`⚠️  Servers not found: ${notFoundIds.join(', ')}`));
+    }
+
+    await fs.writeFile(configPath, JSON.stringify(config, null, 2));
+    console.log(chalk.gray(`📝 Updated ${configPath}`));
+
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('ENOENT')) {
+      throw new Error(`Configuration file not found: ${configPath}`);
+    }
+    throw error;
+  }
+}
+
+/**
  * Handle server info command
  */
 async function handleServerInfoCommand(options: any): Promise<void> {
   try {
     console.log(chalk.blue('📋 Retrieving server information...'));
 
-    // Load configuration
-    const { loadConfig } = await import('@/config/loader.js');
-    const config = loadConfig();
-
+    // Load configuration from file
+    const config = await loadConfigFromFile();
     const servers = config.servers;
 
     if (options.server) {

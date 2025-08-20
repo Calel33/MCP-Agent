@@ -37,7 +37,7 @@ export class MCPChatService {
     }
 
     try {
-      console.log('🔧 Initializing MCP Chat Service with filesystem server...');
+      console.log('🔧 Initializing MCP Chat Service with Playwright MCP server...');
 
       // Validate OpenAI API key
       const apiKey = process.env.OPENAI_API_KEY;
@@ -45,20 +45,26 @@ export class MCPChatService {
         throw new Error('OPENAI_API_KEY environment variable is required');
       }
 
-      // Create MCP client with filesystem server
+      // Create MCP client with Playwright MCP server using correct mcp-use format
       this.mcpClient = MCPClient.fromDict({
-        filesystem: {
-          name: 'File System Server',
-          description: 'Provides file system operations',
-          connector: {
-            type: 'stdio',
-            command: 'npx',
-            args: ['@modelcontextprotocol/server-filesystem', '/Users/kyla/new project'],
+        mcpServers: {
+          'playwright-mcp': {
+            command: 'cmd',
+            args: [
+              '/c',
+              'npx',
+              '-y',
+              '@smithery/cli@latest',
+              'run',
+              '@microsoft/playwright-mcp',
+              '--key',
+              '9c441b5c-510a-41cd-a242-f77baa272f2c'
+            ],
           },
         },
       });
 
-      console.log('📁 MCP filesystem client created');
+      console.log('🎭 MCP Playwright client created');
 
       // Create LangChain OpenAI client
       this.llm = new ChatOpenAI({
@@ -81,7 +87,7 @@ export class MCPChatService {
       console.log('🤖 MCP Agent created');
 
       this.initialized = true;
-      console.log('✅ MCP Chat Service initialized successfully with real filesystem server');
+      console.log('✅ MCP Chat Service initialized successfully with Playwright MCP server');
     } catch (error) {
       console.error('❌ Failed to initialize MCP Chat Service:', error);
       throw new Error(`MCP initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -138,7 +144,7 @@ export class MCPChatService {
     try {
       // Show tool usage if enabled
       if (options.enableToolVisibility) {
-        yield '\n🔧 Connecting to filesystem server...\n';
+        yield '\n🔧 Connecting to Playwright MCP server...\n';
         await new Promise(resolve => setTimeout(resolve, 300));
       }
 
@@ -149,7 +155,7 @@ export class MCPChatService {
       const result = await this.mcpAgent.run(query, maxSteps);
 
       if (options.enableToolVisibility) {
-        yield '\n✅ Filesystem server connected\n\n';
+        yield '\n✅ Playwright MCP server connected\n\n';
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
@@ -172,11 +178,12 @@ export class MCPChatService {
       console.error('❌ Error in real MCP streaming:', error);
 
       // Fallback to error message
-      yield `\n❌ Error connecting to MCP filesystem: ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
-      yield `I'm having trouble connecting to the filesystem server. This might be because:\n`;
-      yield `- The @modelcontextprotocol/server-filesystem package needs to be installed globally\n`;
+      yield `\n❌ Error connecting to Playwright MCP: ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
+      yield `I'm having trouble connecting to the Playwright MCP server. This might be because:\n`;
+      yield `- The @smithery/cli package needs to be installed globally\n`;
+      yield `- The @microsoft/playwright-mcp server is not available\n`;
       yield `- The OpenAI API key is not configured in .env.local\n`;
-      yield `- There's a permission issue with the filesystem\n\n`;
+      yield `- There's a network issue with the Smithery CLI\n\n`;
       yield `Please check the console for more details and try again.`;
     }
   }
@@ -222,7 +229,7 @@ export class MCPChatService {
   }
 
   /**
-   * Get service health status from real MCP filesystem server
+   * Get service health status from real MCP Playwright server
    */
   async getHealthStatus() {
     try {
@@ -248,12 +255,12 @@ export class MCPChatService {
           status: 'healthy',
           healthy: true,
           service: 'MCP Chat Service (Production Mode)',
-          backend: 'MCP Filesystem Server',
+          backend: 'Playwright MCP Server',
           servers: serverNames,
           features: {
             streaming: true,
             tool_visibility: true,
-            file_operations: 'real',
+            browser_automation: 'real',
             mcp_integration: 'production'
           }
         };

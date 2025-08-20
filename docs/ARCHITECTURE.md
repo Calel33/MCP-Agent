@@ -47,10 +47,11 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 │  - Real OpenAI API Integration                             │
 ├─────────────────────────────────────────────────────────────┤
 │  🔌 LIVE MCP Servers (via mcp-use library)                 │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │
-│  │📁 Filesystem│ │🌐 Browser   │ │🗄️ SQLite    │ ...      │
-│  │✅ CONNECTED │ │⏳ Available │ │⏳ Available │          │
-│  └─────────────┘ └─────────────┘ └─────────────┘          │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │🎭 Playwright MCP Server (Microsoft + Smithery CLI) │  │
+│  │✅ CONNECTED - Browser Automation Capabilities       │  │
+│  │🔧 Enable/Disable via CLI Commands                   │  │
+│  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -68,7 +69,7 @@ mcp-agent-ui/           # 🌐 Next.js 15 Production UI ✅ LIVE
 │   │   ├── chat/page.tsx          # Professional chat interface
 │   │   └── page.tsx               # Auto-redirect to chat
 │   ├── lib/
-│   │   └── mcp-chat-service.ts    # 🔧 PRODUCTION MCP integration
+│   │   └── mcp-chat-service.ts    # 🔧 PRODUCTION Playwright MCP integration
 │   └── hooks/
 │       └── use-mcp-status.ts      # Real-time health monitoring
 ├── .env.local                     # Production OpenAI API configuration
@@ -192,13 +193,15 @@ src/                    # 🤖 Backend MCP Multi-Agent ✅ COMPLETE
 **Key Components**:
 - **Main CLI Entry Point** (`index.ts`): Commander.js-based CLI with comprehensive command structure
 - **Query Commands** (`commands/query.ts`): Interactive query execution with streaming support
-- **Server Management** (`commands/servers.ts`): Server listing, status checking, and information display
+- **Server Management** (`commands/servers.ts`): Server listing, status checking, enable/disable functionality, and information display
 - **Configuration Management** (`commands/config.ts`): Setup, validation, and configuration display
 - **Advanced Logging** (`utils/logger.ts`): Multi-level logging with verbose/quiet modes
 - **Simple Agent** (`utils/simple-agent.ts`): Lightweight agent implementation for CLI usage
 
 **Features**:
 - **Complete Command Structure**: query, server, config commands with subcommands and aliases
+- **Server Enable/Disable**: Runtime control of MCP servers via CLI commands ✅ NEW
+- **File-Based Configuration**: Loads configuration from mcp-config.json and mcp-agent.config.json ✅ NEW
 - **Multiple Output Formats**: Text, JSON, and table formats with proper formatting
 - **Streaming Support**: Real-time response streaming for query commands
 - **Comprehensive Help System**: Built-in help with examples for all commands
@@ -206,6 +209,15 @@ src/                    # 🤖 Backend MCP Multi-Agent ✅ COMPLETE
 - **Input Validation**: All parameters validated with helpful feedback
 - **Security**: API keys properly masked in output, input sanitization
 - **Testing**: Comprehensive test suite with 25+ test cases and 100% pass rate
+
+**New CLI Commands** ✅ **ADDED 2025-08-20**:
+```bash
+# Server Management
+npx tsx src/cli/index.ts server enable <server-ids...>   # Enable MCP servers
+npx tsx src/cli/index.ts server disable <server-ids...>  # Disable MCP servers
+npx tsx src/cli/index.ts server list --enabled-only      # Show only enabled servers
+npx tsx src/cli/index.ts server status --server <id>     # Check specific server status
+```
 
 ### 5. Server Manager (`src/config/server-manager.ts`) ✅ NEW
 

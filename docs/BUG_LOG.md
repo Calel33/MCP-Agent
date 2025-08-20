@@ -6,7 +6,7 @@
 **Project ID**: `3d6353d3-caac-488c-8168-00f924dd6776`  
 **Technology Stack**: TypeScript/Node.js, mcp-use library v0.1.15, OpenAI GPT-4  
 **Log Created**: 2025-08-17  
-**Last Updated**: 2025-08-18 - ✅ **PROJECT COMPLETE - SECURITY ISSUE RESOLVED**
+**Last Updated**: 2025-08-20 - ✅ **PLAYWRIGHT MCP INTEGRATION - CONFIGURATION ISSUES RESOLVED**
 
 ## 🎯 Purpose
 
@@ -443,7 +443,124 @@ catch (error) {
 - ✅ **Proper Error Logging**: Server-side logging with client-side generic responses
 - ✅ **Cache Security**: Error responses properly configured to prevent caching
 
-**Last Updated**: 2025-08-18 22:30
-**Final Review**: Project complete - all issues resolved including security enhancement
-**Maintainer**: Augment Agent (Backend Developer Mode)
-**Status**: ✅ **PRODUCTION READY - SECURE BUG-FREE RELEASE**
+---
+
+## 📅 Session: 2025-08-20 - Playwright MCP Integration
+
+### 🐛 **Bug #007: Frontend MCP Configuration Format Mismatch**
+
+**Date**: 2025-08-20
+**Severity**: High
+**Component**: Frontend MCP Service (`mcp-agent-ui/src/lib/mcp-chat-service.ts`)
+**Task**: Playwright MCP Integration
+
+#### **Problem Description**
+Frontend was showing "No MCP servers defined in config" warnings despite Playwright MCP server being configured. The mcp-use library was not detecting the MCP server configuration.
+
+#### **Error Messages**
+```
+18:10:56 [mcp-use] warn: No MCP servers defined in config
+18:10:56 [mcp-use] info: ✅ Created 0 new sessions
+18:10:56 [mcp-use] info: 🛠️ Created 0 LangChain tools from client
+```
+
+#### **Root Cause**
+Frontend was using incorrect configuration format for mcp-use library. Used custom format instead of standard `mcpServers` format expected by mcp-use.
+
+#### **Resolution**
+**Fixed Configuration Format**:
+```typescript
+// ❌ Wrong Format (Custom)
+MCPClient.fromDict({
+  'playwright-mcp': {
+    name: 'Playwright MCP Server',
+    connector: { type: 'stdio', command: 'cmd', args: [...] }
+  }
+})
+
+// ✅ Correct Format (mcp-use standard)
+MCPClient.fromDict({
+  mcpServers: {
+    'playwright-mcp': {
+      command: 'cmd',
+      args: ['/c', 'npx', '-y', '@smithery/cli@latest', 'run', '@microsoft/playwright-mcp', '--key', '...']
+    }
+  }
+})
+```
+
+#### **Validation**
+- ✅ Health endpoint now returns `"servers":["playwright-mcp"]`
+- ✅ No more "No MCP servers defined" warnings
+- ✅ MCP client initialization successful
+
+---
+
+### 🐛 **Bug #008: CLI Loading Default Configuration Instead of Files**
+
+**Date**: 2025-08-20
+**Severity**: Medium
+**Component**: CLI Configuration Loading (`src/cli/index.ts`)
+**Task**: Enable/Disable MCP Servers
+
+#### **Problem Description**
+CLI enable/disable commands were updating configuration files correctly, but CLI list/status commands were still showing servers as enabled even when disabled in config files.
+
+#### **Root Cause**
+CLI was using `loadConfig()` function which loads hardcoded default servers instead of reading from configuration files (`mcp-config.json`, `mcp-agent.config.json`).
+
+#### **Resolution**
+**Added File-Based Configuration Loading**:
+```typescript
+// Added loadConfigFromFile() function
+async function loadConfigFromFile(): Promise<any> {
+  const configPaths = ['mcp-config.json', 'mcp-agent.config.json'];
+  // Try each config file and return first valid one
+}
+
+// Updated CLI handlers to use file-based config
+const config = await loadConfigFromFile();
+```
+
+#### **Validation**
+- ✅ `server list` now shows correct enabled/disabled status from files
+- ✅ `server disable playwright-mcp` properly shows server as disabled
+- ✅ `server enable playwright-mcp` properly shows server as enabled
+- ✅ `--enabled-only` filter works correctly
+
+---
+
+### 🐛 **Bug #009: Environment Variable Detection Issues**
+
+**Date**: 2025-08-20
+**Severity**: Low
+**Component**: Environment Configuration (`.env`, `.env.local`)
+**Task**: API Key Configuration
+
+#### **Problem Description**
+Test API key was being used instead of real OpenAI API key, causing authentication errors.
+
+#### **Error Messages**
+```
+Error: 401 Incorrect API key provided: test-key******************tion
+```
+
+#### **Root Cause**
+Created test `.env` file with placeholder API key for configuration validation, but frontend needed real API key in `.env.local`.
+
+#### **Resolution**
+- ✅ Updated `.env.local` with real OpenAI API key
+- ✅ Ensured both backend and frontend use same valid API key
+- ✅ Verified environment variable loading in both systems
+
+#### **Validation**
+- ✅ Backend CLI queries work with real API key
+- ✅ Frontend health endpoint responds correctly
+- ✅ No authentication errors in logs
+
+---
+
+**Last Updated**: 2025-08-20 18:30
+**Final Review**: Playwright MCP integration complete - all configuration issues resolved
+**Maintainer**: Multi-Agent Workflow (Code Archaeologist → Implementation → Testing)
+**Status**: ✅ **PRODUCTION READY - PLAYWRIGHT MCP INTEGRATED**

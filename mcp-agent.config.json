@@ -22,52 +22,34 @@
   },
   "servers": [
     {
-      "id": "filesystem",
-      "name": "File System Server",
-      "description": "Provides file system operations like reading, writing, and listing files",
+      "id": "playwright-mcp",
+      "name": "Playwright MCP Server",
+      "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
       "connectionType": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-filesystem", "/Users/kyla/new project"],
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@microsoft/playwright-mcp",
+        "--key",
+        "9c441b5c-510a-41cd-a242-f77baa272f2c"
+      ],
       "enabled": true,
-      "priority": 8,
-      "tags": ["filesystem", "files", "io"],
-      "timeout": 30000,
-      "retry": {
-        "maxAttempts": 3,
-        "delayMs": 1000,
-        "backoffMultiplier": 2
-      }
-    },
-    {
-      "id": "web-browser",
-      "name": "Web Browser Server", 
-      "description": "Provides web browsing capabilities",
-      "connectionType": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-puppeteer"],
-      "enabled": false,
-      "priority": 3,
-      "tags": ["web", "browser", "scraping"],
+      "priority": 10,
+      "tags": [
+        "browser",
+        "automation",
+        "playwright",
+        "web"
+      ],
       "timeout": 45000,
       "retry": {
-        "maxAttempts": 2,
-        "delayMs": 2000
-      }
-    },
-    {
-      "id": "sqlite",
-      "name": "SQLite Database Server",
-      "description": "Provides SQLite database operations", 
-      "connectionType": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-sqlite", "database.db"],
-      "enabled": false,
-      "priority": 4,
-      "tags": ["database", "sqlite", "storage"],
-      "timeout": 30000,
-      "retry": {
         "maxAttempts": 3,
-        "delayMs": 1500
+        "delayMs": 2000,
+        "backoffMultiplier": 2
       }
     }
   ],

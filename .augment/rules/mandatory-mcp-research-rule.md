@@ -19,6 +19,9 @@ For **EVERY** user request involving writing, modifying, or generating code (any
 ### STEP 1: MANDATORY MCP TOOL RESEARCH
 **BEFORE** writing ANY code, you **MUST** call appropriate MCP research tools:
 
+### 🎯 GOAL-ORIENTED RESEARCH REQUIREMENT
+**CRITICAL**: All research must conclude by directly addressing the user's stated goal. Research that doesn't connect back to the goal is incomplete.
+
 #### 🔍 Research Tool Selection Guide (CRITICAL: Each Tool Has Specific Purpose):
 
 ##### **Archon MCP Tools** - PROJECT-SPECIFIC Research
@@ -83,12 +86,14 @@ You **MUST** research the following before any code generation:
 Before proceeding to code generation, verify:
 
 - [ ] **Research Tools Called**: Appropriate MCP tools used successfully
+- [ ] **Goal Alignment**: Research directly addresses the user's stated goal
 - [ ] **Patterns Found**: Relevant implementation patterns discovered
 - [ ] **Best Practices Identified**: Security, performance, and quality standards understood
 - [ ] **Dependencies Verified**: Required packages and versions confirmed
 - [ ] **Integration Planned**: Approach for fitting into existing codebase defined
 - [ ] **Error Handling Considered**: Failure modes and error management planned
 - [ ] **Testing Strategy**: Approach for validating implementation determined
+- [ ] **Goal Achievement Path**: Clear connection from research findings to goal completion
 
 ### STEP 4: ONLY THEN GENERATE CODE
 
@@ -290,6 +295,7 @@ If tools return limited results:
 - v1.0: Initial rule creation
 - v2.0: Enhanced with detailed guidelines and examples
 - v2.1: Added MCP tool specialization insights - Archon for PROJECT-SPECIFIC, GitHub for EXTERNAL, Forkdocs for OFFICIAL
+- v2.2: Added goal-oriented research requirement - all research must conclude by addressing user's stated goal
 
 **Review Schedule**: Monthly review for effectiveness and updates
 

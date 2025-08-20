@@ -102,57 +102,34 @@ export function loadConfig(customConfig?: Partial<MCPMultiAgentConfig>): MCPMult
 
 /**
  * Get default server configurations
- * These are example servers - users should customize based on their needs
+ * Updated to include only Playwright MCP server as per project requirements
  */
 function getDefaultServers(): MCPServerConfig[] {
   return [
     {
-      id: 'filesystem',
-      name: 'File System Server',
-      description: 'Provides file system operations',
+      id: 'playwright-mcp',
+      name: 'Playwright MCP Server',
+      description: 'Provides browser automation capabilities via Microsoft Playwright MCP',
       connectionType: 'stdio',
-      command: 'npx',
-      args: ['@modelcontextprotocol/server-filesystem', '/tmp'],
-      enabled: false, // Disabled by default - user should enable and configure
-      priority: 5,
-      tags: ['filesystem', 'files'],
-      timeout: 30000,
-      retry: {
-        maxAttempts: 3,
-        delayMs: 1000,
-        backoffMultiplier: 2,
-      },
-    },
-    {
-      id: 'web-browser',
-      name: 'Web Browser Server',
-      description: 'Provides web browsing capabilities',
-      connectionType: 'stdio',
-      command: 'npx',
-      args: ['@modelcontextprotocol/server-puppeteer'],
-      enabled: false, // Disabled by default
-      priority: 3,
-      tags: ['web', 'browser', 'scraping'],
+      command: 'cmd',
+      args: [
+        '/c',
+        'npx',
+        '-y',
+        '@smithery/cli@latest',
+        'run',
+        '@microsoft/playwright-mcp',
+        '--key',
+        '9c441b5c-510a-41cd-a242-f77baa272f2c'
+      ],
+      enabled: true,
+      priority: 10,
+      tags: ['browser', 'automation', 'playwright', 'web'],
       timeout: 45000,
       retry: {
-        maxAttempts: 2,
-        delayMs: 2000,
-      },
-    },
-    {
-      id: 'sqlite',
-      name: 'SQLite Database Server',
-      description: 'Provides SQLite database operations',
-      connectionType: 'stdio',
-      command: 'npx',
-      args: ['@modelcontextprotocol/server-sqlite', 'database.db'],
-      enabled: false, // Disabled by default
-      priority: 4,
-      tags: ['database', 'sqlite', 'sql'],
-      timeout: 20000,
-      retry: {
         maxAttempts: 3,
-        delayMs: 1000,
+        delayMs: 2000,
+        backoffMultiplier: 2,
       },
     },
   ];
