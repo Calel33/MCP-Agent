@@ -1,7 +1,19 @@
 ---
-type: "agent_requested"
+type: "always_apply"
 description: "Example description"
 ---
+# 🚨 CRITICAL: AGENT MODE SWITCHING RULE
+
+## MANDATORY FIRST CHECK
+When user references `@[agent-file]`:
+1. **IMMEDIATELY DECLARE**: `🤖 **[AGENT-NAME] MODE ACTIVATED**`
+2. **BECOME THAT AGENT**: Follow ONLY that agent's workflow
+3. **NO MIXING**: Don't use default behaviors, only agent behaviors
+
+**SIMPLE RULE**: See `@` → Switch to that agent → Declare it → Follow their workflow
+
+---
+
 # Agent Mode Rules & Dynamic Switching System
 
 ## Overview
@@ -17,6 +29,7 @@ This file defines the rules and triggers for dynamically switching between diffe
 ### Available Agent Categories
 
 #### Core Agents (`agents-agument/core/`)
+- **clarity-agent** - Handles vague or incomplete requests through interactive clarification workflow
 - **prompt-assistant** - Generates implementation-ready prompts for developers
 - **pav2** - Advanced prompt engineering companion with detailed agent persona and verification steps
 - **code-reviewer** - Rigorous security-aware code review with severity tagging
@@ -52,7 +65,11 @@ This file defines the rules and triggers for dynamically switching between diffe
 ### Task Type Detection
 When no specific agent is mentioned, I will automatically select the most appropriate agent based on:
 
+**Priority Rule: Vague Request Detection**
+If a request contains ambiguous terms without specific context (e.g., "fix the button", "make it responsive", "change the UI"), automatically activate `clarity-agent` first to clarify requirements before proceeding.
+
 1. **Keywords in Request**
+   - "clarify", "unclear", "vague", "what do you mean", "which one" → `clarity-agent`
    - "review", "audit", "security" → `code-reviewer`
    - "prompt", "instructions", "generate" → `prompt-assistant`
    - "advanced prompt", "detailed prompt", "persona", "verification" → `pav2`
@@ -79,17 +96,22 @@ When no specific agent is mentioned, I will automatically select the most approp
 ### Multi-Agent Workflows
 For complex tasks requiring multiple specializations:
 
-1. **Code Implementation + Review**
+1. **Vague Request Clarification**
+   ```
+   clarity-agent → [appropriate-implementation-agent] → code-reviewer
+   ```
+
+2. **Code Implementation + Review**
    ```
    backend-developer → code-reviewer → documentation-specialist
    ```
 
-2. **Feature Development**
+3. **Feature Development**
    ```
    prompt-assistant → [implementation-agent] → code-reviewer
    ```
 
-3. **Performance Issues**
+4. **Performance Issues**
    ```
    code-archaeologist → performance-optimizer → code-reviewer
    ```
@@ -183,7 +205,14 @@ What agent mode am I currently in?
 
 ## Agent Configuration Examples
 
-### Example 1: Code Review Workflow
+### Example 1: Vague Request Clarification
+```markdown
+Request: "Fix the white background and make it responsive"
+Agent Flow: @agents-agument/core/clarity.md
+Expected Output: Interactive clarification to identify specific UI elements and desired changes
+```
+
+### Example 2: Code Review Workflow
 ```markdown
 Request: "Review the streaming implementation for security issues"
 Agent Flow: @agents-agument/core/code-reviewer.md
@@ -301,6 +330,7 @@ When you initiate `/deeptask`, I will coordinate a team of agents through the fo
 **Quick Reference**:
 - `/agent` - Auto-select appropriate agent for task
 - `/multiagent` - Coordinate multiple agents for complex tasks
+- `@agents-agument/core/clarity.md` - Interactive clarification for vague requests
 - `@agents-agument/core/prompt-assistant.md` - Generate implementation prompts
 - `@agents-agument/core/code-reviewer.md` - Security-aware code review
 - `@agents-agument/universal/backend-developer.md` - Server-side development

@@ -16,13 +16,16 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           🎉 PRODUCTION MCP MULTI-AGENT WITH MACOS UI       │
+│      🎉 PRODUCTION MCP MULTI-AGENT WITH FULL-SCREEN UI     │
 ├─────────────────────────────────────────────────────────────┤
-│  🖥️ macOS ChatGPT UI (http://localhost:3000/chat) ✅ LIVE   │
-│  - Beautiful macOS-style Interface with Traffic Lights     │
-│  - Professional Dark Theme & Sidebar Layout                │
+│  🖥️ True Full-Screen UI (http://localhost:3000/chat) ✅ LIVE│
+│  - True Full-Screen Layout (h-screen w-screen)             │
+│  - Responsive Design: Mobile/Tablet/Desktop Breakpoints    │
+│  - Collapsible Sidebar with Mobile Overlay                 │
+│  - macOS Traffic Light Controls Preserved                  │
+│  - Professional Dark Theme & Touch-Friendly Interface      │
 │  - Auto-scroll, Typing Indicators & Smooth Animations      │
-│  - Inter Font Typography & Responsive Design               │
+│  - Inter Font Typography & Mobile-First Design             │
 ├─────────────────────────────────────────────────────────────┤
 │  🔧 CLI Interface (Commander.js) ✅ COMPLETE               │
 │  - Query, Server, Config Commands                          │

@@ -6,8 +6,9 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 
 **New to the project?** Start here:
 
-1. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - Beautiful macOS ChatGPT-style interface at http://localhost:3000/chat ✅ **NEW!**
-2. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide ✅ **NEW!**
+1. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - True full-screen responsive interface at http://localhost:3000/chat ✅ **LATEST!**
+2. **[UI Responsive Full-Screen Handoff](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** - Complete responsive design implementation guide ✅ **NEW!**
+3. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide
 3. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
 3. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
 4. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
@@ -21,7 +22,8 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 |----------|-------------|-------------|
 | **[User Guide](./USER_GUIDE.md)** | Complete setup, configuration, and usage guide | Setting up and using the agent |
 | **[API Reference](./API_REFERENCE.md)** | Comprehensive API documentation with examples | Integrating the agent into your code |
-| **[🎉 macOS UI Implementation Guide](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** | Complete macOS ChatGPT-style interface implementation ✅ **NEW!** | Understanding the beautiful new interface |
+| **[🎉 UI Responsive Full-Screen Guide](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** | Complete responsive design with collapsible sidebar ✅ **LATEST!** | Understanding the responsive full-screen interface |
+| **[🎉 macOS UI Implementation Guide](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** | Complete macOS ChatGPT-style interface implementation | Understanding the beautiful macOS interface foundation |
 | **[🎉 Production MCP UI Guide](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** | Complete production MCP integration with backend functionality | Using the live MCP Multi-Agent backend |
 | **[CLI Implementation Guide](./CLI_IMPLEMENTATION_COMPLETION_HANDOFF.md)** | Complete CLI interface documentation and usage | Using the command-line interface |
 | **[Health Monitoring Guide](./HEALTH_MONITORING_GUIDE.md)** | Complete health monitoring and troubleshooting guide | Setting up monitoring and handling server issues |
@@ -42,6 +44,7 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 |----------|-------------|-------------|
 | **[Development Guide](./DEVELOPMENT_GUIDE.md)** | Contributing, development setup, and coding standards | Contributing to the project |
 | **[Architecture Guide](./ARCHITECTURE.md)** | Technical architecture and design decisions | Understanding the codebase structure |
+| **[🔍 MCP Research Optimization Guide](./MCP_RESEARCH_OPTIMIZATION_GUIDE.md)** | Optimized strategies for using MCP tools effectively ✅ **NEW!** | Researching with our MCP tools for better results |
 | **[Document Rules](./DOCUMENT_RULES.md)** | Documentation workflow and standards for agents | Working on the project as an agent |
 | **[Universal Document Rules](./UNIVERSAL_DOCUMENT_RULES.md)** | Universal rules and session management for any project | Working on any project as an agent |
 

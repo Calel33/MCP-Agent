@@ -19,30 +19,46 @@ For **EVERY** user request involving writing, modifying, or generating code (any
 ### STEP 1: MANDATORY MCP TOOL RESEARCH
 **BEFORE** writing ANY code, you **MUST** call appropriate MCP research tools:
 
-#### 🔍 Research Tool Selection Guide:
+#### 🔍 Research Tool Selection Guide (CRITICAL: Each Tool Has Specific Purpose):
 
-##### **Archon MCP Tools** - Project & Knowledge Management
-- `perform_rag_query()` - Query documentation, best practices, architectural patterns
-- `search_code_examples()` - Find implementation patterns and code examples
-- `manage_project()` - Get project context and requirements
-- `manage_task()` - Check current tasks and priorities
-- `get_available_sources()` - See what knowledge sources are available
+##### **Archon MCP Tools** - PROJECT-SPECIFIC Research
+- **Purpose**: Search within YOUR project's knowledge base and integrated sources
+- **Best For**: Patterns you've implemented, tech stack you're using, project-specific examples
+- **Sources**: Your integrated documentation (shadcn/ui, Next.js docs, libraries you use)
+- **Tools**:
+  - `search_code_examples()` - Find patterns in YOUR integrated sources
+  - `perform_rag_query()` - Query YOUR project-specific documentation
+  - `get_available_sources()` - See what sources you actually have
+  - `manage_project()` - Get project context and requirements
+  - `manage_task()` - Check current tasks and priorities
+- **❌ NOT For**: Generic programming tutorials, broad "how-to" guides, general best practices
 
-**Use When**: Need project context, best practices, or implementation guidance
+**Use When**: Need project-specific patterns, integration with your tech stack, your existing implementations
 
-##### **GitHub/Grep MCP Tools** - Code Pattern Research
-- `searchGitHub_grep()` - Find real-world code examples across repositories
-- `githubSearchCode_octocode()` - Search for specific code patterns
-- `githubGetFileContent_octocode()` - Examine specific file implementations
-- `githubSearchRepositories_octocode()` - Find relevant repositories
-- `packageSearch_octocode()` - Research NPM/Python packages
+##### **GitHub/Grep MCP Tools** - EXTERNAL Pattern Discovery
+- **Purpose**: Find real-world implementations across the broader ecosystem
+- **Best For**: Discovering new patterns, seeing how others solve problems, quality examples
+- **Sources**: Public repositories, open-source projects, community implementations
+- **Tools**:
+  - `searchGitHub_grep()` - Find patterns in quality repositories
+  - `githubSearchCode_octocode()` - Search specific organizations/repos
+  - `githubGetFileContent_octocode()` - Examine specific implementations
+  - `githubSearchRepositories_octocode()` - Find relevant repositories
+  - `packageSearch_octocode()` - Research NPM/Python packages
+- **✅ Perfect For**: Generic programming patterns, industry best practices, external validation
 
-**Use When**: Need real-world examples, library usage patterns, or repository analysis
+**Use When**: Need real-world examples, library usage patterns, discovering new approaches
 
-##### **Forkdocs MCP Tools** - Official Documentation
-- `get-library-docs_docfork()` - Get official library documentation and examples
+##### **Docfork MCP Tools** - OFFICIAL Library Documentation
+- **Purpose**: Fetch up-to-date official documentation for any open-source library
+- **Best For**: Official docs, installation guides, topic-focused information, code examples from maintainers
+- **How It Works**: Uses `author/library` format (e.g., "vercel/next.js", "shadcn-ui/ui")
+- **Sources**: Official documentation sites for open-source libraries
+- **Tools**:
+  - `get-library-docs_docfork()` - Fetch official docs with optional topic focus
+- **✅ Perfect For**: Installation guides, authentication setup, routing examples, official best practices
 
-**Use When**: Need authoritative API documentation and official usage examples
+**Use When**: Need official documentation, setup guides, or topic-specific information from library maintainers
 
 ### STEP 2: RESEARCH REQUIREMENTS
 
@@ -102,20 +118,29 @@ After successful research and validation, proceed with:
 
 ## 📋 WORKFLOW EXAMPLES
 
-### Example 1: API Authentication
+### Example 1: API Authentication (Optimized Workflow)
 ```
 User: "Add JWT authentication to the Express API"
     ↓
-1. Archon: perform_rag_query("JWT authentication best practices Express.js")
-2. GitHub: searchGitHub_grep("express jwt middleware")
-3. Forkdocs: get-library-docs("jsonwebtoken", "authentication")
-4. Archon: search_code_examples("Express JWT middleware implementation")
+Phase 1: Project-First Research (Archon)
+1. get_available_sources() - Check what auth sources we have
+2. search_code_examples("Express JWT middleware", source_id="our-auth-docs")
+
+Phase 2: External Pattern Discovery (GitHub)
+3. searchGitHub_grep("express jwt middleware", repo="expressjs/")
+4. githubSearchCode_octocode([{queryTerms: ["JWT", "middleware"], owner: ["expressjs"]}])
+
+Phase 3: Official Documentation (Docfork)
+5. get-library-docs_docfork("auth0/jsonwebtoken", "authentication")
+
+Phase 4: Project Integration (Archon)
+6. perform_rag_query("Express.js JWT integration our tech stack")
     ↓
 Research Analysis:
-- JWT best practices identified
-- Express middleware patterns found
-- Security considerations documented
-- Error handling approaches discovered
+- Project-specific auth patterns found
+- Real-world Express implementations discovered
+- Official JWT API validated
+- Integration approach planned
     ↓
 THEN: Implement JWT authentication based on research findings
 ```
@@ -177,35 +202,50 @@ THEN: Implement PostgreSQL integration based on research
 
 ## 🔧 Tool Usage Guidelines
 
-### Archon MCP - Knowledge Base Queries
+### Archon MCP - PROJECT-SPECIFIC Queries
 ```typescript
-// High-level architectural guidance
-perform_rag_query("microservices authentication patterns", match_count=5)
+// ✅ Use technical terminology from YOUR stack
+perform_rag_query("TypeScript React hooks useState useEffect responsive design", match_count=3)
 
-// Specific implementation guidance
-search_code_examples("Express middleware error handling", match_count=3)
+// ✅ Search YOUR code examples with specific patterns
+search_code_examples("sidebar collapsible mobile overlay backdrop", source_id="ui.shadcn.com", match_count=5)
 
-// Project context
+// ✅ Always check what sources you have first
+get_available_sources()
+
+// ✅ Project context and requirements
 manage_project(action="get", project_id="...")
 ```
 
-### GitHub MCP - Real-World Examples
+### GitHub MCP - EXTERNAL Pattern Discovery
 ```typescript
-// Find implementation patterns
-searchGitHub_grep("useState loading state", language=["TypeScript"])
+// ✅ Target YOUR ecosystem
+githubSearchCode_octocode([{
+  queryTerms: ["responsive", "sidebar"],
+  owner: ["vercel", "shadcn-ui", "tailwindlabs", "chakra-ui"],
+  language: "typescript",
+  stars: ">100",
+  pushed: ">2023-01-01" // Recent patterns
+}])
 
-// Repository analysis
-githubSearchCode_octocode([{queryTerms: ["authentication"], language: "javascript"}])
+// ✅ Use regex for specific patterns
+searchGitHub_grep("useState.*sidebar.*mobile", language=["TypeScript", "TSX"], useRegexp=true, repo="shadcn-ui/")
 
-// Package research
-packageSearch_octocode({npmPackages: [{name: "express-rate-limit"}]})
+// ✅ Package research for your stack
+packageSearch_octocode({npmPackages: [{name: "react-responsive"}]})
 ```
 
-### Forkdocs MCP - Official Documentation
+### Docfork MCP - OFFICIAL Library Documentation
 ```typescript
-// Get authoritative documentation
-get-library-docs("react", "hooks")
-get-library-docs("express", "middleware")
+// ✅ Get official docs using author/library format
+get-library-docs_docfork("vercel/next.js", "responsive-design")
+get-library-docs_docfork("tailwindlabs/tailwindcss", "responsive-design")
+get-library-docs_docfork("facebook/react", "hooks")
+get-library-docs_docfork("shadcn-ui/ui", "installation")
+
+// ✅ Focus on specific topics
+get-library-docs_docfork("nextauthjs/next-auth", "authentication")
+get-library-docs_docfork("prisma/prisma", "installation")
 ```
 
 ## 🚨 Emergency Exceptions
@@ -249,6 +289,7 @@ If tools return limited results:
 **Version History:**
 - v1.0: Initial rule creation
 - v2.0: Enhanced with detailed guidelines and examples
+- v2.1: Added MCP tool specialization insights - Archon for PROJECT-SPECIFIC, GitHub for EXTERNAL, Forkdocs for OFFICIAL
 
 **Review Schedule**: Monthly review for effectiveness and updates
 

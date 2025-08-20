@@ -29,6 +29,7 @@ export default function ChatPage() {
     { id: '1', title: 'Explaining quantum computing', lastMessage: 'What is quantum computing?' },
     { id: '2', title: 'Creative writing prompts', lastMessage: 'Give me some writing ideas' }
   ]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { status: mcpStatus, isLoading: mcpLoading, refresh: refreshMCP } = useMCPStatus();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
@@ -120,6 +121,18 @@ export default function ChatPage() {
     }
   }, [messages, isLoading]);
 
+  // Close sidebar on mobile when window resizes to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
@@ -140,8 +153,8 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="bg-gray-100 h-screen p-8 flex items-center justify-center">
-      <div className="w-full max-w-6xl h-[700px] rounded-lg bg-[#1E1E1E] shadow-2xl overflow-hidden border border-gray-700 relative">
+    <div className="h-screen w-screen bg-[#1E1E1E] overflow-hidden relative">
+      <div className="w-full h-full bg-[#1E1E1E] overflow-hidden relative">
         {/* Window Controls Bar */}
         <div className="h-6 bg-[#2A2A2A] flex items-center px-3">
           <div className="flex items-center space-x-1.5">
@@ -151,10 +164,37 @@ export default function ChatPage() {
           </div>
         </div>
 
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* App Content */}
         <div className="flex h-[calc(100%-1.5rem)]">
           {/* Sidebar */}
-          <div className="w-64 bg-gray-800 flex flex-col border-r border-gray-700">
+          <div className={`
+            w-64 sm:w-72 bg-gray-800 flex flex-col border-r border-gray-700 transition-transform duration-300 ease-in-out
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            lg:translate-x-0 lg:static lg:z-auto
+            fixed inset-y-0 left-0 z-50
+            max-w-[80vw] sm:max-w-none
+          `}>
+            {/* Mobile Close Button */}
+            <div className="lg:hidden p-4 border-b border-gray-700">
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="w-full flex items-center justify-center rounded-md border border-gray-600 px-3 py-2 text-sm font-medium hover:bg-gray-700 text-white"
+              >
+                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Close
+              </button>
+            </div>
+
             {/* New Chat Button */}
             <div className="p-4">
               <button
@@ -247,10 +287,19 @@ export default function ChatPage() {
           {/* Main Chat Area */}
           <div className="flex-1 flex flex-col overflow-hidden relative">
             {/* Chat Header */}
-            <div className="border-b border-gray-700 p-3 flex items-center justify-between bg-gray-800">
-              <div className="flex items-center">
-                <span className="font-medium text-white">MCP Multi-Agent</span>
-                <span className="ml-2 px-2 py-1 rounded-md bg-gray-700 text-xs text-gray-300">AI</span>
+            <div className="border-b border-gray-700 p-3 sm:p-4 flex items-center justify-between bg-gray-800">
+              <div className="flex items-center min-w-0 flex-1">
+                {/* Mobile Hamburger Menu */}
+                <button
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="lg:hidden p-2 rounded-md hover:bg-gray-700 text-gray-300 mr-2 sm:mr-3 flex-shrink-0"
+                >
+                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12h18M3 6h18M3 18h18"></path>
+                  </svg>
+                </button>
+                <span className="font-medium text-white truncate">MCP Multi-Agent</span>
+                <span className="ml-2 px-2 py-1 rounded-md bg-gray-700 text-xs text-gray-300 flex-shrink-0">AI</span>
               </div>
               <div className="flex items-center space-x-2">
                 <button className="p-1.5 rounded-md hover:bg-gray-700 text-gray-300">
@@ -318,14 +367,14 @@ export default function ChatPage() {
 
 
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-700 bg-gray-800">
+            <div className="p-3 sm:p-4 border-t border-gray-700 bg-gray-800">
               <form onSubmit={handleSubmit} className="relative rounded-lg border border-gray-600 bg-gray-700 shadow-sm">
                 <textarea
                   ref={textareaRef}
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  className="w-full p-3 pr-12 text-sm bg-transparent focus:outline-none resize-none text-white"
+                  className="w-full p-3 pr-12 text-sm bg-transparent focus:outline-none resize-none text-white min-h-[44px]"
                   rows={1}
                   placeholder="Message MCP Multi-Agent..."
                   disabled={isLoading}
@@ -333,14 +382,14 @@ export default function ChatPage() {
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="absolute right-2 bottom-2 p-1 rounded-md text-gray-400 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute right-2 bottom-2 p-2 rounded-md text-gray-400 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
                 >
-                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"></path>
                   </svg>
                 </button>
               </form>
-              <div className="mt-2 text-xs text-center text-gray-400">
+              <div className="mt-2 text-xs text-center text-gray-400 px-2">
                 MCP Multi-Agent can make mistakes. Consider checking important information.
               </div>
             </div>
