@@ -79,6 +79,31 @@
         "delayMs": 1500,
         "backoffMultiplier": 2
       }
+    },
+    {
+      "id": "hustle-http",
+      "name": "Hustle HTTP MCP Server",
+      "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
+      "connectionType": "http",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}"
+      ],
+      "enabled": true,
+      "priority": 8,
+      "tags": [
+        "crypto",
+        "agent",
+        "http",
+        "remote"
+      ],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
+        "backoffMultiplier": 2
+      }
     }
   ],
   "logging": {

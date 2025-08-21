@@ -78,6 +78,10 @@ src/config/
 
 **Required Variables:**
 - `OPENAI_API_KEY`: Your OpenAI API key (required for LLM integration)
+- `SMITHERY_API_KEY`: Smithery API key (required for DocFork and Playwright MCP)
+- `SMITHERY_PROFILE`: Smithery profile ID (required for DocFork MCP)
+- `HUSTLE_API_KEY`: Hustle HTTP API key (required for crypto agent MCP)
+- `HUSTLE_VAULT_ID`: Hustle vault ID (required for crypto agent MCP)
 
 **Optional Configuration:**
 - `OPENAI_MODEL`: Model to use (default: gpt-4o)

@@ -1,11 +1,7 @@
 ---
-alwaysApply: true
-priority: CRITICAL
-type: "enforcement_rule"
-version: "2.0"
-lastUpdated: "2025-01-18"
+type: "agent_requested"
+description: "Example description"
 ---
-
 # 🚨 MANDATORY MCP RESEARCH RULE - BEFORE ANY CODE
 
 ## 📋 Rule Overview

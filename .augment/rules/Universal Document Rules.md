@@ -31,6 +31,13 @@ ALL agents MUST:
 3. ✅ Document all changes and decisions
 4. ✅ Create audit trail for all work
 
+### **Rule 4: MANDATORY Learning Documentation**
+For ALL significant sessions and implementations:
+1. ✅ MUST create `WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md` for each session
+2. ✅ MUST document technical insights, patterns discovered, and lessons learned
+3. ✅ MUST include best practices established and future applications
+4. ✅ MUST capture process improvements and quality assurance findings
+
 ## 📁 Universal Documentation Structure
 
 ### **Required Documentation Folder Structure**
@@ -45,6 +52,8 @@ docs/
 ├── API_REFERENCE.md            # API documentation (if applicable)
 ├── USER_GUIDE.md               # User documentation (if applicable)
 ├── DEVELOPMENT_GUIDE.md        # Contributing guide (if applicable)
+├── WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md  # Session learning documentation (REQUIRED)
+├── TASK_COMPLETION_VALIDATION_REPORT_YYYY-MM-DD.md  # Quality validation reports (when applicable)
 └── sessions/                   # Session-specific documentation
     ├── SESSION_YYYY-MM-DD_HH-MM.md
     └── PAUSE_YYYY-MM-DD_HH-MM.md
@@ -57,6 +66,13 @@ If `docs/` folder doesn't exist:
 3. ✅ CREATE `docs/PROJECT_BRIEF.md` with project template
 4. ✅ CREATE `docs/SESSION_LOG.md` for session tracking
 5. ✅ CREATE `docs/sessions/` subfolder for session documentation
+
+### **Learning Documentation Rules**
+For ALL significant sessions:
+1. ✅ CREATE `WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md` at session end
+2. ✅ INCLUDE technical insights, patterns, and lessons learned
+3. ✅ DOCUMENT best practices and future applications
+4. ✅ CAPTURE process improvements and quality findings
 
 ## 🎮 Session Management Commands
 

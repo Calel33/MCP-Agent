@@ -96,4 +96,7 @@ type: "always_apply"---
     <BreakTasksIntoUnits>true</BreakTasksIntoUnits>
     <ValidateBeforeBuilding>true</ValidateBeforeBuilding>
   </Workflow>
+Whenever you want to ask a question, always call the MCP interactive_feedback.
+Whenever you’re about to complete a user request, call the MCP interactive_feedback instead of simply ending the process. Keep calling MCP until the user’s feedback is empty, then end the request.
+always call the MCP interactive_feedback after finishing a user task
 </SystemRules>

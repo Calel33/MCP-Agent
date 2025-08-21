@@ -6,17 +6,18 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 
 **New to the project?** Start here:
 
-1. **[🔍 TASK COMPLETION VALIDATION](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md)** - Professional validation of authentication fix completion ✅ **APPROVED!**
-2. **[✅ AUTHENTICATION FIX COMPLETE](./sessions/SESSION_2025-08-21_AUTHENTICATION_FIX_COMPLETION.md)** - DocFork MCP authentication fully resolved
-3. **[🔒 CRITICAL SECURITY FIX](./sessions/SESSION_2025-08-21_CRITICAL_SECURITY_FIX.md)** - Security vulnerability remediation completed
-4. **[🎉 DOCFORK MCP INTEGRATION](./sessions/SESSION_2025-08-20_DOCFORK_MCP_INTEGRATION.md)** - Documentation research with HTTP Streamable transport
-5. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - True full-screen responsive interface at http://localhost:3001/chat
-6. **[UI Responsive Full-Screen Handoff](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** - Complete responsive design implementation guide
-7. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide
-8. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
-9. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
-10. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
-11. **[API Reference](./API_REFERENCE.md)** - Comprehensive API documentation
+1. **[📚 WHAT WE LEARNED THIS SESSION](./WHAT_WE_LEARNED_SESSION_2025-08-21.md)** - Key insights and lessons from authentication fix session ✅ **NEW!**
+2. **[🔍 TASK COMPLETION VALIDATION](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md)** - Professional validation of authentication fix completion ✅ **APPROVED!**
+3. **[✅ AUTHENTICATION FIX COMPLETE](./sessions/SESSION_2025-08-21_AUTHENTICATION_FIX_COMPLETION.md)** - DocFork MCP authentication fully resolved
+4. **[🔒 CRITICAL SECURITY FIX](./sessions/SESSION_2025-08-21_CRITICAL_SECURITY_FIX.md)** - Security vulnerability remediation completed
+5. **[🎉 DOCFORK MCP INTEGRATION](./sessions/SESSION_2025-08-20_DOCFORK_MCP_INTEGRATION.md)** - Documentation research with HTTP Streamable transport
+6. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - True full-screen responsive interface at http://localhost:3001/chat
+7. **[UI Responsive Full-Screen Handoff](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** - Complete responsive design implementation guide
+8. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide
+9. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
+10. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
+11. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
+12. **[API Reference](./API_REFERENCE.md)** - Comprehensive API documentation
 
 ## 📖 User Documentation
 
@@ -48,7 +49,9 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 |----------|-------------|-------------|
 | **[Development Guide](./DEVELOPMENT_GUIDE.md)** | Contributing, development setup, and coding standards | Contributing to the project |
 | **[Architecture Guide](./ARCHITECTURE.md)** | Technical architecture and design decisions | Understanding the codebase structure |
-| **[🔍 MCP Research Optimization Guide](./MCP_RESEARCH_OPTIMIZATION_GUIDE.md)** | Optimized strategies for using MCP tools effectively with DeepWiki ✅ **ENHANCED!** | Researching with our MCP tools for better results |
+| **[🔍 MCP Research Optimization Guide](./MCP_RESEARCH_OPTIMIZATION_GUIDE.md)** | Optimized strategies for using MCP tools effectively with DeepWiki + Hustle HTTP ✅ **ENHANCED!** | Researching with our MCP tools for better results |
+| **[🚀 Hustle HTTP MCP Integration Guide](./HUSTLE_HTTP_MCP_INTEGRATION_GUIDE.md)** | Complete guide for crypto agent MCP integration ✅ **NEW!** | Setting up crypto agent capabilities |
+| **[🔍 Task Completion Validation Report - Hustle HTTP](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21_HUSTLE_HTTP.md)** | Official validation of Hustle HTTP MCP integration ✅ **NEW!** | Verification of implementation quality |
 | **[🎯 Goal-Oriented Research Guide](./GOAL_ORIENTED_RESEARCH_GUIDE.md)** | Systematic approach for agents to conduct comprehensive research ✅ **NEW!** | When agents need to research for users |
 | **[🚀 Research Quick Reference](./RESEARCH_QUICK_REFERENCE.md)** | Agent cheat sheet for goal-oriented research with all MCP tools ✅ **NEW!** | Quick reference during research tasks |
 | **[Document Rules](./DOCUMENT_RULES.md)** | Documentation workflow and standards for agents | Working on the project as an agent |
@@ -136,7 +139,8 @@ These documents are updated regularly:
 - **[Project Progress](./PROJECT_PROGRESS.md)** - Updated after each major milestone
 - **[Bug Log](./BUG_LOG.md)** - Updated when issues are discovered/resolved
 - **[Architecture Guide](./ARCHITECTURE.md)** - Updated when architecture changes
-- **[🔍 MCP Research Optimization Guide](./MCP_RESEARCH_OPTIMIZATION_GUIDE.md)** - Updated with new research patterns and DeepWiki insights ✅ **ENHANCED!**
+- **[🔍 MCP Research Optimization Guide](./MCP_RESEARCH_OPTIMIZATION_GUIDE.md)** - Updated with new research patterns, DeepWiki insights, and Hustle HTTP crypto workflows ✅ **ENHANCED!**
+- **[🚀 Hustle HTTP MCP Integration Guide](./HUSTLE_HTTP_MCP_INTEGRATION_GUIDE.md)** - Complete crypto agent MCP setup and troubleshooting ✅ **NEW!**
 - **[🎯 Goal-Oriented Research Guide](./GOAL_ORIENTED_RESEARCH_GUIDE.md)** - Updated based on research outcomes ✅ **NEW!**
 
 ## 🔍 Finding Information
@@ -173,6 +177,7 @@ These documents are updated regularly:
 - Phase completion handoffs document detailed implementation
 
 ### **Quality Assurance & Validation**
+- ✅ **Learning Documentation**: [What We Learned This Session](./WHAT_WE_LEARNED_SESSION_2025-08-21.md) - Technical insights and lessons learned
 - ✅ **Professional Validation**: [Task Completion Validation Report](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md) - Independent verification of completion claims
 - All code examples are tested and verified
 - Screenshots and diagrams where helpful
@@ -213,6 +218,7 @@ For additional help:
 | Document | Description | When to Use |
 |----------|-------------|-------------|
 | **[🔒 Security Incident Report](./SECURITY_INCIDENT_REPORT_2025-08-21.md)** | Complete security vulnerability remediation documentation | Understanding security measures and incident response |
+| **[📚 What We Learned This Session](./WHAT_WE_LEARNED_SESSION_2025-08-21.md)** | Technical insights and lessons learned from authentication fix session | Understanding patterns, best practices, and future applications |
 | **[🔍 Task Completion Validation](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md)** | Professional validation report of authentication fix completion | Independent verification of work quality and completion |
 | **[✅ Authentication Fix Session](./sessions/SESSION_2025-08-21_AUTHENTICATION_FIX_COMPLETION.md)** | Complete authentication resolution documentation | Understanding DocFork MCP authentication implementation |
 | **[🔒 Critical Security Fix Session](./sessions/SESSION_2025-08-21_CRITICAL_SECURITY_FIX.md)** | Detailed session log of security fix implementation | Technical details of security remediation process |

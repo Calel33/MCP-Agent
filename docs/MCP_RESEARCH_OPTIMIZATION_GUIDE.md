@@ -794,8 +794,59 @@ Based on testing, the **Archon → DeepWiki → GitHub → Docfork** priority or
 3. **GitHub** (Pattern discovery) → Find real-world examples to validate approach
 4. **Docfork** (Official docs) → Confirm API syntax and installation details
 
-**🎯 Next Update**: After next research-heavy session, add new patterns and optimizations discovered.
+## 🆕 NEW: Hustle HTTP MCP Integration (2025-08-21)
+
+### **🔗 Hustle HTTP MCP Server**
+**Purpose**: Crypto agent capabilities for blockchain and cryptocurrency research
+**Connection**: Remote HTTP endpoint via `mcp-remote`
+**Priority**: 8 (Medium priority, same as DocFork)
+
+#### **When to Use Hustle HTTP MCP:**
+- 🪙 **Cryptocurrency research** → Market data, token analysis, DeFi protocols
+- 📊 **Blockchain analysis** → Smart contract patterns, transaction analysis
+- 💰 **Trading strategies** → Technical analysis, market indicators
+- 🔐 **Crypto security** → Wallet security, smart contract auditing
+- 🌐 **DeFi integration** → Protocol research, yield farming strategies
+
+#### **Integration Points:**
+- **Backend**: Available in both `mcp-config.json` and `mcp-agent.config.json`
+- **Frontend**: Integrated into `mcp-chat-service.ts` for real-time crypto queries
+- **Security**: Uses secure environment variables (`HUSTLE_API_KEY`, `HUSTLE_VAULT_ID`)
+
+#### **Research Workflow with Crypto Focus:**
+```typescript
+// 1. Start with project context (Archon)
+search_code_examples_archon({
+  query: "crypto trading bot implementation",
+  match_count: 5
+})
+
+// 2. Get expert crypto insights (Hustle HTTP)
+// [Use through chat interface - "Analyze Bitcoin market trends"]
+
+// 3. Find implementation patterns (GitHub)
+searchGitHub_grep({
+  query: "cryptocurrency API integration",
+  language: ["TypeScript", "JavaScript"]
+})
+
+// 4. Validate with official docs (DocFork)
+// [Standard documentation research]
+```
+
+### **🎯 Updated MCP Server Ecosystem**
+
+| Server | Type | Priority | Best For | Status |
+|--------|------|----------|----------|--------|
+| **Archon** | Project | 10 | Our codebase patterns | ✅ Active |
+| **DeepWiki** | Intelligence | 9 | Expert repository analysis | ✅ Active |
+| **Hustle HTTP** | Remote | 8 | Crypto/blockchain research | 🆕 New |
+| **DocFork** | HTTP | 8 | Official documentation | ✅ Active |
+| **Playwright** | stdio | 10 | Browser automation | ✅ Active |
+| **GitHub Search** | API | 7 | Pattern discovery | ✅ Active |
+
+**🎯 Next Update**: After crypto research sessions, add specific Hustle HTTP patterns and optimizations.
 
 ---
 
-**📝 UPDATED**: 2025-08-21 - Added DeepWiki integration and comprehensive testing results
+**📝 UPDATED**: 2025-08-21 - Added Hustle HTTP MCP integration and crypto research workflows

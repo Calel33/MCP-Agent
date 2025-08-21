@@ -55,6 +55,13 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 │  │🔧 Enable/Disable via CLI Commands                   │  │
 │  └─────────────────────────────────────────────────────┘  │
 │  ┌─────────────────────────────────────────────────────┐  │
+│  │🪙 Hustle HTTP MCP Server (Remote HTTP)              │  │
+│  │✅ ACTIVE & FUNCTIONAL - Crypto Agent Capabilities   │  │
+│  │🌐 Remote Server: mcp-remote bridging                │  │
+│  │🔑 Secure Environment Variables: API Key + Vault ID │  │
+│  │🔧 Enable/Disable via CLI Commands                   │  │
+│  └─────────────────────────────────────────────────────┘  │
+│  ┌─────────────────────────────────────────────────────┐  │
 │  │🎭 Playwright MCP Server (DISABLED)                  │  │
 │  │⏸️ DISABLED - Browser Automation (Available)         │  │
 │  │🔧 Can be enabled via CLI Commands                   │  │
@@ -284,8 +291,10 @@ interface AdvancedServerManagerConfig {
 **Integration**: Uses the `mcp-use` TypeScript library for MCP server connections.
 
 **Supported Server Types**:
+- **DocFork MCP Server**: Documentation research and library analysis
+- **Hustle HTTP MCP Server**: Crypto agent capabilities and blockchain research
+- **Playwright MCP Server**: Browser automation and web scraping
 - **Filesystem Server**: File operations and directory management
-- **Browser Server**: Web scraping and automation via Puppeteer
 - **SQLite Server**: Database operations and SQL queries
 - **Memory Server**: Persistent knowledge storage
 - **Git Server**: Version control operations

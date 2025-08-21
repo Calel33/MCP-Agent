@@ -37,7 +37,7 @@ export class MCPChatService {
     }
 
     try {
-      console.log('🔧 Initializing MCP Chat Service with DocFork (HTTP) MCP server...');
+      console.log('🔧 Initializing MCP Chat Service with DocFork (HTTP) and Hustle HTTP MCP servers...');
 
       // Validate OpenAI API key
       const apiKey = process.env.OPENAI_API_KEY;
@@ -48,6 +48,16 @@ export class MCPChatService {
       // Create MCP client with DocFork MCP server using Smithery URL parameter format
       const smitheryApiKey = process.env.SMITHERY_API_KEY || 'SMITHERY_API_KEY_REQUIRED';
       const smitheryProfile = process.env.SMITHERY_PROFILE || 'glad-squid-LrsVYY';
+
+      // Hustle HTTP MCP server configuration
+      const hustleApiKey = process.env.HUSTLE_API_KEY || 'HUSTLE_API_KEY_REQUIRED';
+      const hustleVaultId = process.env.HUSTLE_VAULT_ID || 'HUSTLE_VAULT_ID_REQUIRED';
+
+      console.log('🔧 Hustle HTTP MCP Configuration:');
+      console.log(`   API Key: ${hustleApiKey.substring(0, 8)}...${hustleApiKey.substring(hustleApiKey.length - 4)}`);
+      console.log(`   Vault ID: ${hustleVaultId}`);
+      console.log(`   API Key Status: ${hustleApiKey === 'HUSTLE_API_KEY_REQUIRED' ? '❌ NOT SET' : '✅ SET'}`);
+      console.log(`   Vault ID Status: ${hustleVaultId === 'HUSTLE_VAULT_ID_REQUIRED' ? '❌ NOT SET' : '✅ SET'}`);
       // Smithery expects api_key as URL parameter, not Authorization header
       const docforkUrl = `https://server.smithery.ai/@docfork/mcp/mcp?api_key=${smitheryApiKey}&profile=${smitheryProfile}`;
 
@@ -69,6 +79,13 @@ export class MCPChatService {
               'Content-Type': 'application/json'
             }
           },
+          'hustle-http': {
+            command: 'npx',
+            args: [
+              'mcp-remote',
+              `https://hustle-remote.myagent.sh/mcp?apikey=${hustleApiKey}&vaultId=${hustleVaultId}`
+            ]
+          },
         },
       };
 
@@ -77,7 +94,7 @@ export class MCPChatService {
 
       this.mcpClient = MCPClient.fromDict(mcpConfig);
 
-      console.log('🎭 MCP DocFork client created (HTTP Streamable)');
+      console.log('🎭 MCP clients created: DocFork (HTTP Streamable) + Hustle HTTP (Remote)');
 
       // Create LangChain OpenAI client
       this.llm = new ChatOpenAI({

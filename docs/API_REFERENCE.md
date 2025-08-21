@@ -52,6 +52,17 @@ const config = createConfig([
     tags: ['documentation', 'research', 'libraries', 'docs']
   },
   {
+    id: 'hustle-http',
+    name: 'Hustle HTTP MCP Server',
+    description: 'Crypto agent capabilities via Hustle HTTP MCP',
+    connectionType: 'http',
+    command: 'npx',
+    args: ['mcp-remote', 'https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}'],
+    enabled: true,
+    priority: 8,
+    tags: ['crypto', 'agent', 'http', 'remote']
+  },
+  {
     id: 'playwright-mcp',
     name: 'Playwright MCP Server',
     description: 'Browser automation capabilities',

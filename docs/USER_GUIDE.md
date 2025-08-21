@@ -117,6 +117,14 @@ LOG_FILE=./logs/agent.log                      # Optional: Log file path
 
 # Environment Detection
 NODE_ENV=development                           # Environment: development, production, test (default: development)
+
+# Smithery MCP Configuration (Required for DocFork and Playwright MCP)
+SMITHERY_API_KEY=your_smithery_api_key_here
+SMITHERY_PROFILE=your_smithery_profile_here
+
+# Hustle HTTP MCP Configuration (Required for Crypto Agent MCP)
+HUSTLE_API_KEY=your_hustle_api_key_here
+HUSTLE_VAULT_ID=your_hustle_vault_id_here
 ```
 
 ### Environment Validation
@@ -511,6 +519,36 @@ The agent supports multiple MCP server connection types:
 ### Popular MCP Servers
 
 Here are some popular MCP servers you can integrate:
+
+#### Hustle HTTP MCP Server (Crypto Agent)
+```typescript
+{
+  id: 'hustle-http',
+  name: 'Hustle HTTP MCP Server',
+  description: 'Crypto agent capabilities via Hustle HTTP MCP',
+  connectionType: 'http',
+  command: 'npx',
+  args: ['mcp-remote', 'https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}'],
+  enabled: true,
+  priority: 8,
+  tags: ['crypto', 'agent', 'http', 'remote']
+}
+```
+
+#### DocFork MCP Server (Documentation Research)
+```typescript
+{
+  id: 'docfork-mcp',
+  name: 'DocFork MCP Server',
+  description: 'Documentation research capabilities via DocFork MCP',
+  connectionType: 'http',
+  url: 'https://server.smithery.ai/@docfork/mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}',
+  preferSse: false,
+  enabled: true,
+  priority: 8,
+  tags: ['documentation', 'research', 'libraries', 'docs']
+}
+```
 
 #### File System Server
 ```typescript

@@ -30,7 +30,7 @@
 
 ### **Phase 1: Immediate Security Response**
 1. **Rotate the exposed key** with Smithery service provider
-2. **Revoke access** for the compromised key `9c441b5c-510a-41cd-a242-f77baa272f2c`
+2. **Revoke access** for the compromised key ``
 3. **Generate new API key** from Smithery dashboard
 
 ### **Phase 2: Secure Implementation**
