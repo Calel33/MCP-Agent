@@ -10,15 +10,15 @@ This guide provides comprehensive information for developers who want to contrib
 
 **The system is already fully operational!**
 
-**🌐 Live Application**: http://localhost:3000/chat
-**Status**: ✅ Beautiful macOS ChatGPT-style UI with real MCP backend
+**🌐 Live Application**: http://localhost:3001/chat
+**Status**: ✅ DocFork MCP documentation research with HTTP Streamable transport
 
 ### **Quick Development Access**
 
-**Frontend Development** (macOS ChatGPT UI):
+**Frontend Development** (DocFork MCP UI):
 ```bash
 cd mcp-agent-ui
-npm run dev  # Starts beautiful macOS interface at localhost:3000/chat
+npm run dev  # Starts DocFork MCP interface at localhost:3001/chat
 ```
 
 **Backend Development** (MCP Multi-Agent):
@@ -29,15 +29,16 @@ npm run build  # Build TypeScript backend
 
 **Health Monitoring**:
 ```bash
-curl http://localhost:3000/api/health  # Check system status
+curl http://localhost:3001/api/health  # Check system status
 ```
 
 ### **Development Prerequisites** (if extending)
 
 - **Node.js**: Version 18.0.0 or higher ✅ **READY**
 - **OpenAI API**: Already configured ✅ **ACTIVE**
-- **MCP Servers**: Filesystem server connected ✅ **OPERATIONAL**
+- **MCP Servers**: DocFork MCP server connected via HTTP Streamable ✅ **OPERATIONAL**
 - **TypeScript**: Full type safety ✅ **CONFIGURED**
+- **HTTP Transport**: Streamable HTTP with automatic SSE fallback ✅ **OPTIMIZED**
 
 ### **Advanced Development Setup** (optional)
 

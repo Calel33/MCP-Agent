@@ -2,9 +2,9 @@
 
 ## 1. Project Overview / Description
 
-**✅ PRODUCTION READY**: A complete MCP Multi-Agent system with beautiful macOS ChatGPT-style interface and real backend integration. Features a stunning Next.js 15 web interface with streaming chat, connected to actual MCP filesystem servers for real tool execution and file operations.
+**✅ PRODUCTION READY**: A complete MCP Multi-Agent system with DocFork documentation research capabilities and HTTP Streamable transport. Features a responsive Next.js 15 web interface with streaming chat, connected to DocFork MCP server for real documentation research and library information.
 
-**🌐 LIVE APPLICATION**: http://localhost:3000/chat - Beautiful macOS-style interface ready for immediate use with production-grade features.
+**🌐 LIVE APPLICATION**: http://localhost:3001/chat - Professional responsive interface with DocFork MCP integration for documentation research.
 
 ## 2. Target Audience
 
@@ -14,20 +14,20 @@
 
 ## 3. Primary Benefits / Features
 
-### **🌐 Beautiful macOS ChatGPT Interface** ✅ **LIVE**
-- **macOS Design**: Professional ChatGPT-style interface with traffic light controls
-- **Dark Theme**: Sophisticated gray color palette matching macOS aesthetics
-- **Sidebar Layout**: Conversation history and user profile section
-- **Real-time Streaming Chat**: Beautiful message bubbles with word-by-word responses
-- **Auto-scroll & Animations**: Smooth typing indicators and auto-scroll behavior
-- **Professional Typography**: Inter font with Next.js optimization
-- **Responsive Design**: Optimized for desktop with macOS feel
+### **📚 DocFork MCP Documentation Research** ✅ **LIVE**
+- **HTTP Streamable Transport**: Optimal bidirectional streaming with automatic SSE fallback
+- **Documentation Research**: Real-time access to library documentation and technical references
+- **Smithery Integration**: Direct connection to DocFork MCP server via Smithery platform
+- **Query Parameter Auth**: Secure authentication with api_key and profile parameters
+- **Professional UI**: Responsive design with collapsible sidebar and mobile-first approach
+- **Real-time Streaming**: Beautiful message responses with documentation research capabilities
 
 ### **🔧 Real MCP Integration** ✅ **OPERATIONAL**
-- **Filesystem Server**: Real file operations in project directory
-- **Production Backend**: Actual MCP server connectivity (not simulation)
-- **Tool Visibility**: See exactly what tools are being executed
-- **Error Recovery**: Robust production error handling
+- **DocFork MCP Server**: Real documentation research capabilities via HTTP Streamable
+- **Production Backend**: Actual MCP server connectivity with optimal transport
+- **Tool Visibility**: See exactly what documentation tools are being executed
+- **Error Recovery**: Robust production error handling with connection optimization
+- **Transport Optimization**: HTTP Streamable (preferred) with automatic SSE fallback
 
 ### **🤖 Advanced AI Features** ✅ **COMPLETE**
 - **OpenAI GPT-4o**: Latest model with streaming support

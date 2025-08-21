@@ -35,9 +35,9 @@
         "run",
         "@microsoft/playwright-mcp",
         "--key",
-        "9c441b5c-510a-41cd-a242-f77baa272f2c"
+        "${SMITHERY_API_KEY}"
       ],
-      "enabled": true,
+      "enabled": false,
       "priority": 10,
       "tags": [
         "browser",
@@ -49,6 +49,34 @@
       "retry": {
         "maxAttempts": 3,
         "delayMs": 2000,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "docfork-mcp",
+      "name": "DocFork MCP Server",
+      "description": "Provides documentation and library research capabilities via DocFork MCP",
+      "connectionType": "http",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?profile=${SMITHERY_PROFILE}",
+      "preferSse": false,
+      "requestInit": {
+        "headers": {
+          "Authorization": "Bearer ${SMITHERY_API_KEY}",
+          "Content-Type": "application/json"
+        }
+      },
+      "enabled": true,
+      "priority": 8,
+      "tags": [
+        "documentation",
+        "research",
+        "libraries",
+        "docs"
+      ],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
         "backoffMultiplier": 2
       }
     }

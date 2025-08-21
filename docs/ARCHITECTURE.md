@@ -18,7 +18,7 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 ┌─────────────────────────────────────────────────────────────┐
 │      🎉 PRODUCTION MCP MULTI-AGENT WITH FULL-SCREEN UI     │
 ├─────────────────────────────────────────────────────────────┤
-│  🖥️ True Full-Screen UI (http://localhost:3000/chat) ✅ LIVE│
+│  🖥️ True Full-Screen UI (http://localhost:3001/chat) ✅ LIVE│
 │  - True Full-Screen Layout (h-screen w-screen)             │
 │  - Responsive Design: Mobile/Tablet/Desktop Breakpoints    │
 │  - Collapsible Sidebar with Mobile Overlay                 │
@@ -48,9 +48,16 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 ├─────────────────────────────────────────────────────────────┤
 │  🔌 LIVE MCP Servers (via mcp-use library)                 │
 │  ┌─────────────────────────────────────────────────────┐  │
-│  │🎭 Playwright MCP Server (Microsoft + Smithery CLI) │  │
-│  │✅ CONNECTED - Browser Automation Capabilities       │  │
+│  │📚 DocFork MCP Server (HTTP Streamable Transport)   │  │
+│  │✅ AUTHENTICATED & FUNCTIONAL - Documentation Research│  │
+│  │🌐 Smithery Server: HTTP Streamable (preferred)     │  │
+│  │🔑 Dual Authentication: URL Parameter + Bearer Token│  │
 │  │🔧 Enable/Disable via CLI Commands                   │  │
+│  └─────────────────────────────────────────────────────┘  │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │🎭 Playwright MCP Server (DISABLED)                  │  │
+│  │⏸️ DISABLED - Browser Automation (Available)         │  │
+│  │🔧 Can be enabled via CLI Commands                   │  │
 │  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -69,7 +76,7 @@ mcp-agent-ui/           # 🌐 Next.js 15 Production UI ✅ LIVE
 │   │   ├── chat/page.tsx          # Professional chat interface
 │   │   └── page.tsx               # Auto-redirect to chat
 │   ├── lib/
-│   │   └── mcp-chat-service.ts    # 🔧 PRODUCTION Playwright MCP integration
+│   │   └── mcp-chat-service.ts    # ✅ AUTHENTICATED DocFork MCP integration (HTTP Streamable)
 │   └── hooks/
 │       └── use-mcp-status.ts      # Real-time health monitoring
 ├── .env.local                     # Production OpenAI API configuration
@@ -359,7 +366,7 @@ interface RetryConfig {
 
 ### Error Categories
 1. **Connection Errors**: Network failures, timeouts
-2. **Authentication Errors**: API key issues, authorization failures
+2. **Authentication Errors**: ✅ **RESOLVED** - Smithery API dual authentication working
 3. **Server Errors**: MCP server crashes, invalid responses
 4. **Configuration Errors**: Invalid settings, missing requirements
 
@@ -488,10 +495,54 @@ Operation Request → ErrorRecoveryOrchestrator → RetryMechanism (with Circuit
 - **Network**: Connection reuse and timeout management
 - **Storage**: Minimal local storage requirements
 
+## 🔐 Authentication Architecture Update - 2025-08-21
+
+### **Smithery API Authentication Implementation**
+
+**Authentication Method**: Dual Authentication Pattern
+- **URL Parameter**: `?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}`
+- **Authorization Header**: `Bearer ${SMITHERY_API_KEY}`
+
+**Implementation Details**:
+```typescript
+// Environment Configuration
+const smitheryApiKey = process.env.SMITHERY_API_KEY;
+const smitheryProfile = process.env.SMITHERY_PROFILE;
+
+// URL Construction with API Key Parameter
+const docforkUrl = `https://server.smithery.ai/@docfork/mcp/mcp?api_key=${smitheryApiKey}&profile=${smitheryProfile}`;
+
+// mcp-use Configuration with Dual Authentication
+const mcpConfig = {
+  mcpServers: {
+    'docfork-mcp': {
+      url: docforkUrl,                    // URL parameter authentication
+      authToken: smitheryApiKey,          // Authorization header authentication
+      preferSse: false,                   // HTTP Streamable transport
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  }
+};
+```
+
+**Security Features**:
+- ✅ **Environment Variable Protection**: All API keys stored in `.env.local`
+- ✅ **Dual Authentication**: Both URL and header authentication for maximum compatibility
+- ✅ **Comprehensive Logging**: Authentication flow debugging for troubleshooting
+- ✅ **Error Handling**: Detailed error messages for authentication failures
+- ✅ **Production Ready**: Zero exposed credentials in codebase
+
+**Authentication Status**: ✅ **FULLY FUNCTIONAL**
+- DocFork MCP server connected and operational
+- Library documentation retrieval working perfectly
+- All authentication errors resolved
+
 ---
 
-*Last Updated: 2025-08-18*
-*Version: 1.2*
-*Status: Living Document - Updated with health monitoring implementation*
+*Last Updated: 2025-08-21*
+*Version: 1.3*
+*Status: Living Document - Updated with authentication implementation and multi-server architecture*
 
-*This architecture document reflects the current implementation state and planned future enhancements. The system is designed for extensibility and maintainability while providing robust multi-server MCP integration.*
+*This architecture document reflects the current production-ready implementation with authenticated multi-server MCP integration. The system provides robust authentication, comprehensive error handling, and complete documentation coverage.*

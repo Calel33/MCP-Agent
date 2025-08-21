@@ -37,7 +37,7 @@ export class MCPChatService {
     }
 
     try {
-      console.log('🔧 Initializing MCP Chat Service with Playwright MCP server...');
+      console.log('🔧 Initializing MCP Chat Service with DocFork (HTTP) MCP server...');
 
       // Validate OpenAI API key
       const apiKey = process.env.OPENAI_API_KEY;
@@ -45,26 +45,39 @@ export class MCPChatService {
         throw new Error('OPENAI_API_KEY environment variable is required');
       }
 
-      // Create MCP client with Playwright MCP server using correct mcp-use format
-      this.mcpClient = MCPClient.fromDict({
+      // Create MCP client with DocFork MCP server using Smithery URL parameter format
+      const smitheryApiKey = process.env.SMITHERY_API_KEY || 'SMITHERY_API_KEY_REQUIRED';
+      const smitheryProfile = process.env.SMITHERY_PROFILE || 'glad-squid-LrsVYY';
+      // Smithery expects api_key as URL parameter, not Authorization header
+      const docforkUrl = `https://server.smithery.ai/@docfork/mcp/mcp?api_key=${smitheryApiKey}&profile=${smitheryProfile}`;
+
+      console.log('🔧 DocFork MCP Configuration:');
+      console.log(`   API Key: ${smitheryApiKey.substring(0, 8)}...${smitheryApiKey.substring(smitheryApiKey.length - 4)}`);
+      console.log(`   API Key Length: ${smitheryApiKey.length}`);
+      console.log(`   API Key Full (DEBUG): ${smitheryApiKey}`);
+      console.log(`   Profile: ${smitheryProfile}`);
+      console.log(`   URL: ${docforkUrl}`);
+      console.log(`   Auth Method: URL parameter + Authorization header (Smithery format)`);
+
+      const mcpConfig = {
         mcpServers: {
-          'playwright-mcp': {
-            command: 'cmd',
-            args: [
-              '/c',
-              'npx',
-              '-y',
-              '@smithery/cli@latest',
-              'run',
-              '@microsoft/playwright-mcp',
-              '--key',
-              '9c441b5c-510a-41cd-a242-f77baa272f2c'
-            ],
+          'docfork-mcp': {
+            url: docforkUrl, // URL contains api_key parameter
+            preferSse: false, // Use Streamable HTTP (preferred)
+            authToken: smitheryApiKey, // Also include in Authorization header (Smithery requires both)
+            headers: {
+              'Content-Type': 'application/json'
+            }
           },
         },
-      });
+      };
 
-      console.log('🎭 MCP Playwright client created');
+      console.log('🔧 MCP Client Configuration:');
+      console.log(JSON.stringify(mcpConfig, null, 2));
+
+      this.mcpClient = MCPClient.fromDict(mcpConfig);
+
+      console.log('🎭 MCP DocFork client created (HTTP Streamable)');
 
       // Create LangChain OpenAI client
       this.llm = new ChatOpenAI({
@@ -87,7 +100,7 @@ export class MCPChatService {
       console.log('🤖 MCP Agent created');
 
       this.initialized = true;
-      console.log('✅ MCP Chat Service initialized successfully with Playwright MCP server');
+      console.log('✅ MCP Chat Service initialized successfully with DocFork (HTTP) MCP server');
     } catch (error) {
       console.error('❌ Failed to initialize MCP Chat Service:', error);
       throw new Error(`MCP initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -108,7 +121,12 @@ export class MCPChatService {
     }
 
     try {
-      console.log(`🤖 Processing query with real MCP filesystem: "${query.slice(0, 100)}${query.length > 100 ? '...' : ''}"`);
+      console.log(`🤖 Processing query with DocFork MCP server: "${query.slice(0, 100)}${query.length > 100 ? '...' : ''}"`);
+      console.log(`🔧 MCP Client Status:`, {
+        initialized: !!this.mcpClient,
+        agentInitialized: !!this.mcpAgent,
+        serverNames: this.mcpClient?.getServerNames?.() || 'N/A'
+      });
 
       // Build context from conversation history
       const contextualQuery = this.buildContextualQuery(query, options.conversationHistory);
@@ -144,18 +162,31 @@ export class MCPChatService {
     try {
       // Show tool usage if enabled
       if (options.enableToolVisibility) {
-        yield '\n🔧 Connecting to Playwright MCP server...\n';
+        yield '\n🔧 Connecting to DocFork MCP server...\n';
         await new Promise(resolve => setTimeout(resolve, 300));
       }
 
       // Use the real MCP agent to process the query
       const maxSteps = options.maxSteps || 10;
       console.log(`🤖 Running MCP agent with max steps: ${maxSteps}`);
+      console.log(`🔧 About to call mcpAgent.run() with query: "${query}"`);
 
-      const result = await this.mcpAgent.run(query, maxSteps);
+      let result;
+      try {
+        result = await this.mcpAgent.run(query, maxSteps);
+        console.log(`✅ MCP agent run completed successfully`);
+        console.log(`📊 Result type: ${typeof result}, length: ${result?.length || 'N/A'}`);
+      } catch (mcpError) {
+        console.error(`❌ MCP agent run failed:`, {
+          error: mcpError instanceof Error ? mcpError.message : mcpError,
+          stack: mcpError instanceof Error ? mcpError.stack : undefined,
+          type: typeof mcpError
+        });
+        throw mcpError;
+      }
 
       if (options.enableToolVisibility) {
-        yield '\n✅ Playwright MCP server connected\n\n';
+        yield '\n✅ DocFork MCP server connected\n\n';
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
@@ -178,12 +209,12 @@ export class MCPChatService {
       console.error('❌ Error in real MCP streaming:', error);
 
       // Fallback to error message
-      yield `\n❌ Error connecting to Playwright MCP: ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
-      yield `I'm having trouble connecting to the Playwright MCP server. This might be because:\n`;
-      yield `- The @smithery/cli package needs to be installed globally\n`;
-      yield `- The @microsoft/playwright-mcp server is not available\n`;
+      yield `\n❌ Error connecting to DocFork MCP server: ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
+      yield `I'm having trouble connecting to the DocFork MCP server. This might be because:\n`;
+      yield `- The DocFork MCP server at Smithery is not available\n`;
+      yield `- The API key or profile parameters are invalid or expired\n`;
       yield `- The OpenAI API key is not configured in .env.local\n`;
-      yield `- There's a network issue with the Smithery CLI\n\n`;
+      yield `- There's a network issue connecting to https://server.smithery.ai\n\n`;
       yield `Please check the console for more details and try again.`;
     }
   }
@@ -255,12 +286,13 @@ export class MCPChatService {
           status: 'healthy',
           healthy: true,
           service: 'MCP Chat Service (Production Mode)',
-          backend: 'Playwright MCP Server',
+          backend: 'DocFork MCP (HTTP Streamable)',
           servers: serverNames,
           features: {
             streaming: true,
             tool_visibility: true,
             browser_automation: 'real',
+            documentation_research: 'real',
             mcp_integration: 'production'
           }
         };

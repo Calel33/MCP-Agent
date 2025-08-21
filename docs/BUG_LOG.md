@@ -6,7 +6,7 @@
 **Project ID**: `3d6353d3-caac-488c-8168-00f924dd6776`  
 **Technology Stack**: TypeScript/Node.js, mcp-use library v0.1.15, OpenAI GPT-4  
 **Log Created**: 2025-08-17  
-**Last Updated**: 2025-08-20 - ✅ **PLAYWRIGHT MCP INTEGRATION - CONFIGURATION ISSUES RESOLVED**
+**Last Updated**: 2025-08-21 - ✅ **SMITHERY API AUTHENTICATION - ENVIRONMENT VARIABLE LOADING ISSUE RESOLVED**
 
 ## 🎯 Purpose
 
@@ -560,7 +560,76 @@ Created test `.env` file with placeholder API key for configuration validation, 
 
 ---
 
-**Last Updated**: 2025-08-20 18:30
-**Final Review**: Playwright MCP integration complete - all configuration issues resolved
-**Maintainer**: Multi-Agent Workflow (Code Archaeologist → Implementation → Testing)
-**Status**: ✅ **PRODUCTION READY - PLAYWRIGHT MCP INTEGRATED**
+## 📅 Session: 2025-08-21 - Smithery API Authentication Fix
+
+### 🐛 **Bug #008: Environment Variable Loading Issue - Smithery API Key**
+
+**Date**: 2025-08-21
+**Severity**: Critical
+**Component**: Authentication (`src/lib/mcp-chat-service.ts`)
+**Task**: DocFork MCP Authentication Fix
+
+#### **Problem Description**
+DocFork MCP server authentication failing with "Invalid token" and "Missing Authorization header" errors despite correct API key configuration.
+
+#### **Error Messages**
+```
+15:22:11 [mcp-use] error: Streamable HTTP failed: Error POSTing to endpoint (HTTP 401): {"error":"invalid_token","error_description":"Invalid token"}
+15:22:11 [mcp-use] error: SSE: Error: SSE error: Non-200 status code (401)
+❌ Error running query: Error: Could not connect to server with any available transport
+```
+
+#### **Root Cause Analysis**
+1. **Environment Variable Caching**: `.env.local` file updated with new API key but server not restarted
+2. **Authentication Format**: Initial confusion about Smithery requiring both URL parameter and Authorization header
+3. **API Key Rotation**: Previous API key `989a3e87-2e65-4692-89e8-c1acc516279e` was invalid/expired
+
+#### **Resolution Steps**
+1. **✅ Environment Variable Fix**:
+   ```bash
+   # Updated .env.local with valid API key
+   SMITHERY_API_KEY=6e49fa47-fdb9-4ca1-bccd-e7871aad81eb
+   SMITHERY_PROFILE=glad-squid-LrsVYY
+   ```
+
+2. **✅ Authentication Format Correction**:
+   ```typescript
+   // Correct Smithery authentication format
+   const docforkUrl = `https://server.smithery.ai/@docfork/mcp/mcp?api_key=${smitheryApiKey}&profile=${smitheryProfile}`;
+
+   const mcpConfig = {
+     mcpServers: {
+       'docfork-mcp': {
+         url: docforkUrl, // URL contains api_key parameter
+         authToken: smitheryApiKey, // Also include in Authorization header
+         preferSse: false
+       }
+     }
+   };
+   ```
+
+3. **✅ Server Restart**: Restarted development server to pick up new environment variables
+
+#### **Verification**
+```
+15:23:40 [mcp-use] info: ✅ Created 1 new sessions
+15:23:40 [mcp-use] info: 🛠️ Created 1 LangChain tools from client
+15:23:40 [mcp-use] info: ✨ Agent initialization complete
+15:23:42 [mcp-use] info: ✅ Agent finished at step 1
+✅ MCP agent run completed successfully
+```
+
+#### **Prevention Measures**
+- ✅ Added comprehensive environment variable logging
+- ✅ Added authentication flow debugging
+- ✅ Documented correct Smithery authentication format
+- ✅ Created environment variable validation checks
+
+#### **Status**: ✅ **RESOLVED** - Authentication working perfectly
+
+---
+
+**Last Updated**: 2025-08-21 15:25
+**Final Review**: Smithery API authentication complete - all environment and authentication issues resolved
+**Maintainer**: Multi-Agent Workflow (Documentation Specialist → Backend Developer)
+**Status**: ✅ **PRODUCTION READY - DOCFORK MCP AUTHENTICATED AND FUNCTIONAL**

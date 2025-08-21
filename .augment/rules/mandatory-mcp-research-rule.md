@@ -24,7 +24,7 @@ For **EVERY** user request involving writing, modifying, or generating code (any
 
 #### 🔍 Research Tool Selection Guide (CRITICAL: Each Tool Has Specific Purpose):
 
-##### **Archon MCP Tools** - PROJECT-SPECIFIC Research
+##### **Archon MCP Tools** - PROJECT-SPECIFIC Research (Priority #1)
 - **Purpose**: Search within YOUR project's knowledge base and integrated sources
 - **Best For**: Patterns you've implemented, tech stack you're using, project-specific examples
 - **Sources**: Your integrated documentation (shadcn/ui, Next.js docs, libraries you use)
@@ -38,7 +38,24 @@ For **EVERY** user request involving writing, modifying, or generating code (any
 
 **Use When**: Need project-specific patterns, integration with your tech stack, your existing implementations
 
-##### **GitHub/Grep MCP Tools** - EXTERNAL Pattern Discovery
+##### **DeepWiki MCP Tools** - INTELLIGENT REPOSITORY ANALYSIS (Priority #2) ⭐ **NEW**
+- **Purpose**: Ask natural language questions about GitHub repositories and get expert-level answers
+- **Best For**: Understanding how libraries work, best practices, architecture insights, implementation guidance
+- **Sources**: Comprehensive analysis of entire GitHub repositories with structured knowledge extraction
+- **Tools**:
+  - `ask_question_deepwiki()` - Ask "how to" questions and get expert answers
+  - `read_wiki_structure_deepwiki()` - Get organized repository knowledge structure
+  - `read_wiki_contents_deepwiki()` - Read comprehensive repository documentation
+- **Unique Capabilities**:
+  - Q&A interface for complex technical questions
+  - Contextual explanations with code examples
+  - Security and error handling insights
+  - Cross-component relationship understanding
+- **✅ Perfect For**: "How to..." questions, best practices discovery, architecture understanding, implementation guidance
+
+**Use When**: Need expert-level understanding of how to implement features, best practices, or architectural guidance
+
+##### **GitHub/Grep MCP Tools** - EXTERNAL Pattern Discovery (Priority #3)
 - **Purpose**: Find real-world implementations across the broader ecosystem
 - **Best For**: Discovering new patterns, seeing how others solve problems, quality examples
 - **Sources**: Public repositories, open-source projects, community implementations
@@ -52,7 +69,7 @@ For **EVERY** user request involving writing, modifying, or generating code (any
 
 **Use When**: Need real-world examples, library usage patterns, discovering new approaches
 
-##### **Docfork MCP Tools** - OFFICIAL Library Documentation
+##### **Docfork MCP Tools** - OFFICIAL Library Documentation (Priority #4)
 - **Purpose**: Fetch up-to-date official documentation for any open-source library
 - **Best For**: Official docs, installation guides, topic-focused information, code examples from maintainers
 - **How It Works**: Uses `author/library` format (e.g., "vercel/next.js", "shadcn-ui/ui")
@@ -123,7 +140,7 @@ After successful research and validation, proceed with:
 
 ## 📋 WORKFLOW EXAMPLES
 
-### Example 1: API Authentication (Optimized Workflow)
+### Example 1: API Authentication (Enhanced with DeepWiki)
 ```
 User: "Add JWT authentication to the Express API"
     ↓
@@ -131,41 +148,50 @@ Phase 1: Project-First Research (Archon)
 1. get_available_sources() - Check what auth sources we have
 2. search_code_examples("Express JWT middleware", source_id="our-auth-docs")
 
-Phase 2: External Pattern Discovery (GitHub)
-3. searchGitHub_grep("express jwt middleware", repo="expressjs/")
-4. githubSearchCode_octocode([{queryTerms: ["JWT", "middleware"], owner: ["expressjs"]}])
+Phase 2: Intelligent Repository Analysis (DeepWiki) ⭐ NEW
+3. ask_question_deepwiki("expressjs/express", "How do I set up basic routing with middleware for authentication?")
+4. ask_question_deepwiki("expressjs/express", "What are the best practices for error handling and security in Express.js applications?")
 
-Phase 3: Official Documentation (Docfork)
-5. get-library-docs_docfork("auth0/jsonwebtoken", "authentication")
+Phase 3: External Pattern Discovery (GitHub)
+5. searchGitHub_grep("express jwt middleware", repo="expressjs/")
+6. githubSearchCode_octocode([{queryTerms: ["JWT", "middleware"], owner: ["expressjs"]}])
 
-Phase 4: Project Integration (Archon)
-6. perform_rag_query("Express.js JWT integration our tech stack")
+Phase 4: Official Documentation (Docfork)
+7. get-library-docs_docfork("auth0/jsonwebtoken", "authentication")
+
+Phase 5: Project Integration (Archon)
+8. perform_rag_query("Express.js JWT integration our tech stack")
     ↓
 Research Analysis:
 - Project-specific auth patterns found
+- Expert-level implementation guidance from DeepWiki
 - Real-world Express implementations discovered
 - Official JWT API validated
 - Integration approach planned
     ↓
-THEN: Implement JWT authentication based on research findings
+THEN: Implement JWT authentication based on comprehensive research findings
 ```
 
-### Example 2: React Component
+### Example 2: React Component (Enhanced with DeepWiki)
 ```
 User: "Create a data table component with sorting"
     ↓
-1. GitHub: searchGitHub_grep("React data table sorting component")
-2. Archon: perform_rag_query("React table component best practices")
-3. Forkdocs: get-library-docs("react", "hooks")
-4. GitHub: packageSearch_octocode("react table sorting")
+1. Archon: perform_rag_query("React table component best practices")
+2. DeepWiki: ask_question_deepwiki("facebook/react", "What are the best practices for creating performant table components with sorting?") ⭐ NEW
+3. DeepWiki: ask_question_deepwiki("facebook/react", "How should I handle state management for complex table interactions?") ⭐ NEW
+4. GitHub: searchGitHub_grep("React data table sorting component")
+5. GitHub: packageSearch_octocode("react table sorting")
+6. Docfork: get-library-docs_docfork("facebook/react", "hooks")
     ↓
 Research Analysis:
-- React table patterns identified
-- Sorting implementation approaches found
+- Project-specific table patterns identified
+- Expert React guidance on performance and state management
+- Real-world sorting implementation approaches found
 - Performance considerations documented
 - Accessibility requirements discovered
+- Official React hooks API confirmed
     ↓
-THEN: Create React table component based on research
+THEN: Create React table component based on comprehensive research
 ```
 
 ### Example 3: Database Integration
@@ -296,6 +322,7 @@ If tools return limited results:
 - v2.0: Enhanced with detailed guidelines and examples
 - v2.1: Added MCP tool specialization insights - Archon for PROJECT-SPECIFIC, GitHub for EXTERNAL, Forkdocs for OFFICIAL
 - v2.2: Added goal-oriented research requirement - all research must conclude by addressing user's stated goal
+- v2.3: **MAJOR UPDATE** - Integrated DeepWiki MCP as Priority #2 for intelligent repository analysis and expert-level Q&A capabilities
 
 **Review Schedule**: Monthly review for effectiveness and updates
 

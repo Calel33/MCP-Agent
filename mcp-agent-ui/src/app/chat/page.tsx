@@ -39,7 +39,7 @@ export default function ChatPage() {
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
-    const userMessageObj: Message = {
+    const userMessageObj: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
       content: userMessage,
@@ -69,7 +69,7 @@ export default function ChatPage() {
       if (!reader) return;
 
       let assistantMessage = '';
-      const assistantMessageObj: Message = {
+      const assistantMessageObj: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: '',
@@ -95,7 +95,7 @@ export default function ChatPage() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage: Message = {
+      const errorMessage: ChatMessage = {
         id: (Date.now() + 2).toString(),
         role: 'assistant',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
@@ -140,7 +140,7 @@ export default function ChatPage() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as any);
+      handleSubmit(e as React.FormEvent);
     }
   };
 

@@ -120,15 +120,38 @@ function getDefaultServers(): MCPServerConfig[] {
         'run',
         '@microsoft/playwright-mcp',
         '--key',
-        '9c441b5c-510a-41cd-a242-f77baa272f2c'
+        process.env.SMITHERY_API_KEY || 'SMITHERY_API_KEY_REQUIRED'
       ],
-      enabled: true,
+      enabled: false,
       priority: 10,
       tags: ['browser', 'automation', 'playwright', 'web'],
       timeout: 45000,
       retry: {
         maxAttempts: 3,
         delayMs: 2000,
+        backoffMultiplier: 2,
+      },
+    },
+    {
+      id: 'docfork-mcp',
+      name: 'DocFork MCP Server',
+      description: 'Provides documentation and library research capabilities via DocFork MCP',
+      connectionType: 'http',
+      url: `https://server.smithery.ai/@docfork/mcp/mcp?profile=${process.env.SMITHERY_PROFILE || 'glad-squid-LrsVYY'}`,
+      preferSse: false, // Use Streamable HTTP (preferred)
+      requestInit: {
+        headers: {
+          'Authorization': `Bearer ${process.env.SMITHERY_API_KEY || 'SMITHERY_API_KEY_REQUIRED'}`,
+          'Content-Type': 'application/json'
+        }
+      },
+      enabled: true,
+      priority: 8,
+      tags: ['documentation', 'research', 'libraries', 'docs'],
+      timeout: 30000,
+      retry: {
+        maxAttempts: 3,
+        delayMs: 1500,
         backoffMultiplier: 2,
       },
     },

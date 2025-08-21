@@ -35,7 +35,7 @@
         "run",
         "@microsoft/playwright-mcp",
         "--key",
-        "9c441b5c-510a-41cd-a242-f77baa272f2c"
+        "${SMITHERY_API_KEY}"
       ],
       "enabled": true,
       "priority": 10,

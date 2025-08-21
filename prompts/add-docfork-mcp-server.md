@@ -28,7 +28,7 @@ Integrate DocFork MCP server into the existing multi-server agent system to prov
     "mcpServers": {
       "mcp": {
         "command": "cmd",
-        "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@docfork/mcp", "--key", "9c441b5c-510a-41cd-a242-f77baa272f2c"]
+        "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@docfork/mcp", "--key", "${SMITHERY_API_KEY}"]
       }
     }
   }

@@ -324,9 +324,9 @@ const components: Options['components'] = {
     if (
       isValidElement(children) &&
       children.props &&
-      typeof children.props.children === 'string'
+      typeof (children.props as { children?: string }).children === 'string'
     ) {
-      code = children.props.children;
+      code = (children.props as { children: string }).children;
     } else if (typeof children === 'string') {
       code = children;
     }

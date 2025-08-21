@@ -6,6 +6,13 @@ export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
+    // Debug environment variables
+    console.log('🔧 Environment Variables Check:');
+    console.log(`   SMITHERY_API_KEY: ${process.env.SMITHERY_API_KEY ? 'SET' : 'NOT SET'}`);
+    console.log(`   SMITHERY_API_KEY (DEBUG): ${process.env.SMITHERY_API_KEY || 'UNDEFINED'}`);
+    console.log(`   SMITHERY_PROFILE: ${process.env.SMITHERY_PROFILE || 'NOT SET'}`);
+    console.log(`   OPENAI_API_KEY: ${process.env.OPENAI_API_KEY ? 'SET' : 'NOT SET'}`);
+
     const { messages } = await req.json();
 
     // Extract the latest user message

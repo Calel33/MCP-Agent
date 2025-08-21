@@ -49,7 +49,7 @@ how can we get our latest stash# 📅 Session 2025-08-20 - Playwright MCP Integr
         "run",
         "@microsoft/playwright-mcp",
         "--key",
-        "9c441b5c-510a-41cd-a242-f77baa272f2c"
+        "${SMITHERY_API_KEY}"
       ]
     }
   }
@@ -100,7 +100,7 @@ how can we get our latest stash# 📅 Session 2025-08-20 - Playwright MCP Integr
   "mcpServers": {
     "playwright-mcp": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@microsoft/playwright-mcp", "--key", "9c441b5c-510a-41cd-a242-f77baa272f2c"]
+      "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@microsoft/playwright-mcp", "--key", "${SMITHERY_API_KEY}"]
     }
   }
 }
@@ -129,7 +129,7 @@ how can we get our latest stash# 📅 Session 2025-08-20 - Playwright MCP Integr
   "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
   "connectionType": "stdio",
   "command": "cmd",
-  "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@microsoft/playwright-mcp", "--key", "9c441b5c-510a-41cd-a242-f77baa272f2c"],
+  "args": ["/c", "npx", "-y", "@smithery/cli@latest", "run", "@microsoft/playwright-mcp", "--key", "${SMITHERY_API_KEY}"],
   "enabled": true,
   "priority": 10,
   "tags": ["browser", "automation", "playwright", "web"],

@@ -10,27 +10,29 @@ The Multiple MCP Servers General Purpose Agent is a TypeScript-based AI agent th
 
 **Access the beautiful macOS-style MCP Multi-Agent UI immediately:**
 
-**🌐 Open**: http://localhost:3000/chat
-**Status**: ✅ Live with beautiful macOS ChatGPT-style interface
-**Features**: Professional macOS design with real MCP filesystem server integration
+**🌐 Open**: http://localhost:3001/chat
+**Status**: ✅ Live with DocFork MCP documentation research capabilities
+**Features**: Professional responsive design with HTTP Streamable DocFork MCP integration
 
 ### **Instant Usage - No Setup Required**
 
 The application is already running with:
-- ✅ **Beautiful macOS ChatGPT-style interface** with traffic light controls
-- ✅ **Professional dark theme** with sophisticated gray color palette
-- ✅ **Sidebar layout** with conversation history and user profile
-- ✅ **Real MCP filesystem server** connected for actual file operations
+- ✅ **DocFork MCP Server** with HTTP Streamable transport for documentation research
+- ✅ **Professional responsive interface** with mobile-first design
+- ✅ **Sidebar layout** with conversation history and collapsible navigation
+- ✅ **Documentation research capabilities** via DocFork MCP integration
 - ✅ **OpenAI GPT-4o integration** with streaming responses
 - ✅ **Auto-scroll behavior** and smooth typing animations
 - ✅ **Keyboard shortcuts** (Enter to send, Shift+Enter for new lines)
+- ✅ **HTTP Streamable transport** with automatic SSE fallback for optimal performance
 
-**Try these interactions right now:**
+**Try these documentation research interactions right now:**
 ```
-"Can you read the package.json file and tell me about this project?"
-"List all TypeScript files in the src directory"
-"Help me understand the project structure"
-"Create a simple README file for me"
+"Can you help me understand React hooks documentation?"
+"Show me the latest Next.js routing documentation"
+"What are the best practices for TypeScript interfaces?"
+"Find documentation about HTTP streaming in Node.js"
+"Research authentication patterns for web applications"
 ```
 
 ### **Alternative: CLI Interface**

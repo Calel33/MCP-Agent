@@ -41,12 +41,26 @@ import { createConfig } from '@/config';
 
 const config = createConfig([
   {
-    id: 'filesystem',
-    name: 'File System',
+    id: 'docfork-mcp',
+    name: 'DocFork MCP Server',
+    description: 'Documentation research capabilities via DocFork MCP',
+    connectionType: 'http',
+    url: 'https://server.smithery.ai/@docfork/mcp/mcp?api_key=YOUR_API_KEY&profile=YOUR_PROFILE',
+    preferSse: false, // Use HTTP Streamable (preferred)
+    enabled: true,
+    priority: 8,
+    tags: ['documentation', 'research', 'libraries', 'docs']
+  },
+  {
+    id: 'playwright-mcp',
+    name: 'Playwright MCP Server',
+    description: 'Browser automation capabilities',
     connectionType: 'stdio',
-    command: 'npx',
-    args: ['@modelcontextprotocol/server-filesystem', '/path/to/directory'],
-    enabled: true
+    command: 'cmd',
+    args: ['/c', 'npx', '-y', '@smithery/cli@latest', 'run', '@microsoft/playwright-mcp', '--key', 'YOUR_API_KEY'],
+    enabled: false, // Disabled for focused documentation capabilities
+    priority: 10,
+    tags: ['browser', 'automation', 'playwright', 'web']
   }
 ]);
 ```
