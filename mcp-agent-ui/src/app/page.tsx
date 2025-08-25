@@ -1,16 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Redirect to chat page on load
-    router.push('/chat');
-  }, [router]);
+    setIsMounted(true);
+  }, []);
 
+  useEffect(() => {
+    // Only redirect after component is mounted on client
+    if (isMounted) {
+      router.push('/chat');
+    }
+  }, [isMounted, router]);
+
+  // Show consistent loading state during SSR and initial client render
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center">

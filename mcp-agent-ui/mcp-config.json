@@ -1,0 +1,47 @@
+{
+  "servers": [
+    {
+      "id": "playwright-mcp",
+      "name": "Playwright MCP Server",
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@microsoft/playwright-mcp",
+        "--key",
+        "${SMITHERY_API_KEY}"
+      ],
+      "enabled": false,
+      "timeout": 45000,
+      "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-01-10T19:30:00.000Z"
+    },
+    {
+      "id": "docfork-mcp",
+      "name": "DocFork MCP Server",
+      "type": "http",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?profile=${SMITHERY_PROFILE}",
+      "enabled": false,
+      "timeout": 30000,
+      "description": "Provides documentation and library research capabilities via DocFork MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-08-24T18:33:36.339Z"
+    },
+    {
+      "id": "hustle-http",
+      "name": "Hustle HTTP MCP Server",
+      "type": "http",
+      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
+      "enabled": true,
+      "timeout": 30000,
+      "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-01-10T19:30:00.000Z"
+    }
+  ]
+}

@@ -1,31 +1,9 @@
 {
-  "llm": {
-    "provider": "openai",
-    "model": "gpt-4o",
-    "apiKey": "${OPENAI_API_KEY}",
-    "temperature": 0.1,
-    "maxTokens": 4096
-  },
-  "agent": {
-    "maxSteps": 10,
-    "timeout": 60000,
-    "autoInitialize": true,
-    "verbose": true
-  },
-  "serverManager": {
-    "enabled": true,
-    "maxConcurrentServers": 3,
-    "serverStartupTimeout": 30,
-    "healthMonitoring": true,
-    "healthCheckInterval": 30000,
-    "autoReconnect": true
-  },
   "servers": [
     {
       "id": "playwright-mcp",
       "name": "Playwright MCP Server",
-      "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
-      "connectionType": "stdio",
+      "type": "stdio",
       "command": "cmd",
       "args": [
         "/c",
@@ -37,49 +15,33 @@
         "--key",
         "${SMITHERY_API_KEY}"
       ],
-      "enabled": true,
-      "priority": 10,
-      "tags": [
-        "browser",
-        "automation",
-        "playwright",
-        "web"
-      ],
+      "enabled": false,
       "timeout": 45000,
-      "retry": {
-        "maxAttempts": 3,
-        "delayMs": 2000,
-        "backoffMultiplier": 2
-      }
+      "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-01-10T19:30:00.000Z"
+    },
+    {
+      "id": "docfork-mcp",
+      "name": "DocFork MCP Server", 
+      "type": "http",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?profile=${SMITHERY_PROFILE}",
+      "enabled": true,
+      "timeout": 30000,
+      "description": "Provides documentation and library research capabilities via DocFork MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-01-10T19:30:00.000Z"
     },
     {
       "id": "hustle-http",
       "name": "Hustle HTTP MCP Server",
-      "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
-      "connectionType": "http",
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}"
-      ],
+      "type": "http", 
+      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
       "enabled": true,
-      "priority": 8,
-      "tags": [
-        "crypto",
-        "agent",
-        "http",
-        "remote"
-      ],
       "timeout": 30000,
-      "retry": {
-        "maxAttempts": 3,
-        "delayMs": 1500,
-        "backoffMultiplier": 2
-      }
+      "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
+      "createdAt": "2025-01-10T19:30:00.000Z",
+      "updatedAt": "2025-01-10T19:30:00.000Z"
     }
-  ],
-  "logging": {
-    "level": "info",
-    "format": "text"
-  }
+  ]
 }

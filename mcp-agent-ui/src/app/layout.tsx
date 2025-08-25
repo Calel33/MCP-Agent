@@ -39,6 +39,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased h-full overflow-hidden`}
+        suppressHydrationWarning={true}
       >
         {children}
       </body>

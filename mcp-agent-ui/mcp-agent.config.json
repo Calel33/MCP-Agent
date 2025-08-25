@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "Hustle HTTP MCP Server": {
+      "type": "http",
+      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
+      "timeout": 30000
+    }
+  },
+  "updatedAt": "2025-08-24T18:33:37.084Z"
+}

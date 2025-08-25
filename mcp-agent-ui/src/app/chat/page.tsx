@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useMCPStatus } from '@/hooks/use-mcp-status';
+import { SettingsButton } from '@/components/settings/SettingsModal';
 
 interface ChatMessage {
   id: string;
@@ -16,9 +17,16 @@ interface Conversation {
 }
 
 export default function ChatPage() {
+  // Use a ref to track message ID counter to ensure consistency between server and client
+  const messageIdCounter = useRef(1);
+  
+  const generateMessageId = useCallback(() => {
+    return `msg-${messageIdCounter.current++}`;
+  }, []);
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      id: '1',
+      id: 'welcome-1',
       role: 'assistant',
       content: "Hello! I'm your MCP Multi-Agent AI assistant. I'm here to provide information, answer questions, assist with tasks, and engage in conversations on a wide range of topics. I can help with file operations, web research, project management, and more through integrated MCP servers. How can I help you today?"
     }
@@ -40,7 +48,7 @@ export default function ChatPage() {
 
     const userMessage = input.trim();
     const userMessageObj: ChatMessage = {
-      id: Date.now().toString(),
+      id: generateMessageId(),
       role: 'user',
       content: userMessage,
     };
@@ -70,7 +78,7 @@ export default function ChatPage() {
 
       let assistantMessage = '';
       const assistantMessageObj: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: generateMessageId(),
         role: 'assistant',
         content: '',
       };
@@ -96,7 +104,7 @@ export default function ChatPage() {
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: ChatMessage = {
-        id: (Date.now() + 2).toString(),
+        id: generateMessageId(),
         role: 'assistant',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
       };
@@ -123,6 +131,9 @@ export default function ChatPage() {
 
   // Close sidebar on mobile when window resizes to desktop
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsSidebarOpen(false);
@@ -145,8 +156,10 @@ export default function ChatPage() {
   };
 
   const clearChat = () => {
+    // Reset the message counter and create new welcome message
+    messageIdCounter.current = 1;
     setMessages([{
-      id: '1',
+      id: 'welcome-1',
       role: 'assistant',
       content: "Hello! I'm your MCP Multi-Agent AI assistant. I'm here to provide information, answer questions, assist with tasks, and engage in conversations on a wide range of topics. I can help with file operations, web research, project management, and more through integrated MCP servers. How can I help you today?"
     }]);
@@ -262,13 +275,18 @@ export default function ChatPage() {
                   </div>
                 </div>
 
-                <button className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-gray-700 flex items-center text-gray-300">
-                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a9 9 0 0 0 5.636-1.968m-11.272 0A9 9 0 0 0 12 21Z"></path>
-                    <circle cx="12" cy="9" r="3"></circle>
-                  </svg>
-                  MCP Multi-Agent
-                </button>
+                <div className="space-y-1">
+                  <button className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-gray-700 flex items-center text-gray-300">
+                    <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a9 9 0 0 0 5.636-1.968m-11.272 0A9 9 0 0 0 12 21Z"></path>
+                      <circle cx="12" cy="9" r="3"></circle>
+                    </svg>
+                    MCP Multi-Agent
+                  </button>
+                  <div className="px-3">
+                    <SettingsButton />
+                  </div>
+                </div>
                 <button className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-gray-700 flex items-center justify-between text-white">
                   <div className="flex items-center">
                     <div className="h-7 w-7 rounded-full bg-blue-600 flex items-center justify-center mr-2">

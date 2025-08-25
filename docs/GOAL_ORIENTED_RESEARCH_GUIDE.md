@@ -4,14 +4,43 @@
 
 This guide provides a systematic approach for agents to conduct comprehensive, goal-oriented research using our enhanced MCP tools. Every research session must directly address the user's stated goal and provide actionable implementation guidance.
 
-## 🚨 CRITICAL RESEARCH PRINCIPLE
+## 🚨 CRITICAL RESEARCH PRINCIPLES
 
-**ALL RESEARCH MUST BE GOAL-ORIENTED**: Every research action must directly contribute to achieving the user's stated objective. Research that doesn't connect back to the goal is incomplete and ineffective.
+### **Principle #1: ALL RESEARCH MUST BE GOAL-ORIENTED**
+Every research action must directly contribute to achieving the user's stated objective. Research that doesn't connect back to the goal is incomplete and ineffective.
+
+### **Principle #2: ALWAYS CHECK PROJECT DOCS FOLDER FIRST** ✅ NEW
+Before any external research, agents MUST read our `docs/` folder to understand:
+- **Current project architecture** (`ARCHITECTURE.md`)
+- **Implementation patterns we've established** (`IMPLEMENTATION_DOCUMENT_*.md`)
+- **Previous learnings and insights** (`WHAT_WE_LEARNED_*.md`)
+- **Completed features and handoffs** (`*_COMPLETION_HANDOFF.md`)
+- **Current project status** (`PROJECT_PROGRESS.md`)
+- **Session history and context** (`SESSION_LOG.md`)
+
+**Why This Matters**: Our docs folder contains comprehensive project context that prevents:
+- ❌ Suggesting approaches that conflict with our established patterns
+- ❌ Re-researching solutions we've already implemented
+- ❌ Missing critical environmental context (like the Next.js file path issue)
+- ❌ Ignoring lessons learned from previous sessions
+- ❌ Proposing architectures that don't fit our existing system
 
 ## 🔍 Research Tool Priority Order
 
+### **Priority #0: Local Project Documentation** - MANDATORY FIRST STEP ✅ NEW
+- **When**: ALWAYS - Before any other research tool
+- **Purpose**: Read our comprehensive `docs/` folder for project context
+- **Best For**: Understanding our architecture, patterns, previous learnings, environmental context
+- **Tools**: `read_file`, `list_dir`, `grep` to explore docs folder
+- **Critical Files**: 
+  - `ARCHITECTURE.md` - System design and components
+  - `PROJECT_PROGRESS.md` - Current status and completed features
+  - `IMPLEMENTATION_DOCUMENT_*.md` - Existing implementation guides
+  - `WHAT_WE_LEARNED_*.md` - Previous session insights
+  - `*_COMPLETION_HANDOFF.md` - Completed feature documentation
+
 ### **Priority #1: Archon MCP** - Project-Specific Knowledge
-- **When**: Always start here for project-related research
+- **When**: After reading local docs, for project-related research
 - **Purpose**: Search within OUR project's knowledge base and integrated sources
 - **Best For**: Existing patterns, our tech stack, project-specific implementations
 
@@ -42,7 +71,8 @@ const goalAnalysis = {
   technology: "What tech stack/libraries are involved?",
   scope: "Is this UI, backend, integration, etc.?",
   constraints: "Any specific requirements or limitations?",
-  deliverable: "What should be the final output?"
+  deliverable: "What should be the final output?",
+  environment: "What runtime environment context is needed?" // ✅ NEW
 }
 ```
 
@@ -50,6 +80,7 @@ const goalAnalysis = {
 ```typescript
 // Determine which tools to use based on goal
 const researchPlan = {
+  environmentContext: ["Runtime environment verification needed"], // ✅ NEW
   archonQueries: ["Project-specific patterns to search"],
   deepwikiQuestions: ["Expert questions to ask"],
   githubSearches: ["External patterns to discover"],
@@ -59,27 +90,94 @@ const researchPlan = {
 
 ### **Phase 2: Systematic Research Execution**
 
-#### **Step 1: Project-Specific Research (Archon)**
+#### **Step 0: Environment Context Verification (CRITICAL)** ✅ NEW
 ```typescript
-// Always start with our existing knowledge
+// ALWAYS verify runtime environment before implementation
+const environmentResearch = async (goal) => {
+  // 1. Framework working directory behavior
+  const workingDirectory = {
+    nextjs: "process.cwd() points to app directory, not project root",
+    react: "Different in development vs production builds",
+    node: "May vary based on how application is started",
+    verification: "console.log('Working directory:', process.cwd())"
+  };
+  
+  // 2. File system access patterns
+  const fileAccess = {
+    configFiles: "Where do config files need to live?",
+    staticAssets: "How are static files accessed?",
+    uploads: "Where do uploaded files go?",
+    verification: "Test file access with fs.existsSync()"
+  };
+  
+  // 3. Development vs Production differences
+  const environmentDiffs = {
+    paths: "Do file paths change between dev and prod?",
+    permissions: "Are file permissions different?",
+    bundling: "How does bundling affect file access?",
+    verification: "Test in both environments"
+  };
+  
+  // 4. Framework-specific context
+  const frameworkContext = {
+    nextjs: {
+      appRouter: "Files must be in app directory for API routes",
+      staticFiles: "public/ directory for static assets",
+      configFiles: "Config files in app root, not project root"
+    },
+    react: {
+      buildTime: "Static files bundled at build time",
+      runtime: "Dynamic files must be accessible at runtime"
+    },
+    node: {
+      cwd: "Working directory depends on execution context",
+      requires: "Module resolution follows Node.js rules"
+    }
+  };
+  
+  return { workingDirectory, fileAccess, environmentDiffs, frameworkContext };
+};
+```
+
+#### **Step 1: Project-Specific Research (Archon + Local Docs)**
+```typescript
+// ALWAYS start with our existing knowledge - MANDATORY
 const projectResearch = async (goal) => {
-  // Check available sources
+  // 1. CRITICAL: Read our project documentation first
+  const projectContext = await readProjectDocs({
+    architecture: "docs/ARCHITECTURE.md", // System architecture and components
+    progress: "docs/PROJECT_PROGRESS.md", // Current project status
+    sessionHistory: "docs/SESSION_LOG.md", // Previous session learnings
+    implementationGuides: "docs/IMPLEMENTATION_DOCUMENT_*.md", // Existing implementation docs
+    learningDocs: "docs/WHAT_WE_LEARNED_*.md", // Previous insights and patterns
+    handoffDocs: "docs/*_COMPLETION_HANDOFF.md" // Completed feature documentation
+  });
+  
+  // 2. Check available Archon sources
   const sources = await get_available_sources();
   
-  // Search project-specific patterns
+  // 3. Search project-specific patterns in Archon
   const patterns = await search_code_examples({
     query: `${goal.technology} ${goal.objective}`,
     source_id: "relevant-source-id",
     match_count: 5
   });
   
-  // Query project documentation
-  const docs = await perform_rag_query({
+  // 4. Query project documentation in Archon
+  const archonDocs = await perform_rag_query({
     query: `${goal.technology} ${goal.objective} implementation`,
     match_count: 3
   });
   
-  return { sources, patterns, docs };
+  // 5. Analyze existing project patterns from docs folder
+  const existingPatterns = await analyzeProjectPatterns({
+    codebase: projectContext.architecture,
+    completedFeatures: projectContext.handoffDocs,
+    previousLearnings: projectContext.learningDocs,
+    currentProgress: projectContext.progress
+  });
+  
+  return { projectContext, sources, patterns, archonDocs, existingPatterns };
 };
 ```
 
@@ -183,6 +281,16 @@ const createImplementationPlan = (synthesis, originalGoal) => {
 ### **UI/Frontend Implementation Goals**
 ```typescript
 const frontendResearchTemplate = async (goal) => {
+  // 0. Environment context verification ✅ NEW
+  const environmentContext = {
+    framework: goal.framework, // Next.js, React, Vue, etc.
+    buildProcess: "How does bundling affect file access?",
+    staticAssets: "Where do CSS, images, fonts need to live?",
+    apiRoutes: "How do frontend components call backend APIs?",
+    fileStructure: "What's the expected directory structure?",
+    verification: "Test component imports and asset loading"
+  };
+  
   // 1. Project patterns
   const ourPatterns = await search_code_examples({
     query: `React ${goal.component} responsive ${goal.framework}`,
@@ -205,13 +313,32 @@ const frontendResearchTemplate = async (goal) => {
   // 4. Official docs
   const docs = await get-library-docs_docfork("facebook/react", "components");
   
-  return { ourPatterns, expertAdvice, examples, docs };
+  return { environmentContext, ourPatterns, expertAdvice, examples, docs };
 };
 ```
 
 ### **Backend/API Implementation Goals**
 ```typescript
 const backendResearchTemplate = async (goal) => {
+  // 0. Environment context verification ✅ NEW
+  const environmentContext = {
+    runtime: goal.runtime, // Node.js, Deno, Bun
+    framework: goal.framework, // Express, Fastify, Next.js API
+    fileSystem: {
+      configLocation: "Where do config files need to live?",
+      uploads: "How are file uploads handled?",
+      staticFiles: "How are static assets served?",
+      logs: "Where do log files get written?",
+      verification: "Test file I/O operations in target environment"
+    },
+    deployment: {
+      workingDirectory: "What's the working directory in production?",
+      permissions: "What file system permissions are available?",
+      environment: "How do environment variables work?",
+      verification: "Test deployment-specific file access patterns"
+    }
+  };
+  
   // 1. Project patterns
   const ourAPI = await perform_rag_query({
     query: `${goal.framework} API ${goal.feature} implementation`,
@@ -234,7 +361,7 @@ const backendResearchTemplate = async (goal) => {
   // 4. Official docs
   const docs = await get-library-docs_docfork(`${goal.framework}/${goal.framework}`, goal.feature);
   
-  return { ourAPI, expertAdvice, examples, docs };
+  return { environmentContext, ourAPI, expertAdvice, examples, docs };
 };
 ```
 
@@ -271,8 +398,10 @@ const integrationResearchTemplate = async (goal) => {
 - [ ] **Complete Coverage**: Are all aspects of the goal covered?
 - [ ] **Best Practices**: Are security, performance, and maintainability considered?
 - [ ] **Integration Path**: Is it clear how to integrate with existing codebase?
+- [ ] **Environment Context**: Are runtime environment requirements verified? ✅ NEW
 
 ### **Research Completeness Checklist**
+- [ ] **Environment Verification**: Confirmed runtime context and file system requirements ✅ NEW
 - [ ] **Project Context**: Checked existing patterns and implementations
 - [ ] **Expert Guidance**: Got intelligent insights from DeepWiki
 - [ ] **Real-World Validation**: Found quality external examples
@@ -291,8 +420,12 @@ const integrationResearchTemplate = async (goal) => {
 - **Technology**: [Tech stack involved]
 - **Scope**: [UI/Backend/Integration/etc.]
 - **Deliverable**: [Expected output]
+- **Environment**: [Runtime context and requirements] ✅ NEW
 
 ## 🔍 Research Findings
+
+### 🌍 Environment Context (CRITICAL) ✅ NEW
+[Runtime environment verification and file system requirements]
 
 ### 🏗️ Project-Specific Patterns (Archon)
 [What patterns exist in our project]
@@ -311,6 +444,9 @@ const integrationResearchTemplate = async (goal) => {
 
 ## ⚠️ Considerations
 [Security, performance, integration factors]
+
+## 🌍 Environment Verification Steps ✅ NEW
+[How to verify runtime context before implementation]
 
 ## 🧪 Testing Strategy
 [How to validate the implementation]
@@ -336,34 +472,79 @@ const integrationResearchTemplate = async (goal) => {
    🔍 **RESEARCH MODE ACTIVATED**
 
    I'll conduct comprehensive research to help you [restate goal].
-   Research Priority: Archon → DeepWiki → GitHub → Docfork
+   Research Priority: Local Docs → Archon → DeepWiki → GitHub → Docfork
+   
+   🚨 CRITICAL: Starting with our project documentation analysis...
    ```
 
-2. **Execute Systematic Research**
-   - Follow the 4-phase research workflow
-   - Use appropriate templates based on goal type
-   - Ensure all research connects back to the user's goal
+2. **MANDATORY: Read Project Documentation First** ✅ NEW
+   ```typescript
+   // ALWAYS execute this step before any external research
+   const projectContextAnalysis = async () => {
+     // 1. Check docs folder structure
+     const docsList = await list_dir("docs/");
+     
+     // 2. Read core architecture
+     const architecture = await read_file("docs/ARCHITECTURE.md");
+     
+     // 3. Check current progress
+     const progress = await read_file("docs/PROJECT_PROGRESS.md");
+     
+     // 4. Find relevant implementation docs
+     const implementationDocs = await glob_file_search("docs/IMPLEMENTATION_DOCUMENT_*.md");
+     
+     // 5. Check previous learnings
+     const learningDocs = await glob_file_search("docs/WHAT_WE_LEARNED_*.md");
+     
+     // 6. Review completion handoffs
+     const handoffDocs = await glob_file_search("docs/*_COMPLETION_HANDOFF.md");
+     
+     // 7. Analyze session history
+     const sessionLog = await read_file("docs/SESSION_LOG.md");
+     
+     return {
+       architecture,
+       progress,
+       implementationDocs,
+       learningDocs,
+       handoffDocs,
+       sessionLog,
+       projectContext: "Synthesized understanding of our project"
+     };
+   };
+   ```
 
-3. **Deliver Research Report**
+3. **Execute Systematic Research**
+   - FIRST: Complete project documentation analysis
+   - THEN: Follow the 4-phase research workflow
+   - Use appropriate templates based on goal type
+   - Ensure all research connects back to the user's goal AND project context
+
+4. **Deliver Research Report**
    - Use the standard research report template
+   - Include project context analysis findings
    - Provide actionable implementation guidance
    - Include next steps and considerations
 
 ### **Research Quality Standards**
 
 #### **Minimum Research Requirements:**
+- ✅ **Project documentation analysis completed** - MANDATORY FIRST STEP ✅ NEW
 - ✅ **At least 2 MCP tools used** (preferably all 4)
 - ✅ **Direct goal alignment** demonstrated
 - ✅ **Actionable implementation plan** provided
 - ✅ **Security and best practices** considered
 - ✅ **Integration approach** defined
+- ✅ **Project context considered** in all recommendations ✅ NEW
 
 #### **Excellence Indicators:**
+- 🌟 **Complete docs folder analysis** with synthesis of project patterns ✅ NEW
 - 🌟 **All 4 MCP tools used effectively**
 - 🌟 **Multiple implementation approaches** compared
 - 🌟 **Potential challenges** identified and addressed
 - 🌟 **Testing strategy** included
 - 🌟 **Performance considerations** documented
+- 🌟 **Previous learnings incorporated** from WHAT_WE_LEARNED docs ✅ NEW
 
 ## 🎯 Real-World Research Examples
 
@@ -467,6 +648,24 @@ const jwtDocs = await get-library-docs_docfork("auth0/jsonwebtoken", "authentica
 - Synthesize findings with explicit goal connection
 - Create implementation plan that directly addresses the goal
 
+#### **Issue: "Didn't check project docs folder"** ✅ NEW
+**Solution**:
+- STOP current research immediately
+- Run `list_dir("docs/")` to see available documentation
+- Read `docs/ARCHITECTURE.md` for system understanding
+- Check `docs/PROJECT_PROGRESS.md` for current status
+- Search for relevant `docs/IMPLEMENTATION_DOCUMENT_*.md` files
+- Review `docs/WHAT_WE_LEARNED_*.md` for previous insights
+- Restart research with full project context
+
+#### **Issue: "Suggesting conflicting approaches"** ✅ NEW
+**Solution**:
+- Review `docs/ARCHITECTURE.md` for established patterns
+- Check `docs/*_COMPLETION_HANDOFF.md` for completed features
+- Look for similar implementations in previous sessions
+- Ensure recommendations align with our tech stack
+- Consider environment context from previous learnings
+
 ## 🔄 Continuous Research Improvement
 
 ### **After Each Research Session:**
@@ -483,7 +682,16 @@ const jwtDocs = await get-library-docs_docfork("auth0/jsonwebtoken", "authentica
 
 ---
 
-**📝 Created**: 2025-08-21
-**🎯 Purpose**: Enable systematic, goal-oriented research using enhanced MCP tools
-**🔄 Status**: Living document - update based on research outcomes
-**🚀 Usage**: Reference this guide when conducting research for users
+**📝 Created**: 2025-08-21  
+**🔄 Updated**: 2025-01-10 - Added mandatory project documentation analysis  
+**🎯 Purpose**: Enable systematic, goal-oriented research using enhanced MCP tools  
+**🚨 Critical Update**: ALWAYS check `docs/` folder FIRST before any external research  
+**🔄 Status**: Living document - update based on research outcomes  
+**🚀 Usage**: Reference this guide when conducting research for users  
+
+### **🎯 Key Updates (2025-01-10)**
+- ✅ **Mandatory docs folder analysis** before any external research
+- ✅ **Environment context verification** to prevent file path issues
+- ✅ **Project context integration** in all research templates
+- ✅ **Enhanced troubleshooting** for documentation and context issues
+- ✅ **Updated research quality standards** with docs requirements

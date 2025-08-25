@@ -74,19 +74,43 @@ The **Multiple MCP Servers General Purpose Agent** is a TypeScript-based AI agen
 ```
 🎉 PRODUCTION READY STRUCTURE:
 
-mcp-agent-ui/           # 🌐 Next.js 15 Production UI ✅ LIVE
+mcp-agent-ui/           # 🌐 Next.js 15 Production UI ✅ LIVE + MCP SETTINGS INTERFACE
 ├── src/
 │   ├── app/
 │   │   ├── api/
 │   │   │   ├── chat/route.ts      # Real MCP streaming API
-│   │   │   └── health/route.ts    # Production health monitoring
-│   │   ├── chat/page.tsx          # Professional chat interface
+│   │   │   ├── health/route.ts    # Production health monitoring
+│   │   │   └── servers/           # ✅ NEW: MCP Settings API (2025-01-10)
+│   │   │       ├── route.ts       # Server CRUD operations
+│   │   │       ├── [id]/route.ts  # Individual server management
+│   │   │       ├── [id]/toggle/route.ts # Enable/disable servers
+│   │   │       └── status/route.ts # Real-time server health
+│   │   ├── chat/page.tsx          # Professional chat interface + Settings integration
 │   │   └── page.tsx               # Auto-redirect to chat
+│   ├── components/
+│   │   ├── ui/                    # ✅ ENHANCED: New UI components (2025-01-10)
+│   │   │   ├── switch.tsx         # Toggle switch component
+│   │   │   ├── card.tsx           # Card container component
+│   │   │   ├── dialog.tsx         # Modal/dialog primitives
+│   │   │   ├── tabs.tsx           # Tab navigation component
+│   │   │   ├── alert-dialog.tsx   # Confirmation dialogs
+│   │   │   └── alert.tsx          # Alert notifications
+│   │   └── settings/              # ✅ NEW: MCP Settings Interface (2025-01-10)
+│   │       ├── SettingsModal.tsx  # Main settings modal with tabs
+│   │       ├── ServerList.tsx     # Server management interface
+│   │       ├── StatusIndicator.tsx # Real-time status indicators
+│   │       └── ConfirmDialog.tsx  # Safe deletion confirmations
 │   ├── lib/
-│   │   └── mcp-chat-service.ts    # ✅ AUTHENTICATED DocFork MCP integration (HTTP Streamable)
-│   └── hooks/
-│       └── use-mcp-status.ts      # Real-time health monitoring
+│   │   ├── mcp-chat-service.ts    # ✅ AUTHENTICATED DocFork MCP integration (HTTP Streamable)
+│   │   └── mcp-config-service.ts  # ✅ NEW: Configuration service (2025-01-10)
+│   ├── hooks/
+│   │   ├── use-mcp-status.ts      # Real-time health monitoring
+│   │   └── use-mcp-servers.ts     # ✅ NEW: Server management hook (2025-01-10)
+│   └── types/
+│       └── mcp.ts                 # ✅ NEW: TypeScript interfaces (2025-01-10)
 ├── .env.local                     # Production OpenAI API configuration
+├── mcp-config.json                # ✅ NEW: Settings interface configuration (2025-01-10)
+├── mcp-agent.config.json          # ✅ NEW: Agent configuration sync (2025-01-10)
 └── README.md                      # Complete usage guide
 
 src/                    # 🤖 Backend MCP Multi-Agent ✅ COMPLETE
@@ -395,7 +419,54 @@ interface RetryConfig {
 - `ReconnectionManager`: Handles reconnection with exponential backoff
 - **Integration**: Seamlessly integrated with existing server manager
 
-### 6. Error Handling and Recovery (`src/utils/`) ✅ COMPLETED
+### 6. MCP Settings Interface (`mcp-agent-ui/src/components/settings/`) ✅ NEW - COMPLETED 2025-01-10
+
+**Purpose**: Production-ready web interface for comprehensive MCP server management with real-time monitoring and configuration capabilities.
+
+**Key Components**:
+- **SettingsModal**: Main modal with tab navigation (Current Servers | Add New Server | Advanced Settings)
+- **ServerList**: Server management interface with real-time status indicators and CRUD operations
+- **StatusIndicator**: Live server health monitoring with detailed tooltips
+- **ConfirmDialog**: Safe deletion confirmations to prevent accidental operations
+- **Configuration Service**: Backend service for file I/O and server management
+- **Custom Hook**: React state management for server operations and real-time updates
+
+**Features**:
+- **Real-time Server Management**: Enable/disable servers with instant visual feedback
+- **Live Status Monitoring**: Auto-refreshing status indicators (30-second intervals)
+- **Safe Operations**: Confirmation dialogs for destructive actions
+- **Professional UI**: macOS-style design with Radix UI + Tailwind CSS
+- **Full CRUD Operations**: Create, read, update, delete server configurations
+- **TypeScript Strict Mode**: Complete type safety throughout the interface
+- **Responsive Design**: Mobile, tablet, and desktop breakpoints
+- **Configuration Sync**: Automatic synchronization between mcp-config.json and mcp-agent.config.json
+
+**API Endpoints** (Next.js 15 App Router):
+```typescript
+GET    /api/servers              # List all servers with health status
+POST   /api/servers              # Create new server configuration
+GET    /api/servers/[id]         # Get specific server details
+PUT    /api/servers/[id]         # Update server configuration
+DELETE /api/servers/[id]         # Delete server configuration
+POST   /api/servers/[id]/toggle  # Enable/disable specific server
+GET    /api/servers/status       # Real-time health monitoring
+```
+
+**Integration Points**:
+- **Chat Interface**: Settings button integrated in sidebar for easy access
+- **Configuration Files**: Direct integration with mcp-config.json and mcp-agent.config.json
+- **Health Monitoring**: Real-time server status with automatic reconnection
+- **Error Handling**: Comprehensive error management with user-friendly messages
+
+**Technical Implementation**:
+- **Next.js 15**: App Router with streaming support and optimized performance
+- **React 19**: Latest React features with concurrent rendering
+- **TypeScript**: Strict mode compliance with comprehensive type definitions
+- **Radix UI**: Accessible component primitives for professional UI
+- **Tailwind CSS 4**: Modern styling with design system consistency
+- **Zod Validation**: Runtime type checking for all server configurations
+
+### 7. Error Handling and Recovery (`src/utils/`) ✅ COMPLETED
 
 **Purpose**: Comprehensive error handling, retry mechanisms, and graceful degradation for robust operation.
 
@@ -469,11 +540,12 @@ Operation Request → ErrorRecoveryOrchestrator → RetryMechanism (with Circuit
 - ✅ **Error handling and recovery**: Comprehensive error management with retry, circuit breaker, and graceful degradation
 - ✅ **CLI interface**: Complete production-ready CLI with query, server, and config commands ✅ **COMPLETED TODAY!**
 
-### Phase 4: User Interface
-- Interactive chat mode
-- Web-based dashboard
-- Real-time monitoring
-- Configuration GUI
+### Phase 4: User Interface ✅ **PARTIALLY COMPLETE - MCP SETTINGS INTERFACE IMPLEMENTED**
+- ✅ **MCP Settings Interface**: Full server management with CRUD operations, real-time status monitoring, and chat integration ✅ **COMPLETED 2025-01-10**
+- Interactive chat mode ✅ **COMPLETE**
+- ✅ **Web-based dashboard**: Production-ready settings interface with real-time server management
+- ✅ **Real-time monitoring**: Live server status indicators with auto-refresh
+- ✅ **Configuration GUI**: Professional settings modal with tab navigation
 
 ## 🔗 Dependencies
 

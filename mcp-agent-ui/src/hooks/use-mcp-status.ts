@@ -36,6 +36,9 @@ export function useMCPStatus() {
   };
 
   useEffect(() => {
+    // Only run on client side to avoid hydration issues
+    if (typeof window === 'undefined') return;
+    
     // Initial check
     checkStatus();
 
