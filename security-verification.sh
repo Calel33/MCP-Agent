@@ -8,7 +8,7 @@ echo ""
 
 # Check for hardcoded keys in source code and configuration files
 echo "1. Checking for exposed API keys in source code..."
-EXPOSED_KEYS=$(grep -r "9c441b5c-510a-41cd-a242-f77baa272f2c" \
+EXPOSED_KEYS=$(grep -r "" \
   --include="*.ts" \
   --include="*.js" \
   --include="*.json" \

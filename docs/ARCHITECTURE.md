@@ -95,9 +95,10 @@ mcp-agent-ui/           # 🌐 Next.js 15 Production UI ✅ LIVE + MCP SETTINGS 
 │   │   │   ├── tabs.tsx           # Tab navigation component
 │   │   │   ├── alert-dialog.tsx   # Confirmation dialogs
 │   │   │   └── alert.tsx          # Alert notifications
-│   │   └── settings/              # ✅ NEW: MCP Settings Interface (2025-01-10)
+│   │   └── settings/              # ✅ COMPLETE: MCP Settings Interface (2025-01-10)
 │   │       ├── SettingsModal.tsx  # Main settings modal with tabs
-│   │       ├── ServerList.tsx     # Server management interface
+│   │       ├── ServerList.tsx     # Server management interface with add/edit
+│   │       ├── ServerEditor.tsx   # ✅ NEW: Monaco JSON editor modal (2025-01-10)
 │   │       ├── StatusIndicator.tsx # Real-time status indicators
 │   │       └── ConfirmDialog.tsx  # Safe deletion confirmations
 │   ├── lib/
@@ -419,13 +420,14 @@ interface RetryConfig {
 - `ReconnectionManager`: Handles reconnection with exponential backoff
 - **Integration**: Seamlessly integrated with existing server manager
 
-### 6. MCP Settings Interface (`mcp-agent-ui/src/components/settings/`) ✅ NEW - COMPLETED 2025-01-10
+### 6. MCP Settings Interface (`mcp-agent-ui/src/components/settings/`) ✅ COMPLETE - ENHANCED 2025-01-10
 
 **Purpose**: Production-ready web interface for comprehensive MCP server management with real-time monitoring and configuration capabilities.
 
 **Key Components**:
 - **SettingsModal**: Main modal with tab navigation (Current Servers | Add New Server | Advanced Settings)
 - **ServerList**: Server management interface with real-time status indicators and CRUD operations
+- **ServerEditor**: ✅ **NEW** - Monaco JSON editor modal with validation, save/cancel, and pre-fill logic
 - **StatusIndicator**: Live server health monitoring with detailed tooltips
 - **ConfirmDialog**: Safe deletion confirmations to prevent accidental operations
 - **Configuration Service**: Backend service for file I/O and server management
@@ -437,6 +439,8 @@ interface RetryConfig {
 - **Safe Operations**: Confirmation dialogs for destructive actions
 - **Professional UI**: macOS-style design with Radix UI + Tailwind CSS
 - **Full CRUD Operations**: Create, read, update, delete server configurations
+- **JSON Editor Integration**: ✅ **NEW** - Monaco Editor with syntax highlighting and validation
+- **Add/Edit Functionality**: ✅ **NEW** - Complete server configuration editing with pre-fill logic
 - **TypeScript Strict Mode**: Complete type safety throughout the interface
 - **Responsive Design**: Mobile, tablet, and desktop breakpoints
 - **Configuration Sync**: Automatic synchronization between mcp-config.json and mcp-agent.config.json

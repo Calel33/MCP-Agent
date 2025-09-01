@@ -96,28 +96,28 @@ export class MCPConfigService {
 
   static async getServerStatuses(): Promise<ServerStatus[]> {
     const servers = await this.getAllServers();
-    const statuses: ServerStatus[] = [];
 
-    for (const server of servers) {
+    // Run all health checks in parallel for better performance
+    const statusPromises = servers.map(async (server) => {
       try {
-        const status = await this.checkServerHealth(server);
-        statuses.push(status);
+        return await this.checkServerHealth(server);
       } catch (error: unknown) {
-        statuses.push({
+        return {
           id: server.id,
-          status: 'error',
+          status: 'error' as const,
           lastChecked: new Date().toISOString(),
           errorMessage: error instanceof Error ? error.message : 'Unknown error',
-        });
+        };
       }
-    }
+    });
 
+    const statuses = await Promise.all(statusPromises);
     return statuses;
   }
 
   private static async checkServerHealth(server: MCPServer): Promise<ServerStatus> {
     const startTime = Date.now();
-    
+
     try {
       if (!server.enabled) {
         return {
@@ -128,13 +128,16 @@ export class MCPConfigService {
       }
 
       if (server.type === 'http' && server.url) {
+        // Use a much shorter timeout for health checks (5 seconds max)
+        const healthCheckTimeout = Math.min(server.timeout, 5000);
+
         const response = await fetch(server.url, {
           method: 'HEAD',
-          signal: AbortSignal.timeout(server.timeout),
+          signal: AbortSignal.timeout(healthCheckTimeout),
         });
-        
+
         const responseTime = Date.now() - startTime;
-        
+
         return {
           id: server.id,
           status: response.ok ? 'online' : 'error',
@@ -152,10 +155,12 @@ export class MCPConfigService {
         responseTime: Date.now() - startTime,
       };
     } catch (error: unknown) {
+      const responseTime = Date.now() - startTime;
       return {
         id: server.id,
         status: 'error',
         lastChecked: new Date().toISOString(),
+        responseTime,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       };
     }

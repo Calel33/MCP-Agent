@@ -27,7 +27,7 @@ export function useMCPServers(): UseMCPServersReturn {
   const fetchServers = useCallback(async () => {
     try {
       const response = await fetch('/api/servers');
-      const data: APIResponse<MCPServer[]> = await response.json();
+      const data: { success: boolean; servers?: MCPServer[]; error?: string } = await response.json();
       
       if (data.success && data.servers) {
         setServers(data.servers);
@@ -43,13 +43,38 @@ export function useMCPServers(): UseMCPServersReturn {
 
   const fetchStatuses = useCallback(async () => {
     try {
-      const response = await fetch('/api/servers/status');
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch('/api/servers/status', {
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
-      
+
       if (data.success) {
         setStatuses(data.statuses);
+        setError(null);
+      } else {
+        setError(data.error || 'Failed to fetch server statuses');
       }
     } catch (err) {
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          setError('Request timeout - server status check took too long');
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError('Network error while fetching server statuses');
+      }
       console.error('Failed to fetch statuses:', err);
     }
   }, []);

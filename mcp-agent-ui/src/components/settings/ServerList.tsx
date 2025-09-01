@@ -9,14 +9,16 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 import { MCPServer } from '@/types/mcp';
 import { StatusIndicator } from './StatusIndicator';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ServerEditor } from './ServerEditor';
 import { useMCPServers } from '@/hooks/use-mcp-servers';
 
 interface ServerListProps {
   servers: MCPServer[];
   isLoading: boolean;
-  error?: string;
+  error?: string | null;
   selectedServerId?: string | null;
   onSelectServer: (id: string | null) => void;
+  onSwitchToAddTab?: () => void;
 }
 
 export function ServerList({
@@ -25,9 +27,11 @@ export function ServerList({
   error,
   selectedServerId,
   onSelectServer,
+  onSwitchToAddTab,
 }: ServerListProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const { deleteServer, toggleServer, isUpdating } = useMCPServers();
+  const [editingServer, setEditingServer] = useState<MCPServer | null>(null); // NEW STATE
+  const { deleteServer, toggleServer, updateServer, isUpdating } = useMCPServers();
 
   const handleDelete = async (id: string) => {
     await deleteServer(id);
@@ -36,6 +40,14 @@ export function ServerList({
 
   const handleToggle = async (id: string, enabled: boolean) => {
     await toggleServer(id, enabled);
+  };
+
+  // Server Editor save handler
+  const handleSaveServer = async (serverData: Partial<MCPServer>) => {
+    if (editingServer) {
+      await updateServer(editingServer.id, serverData);
+    }
+    setEditingServer(null);
   };
 
   if (isLoading) {
@@ -50,7 +62,7 @@ export function ServerList({
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">MCP Servers ({servers.length})</h3>
-        <Button onClick={() => {/* Open add server dialog */}}>
+        <Button onClick={onSwitchToAddTab}>
           <Plus className="h-4 w-4 mr-2" />
           Add Server
         </Button>
@@ -83,7 +95,7 @@ export function ServerList({
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectServer(server.id);
+                      setEditingServer(server); // Trigger modal with server data
                     }}
                   >
                     <Edit className="h-4 w-4" />
@@ -127,6 +139,13 @@ export function ServerList({
           servers.find(s => s.id === deleteConfirm)?.name
         }"? This action cannot be undone.`}
         onConfirm={() => deleteConfirm && handleDelete(deleteConfirm)}
+      />
+
+      <ServerEditor
+        server={editingServer}
+        open={editingServer !== null}
+        onOpenChange={(open) => !open && setEditingServer(null)}
+        onSave={handleSaveServer}
       />
     </div>
   );

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Settings Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mcp_settings_theme.css">
+    
+    <style>
+        /* Animation Keyframes */
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+        
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Component Animations */
+        .modal-enter {
+            animation: modalEnter 300ms var(--ease-out) forwards;
+        }
+        
+        .modal-exit {
+            animation: modalExit 200ms var(--ease-in) forwards;
+        }
+        
+        .card-enter {
+            animation: cardEnter 300ms var(--ease-out) forwards;
+        }
+        
+        .card-stagger-1 { animation-delay: 100ms; }
+        .card-stagger-2 { animation-delay: 200ms; }
+        .card-stagger-3 { animation-delay: 300ms; }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        .shake-animation {
+            animation: shake 400ms ease-in-out 3;
+        }
+        
+        .spin-animation {
+            animation: spin 1000ms linear infinite;
+        }
+        
+        .bounce-animation {
+            animation: bounce 500ms var(--ease-bounce);
+        }
+        
+        /* Interactive States */
+        .server-card {
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+        
+        .server-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-primary {
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .icon-button {
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+        
+        .icon-button:hover {
+            transform: scale(1.1) rotate(2deg);
+        }
+        
+        .icon-button:active {
+            transform: scale(0.9);
+        }
+        
+        .tab-button {
+            transition: all var(--duration-normal) var(--ease-out);
+        }
+        
+        .tab-active {
+            background: var(--tab-active-bg);
+            border-bottom: 2px solid var(--tab-active-border);
+        }
+        
+        .tab-inactive {
+            background: var(--tab-inactive-bg);
+            border-bottom: 2px solid transparent;
+        }
+        
+        /* Status Indicators */
+        .status-indicator {
+            width: var(--status-indicator-size);
+            height: var(--status-indicator-size);
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-online {
+            background-color: var(--status-online);
+        }
+        
+        .status-offline {
+            background-color: var(--status-offline);
+        }
+        
+        .status-pending {
+            background-color: var(--status-pending);
+        }
+        
+        /* JSON Editor Styles */
+        .json-editor {
+            font-family: var(--font-mono);
+            background: var(--json-editor-bg);
+            border: 1px solid var(--json-editor-border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--foreground);
+            min-height: 300px;
+            resize: vertical;
+        }
+        
+        .validation-panel {
+            background: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        /* Backdrop */
+        .modal-backdrop {
+            background: var(--modal-backdrop);
+            backdrop-filter: blur(8px);
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--muted);
+            border-radius: var(--radius-sm);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius-sm);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+        /* Template buttons */
+        .template-btn {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 1rem;
+            color: var(--secondary-foreground);
+            font-size: 0.875rem;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+        
+        .template-btn:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background: var(--background); color: var(--foreground); font-family: var(--font-sans);">
+    <!-- Demo Background -->
+    <div class="min-h-screen flex items-center justify-center p-4" style="background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);">
+        
+        <!-- Settings Modal Trigger (Demo) -->
+        <button id="openSettingsBtn" class="btn-primary px-6 py-3 rounded-lg font-medium mb-4" style="background: var(--primary); color: var(--primary-foreground);">
+            <i data-lucide="settings" class="w-5 h-5 inline mr-2"></i>
+            Open MCP Settings
+        </button>
+        
+        <!-- Modal Backdrop -->
+        <div id="modalBackdrop" class="fixed inset-0 modal-backdrop hidden z-40">
+        </div>
+        
+        <!-- Main Settings Modal -->
+        <div id="settingsModal" class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden">
+            <div class="mcp-modal w-full max-w-4xl max-h-[90vh] overflow-hidden">
+                
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-6 border-b" style="border-color: var(--border);">
+                    <h2 class="text-2xl font-semibold">MCP Settings</h2>
+                    <button id="closeModalBtn" class="icon-button p-2 rounded-lg" style="background: var(--secondary);">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="flex border-b" style="border-color: var(--border);">
+                    <button id="currentServersTab" class="tab-button tab-active px-6 py-4 font-medium">
+                        Current Servers
+                    </button>
+                    <button id="addServerTab" class="tab-button tab-inactive px-6 py-4 font-medium">
+                        Add New Server
+                    </button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="p-6 overflow-y-auto custom-scrollbar" style="max-height: calc(90vh - 200px);">
+                    
+                    <!-- Current Servers Tab Content -->
+                    <div id="currentServersContent" class="tab-content">
+                        <div class="space-y-4">
+                            
+                            <!-- Server Card 1 -->
+                            <div class="server-card mcp-server-card p-4 card-enter">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-2xl">📊</div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">file-system-server</h3>
+                                            <p class="text-sm" style="color: var(--muted-foreground);">
+                                                stdio • /usr/local/bin/mcp-fs-server
+                                            </p>
+                                            <p class="text-xs mt-1" style="color: var(--muted-foreground);">
+                                                Last seen: 2 minutes ago
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="status-indicator status-online"></span>
+                                        <button class="icon-button p-2 rounded edit-server-btn" 
+                                                style="background: var(--secondary);"
+                                                data-server='{"id":"file-system-server","name":"file-system-server","type":"stdio","command":"/usr/local/bin/mcp-fs-server","args":["--root","/home/user/documents"],"enabled":true,"timeout":10000,"description":"Local file system access","createdAt":"2025-01-10T10:30:00Z","updatedAt":"2025-01-10T10:30:00Z"}'>
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="icon-button p-2 rounded" style="background: var(--destructive);">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Server Card 2 -->
+                            <div class="server-card mcp-server-card p-4 card-enter card-stagger-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-2xl">🌐</div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">web-search-server</h3>
+                                            <p class="text-sm" style="color: var(--muted-foreground);">
+                                                http • https://api.example.com/mcp
+                                            </p>
+                                            <p class="text-xs mt-1" style="color: var(--muted-foreground);">
+                                                Last seen: Never
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="status-indicator status-offline pulse-animation"></span>
+                                        <button class="icon-button p-2 rounded edit-server-btn" 
+                                                style="background: var(--secondary);"
+                                                data-server='{"id":"web-search-server","name":"web-search-server","type":"http","url":"https://api.example.com/mcp","enabled":false,"timeout":15000,"description":"Web search capabilities","createdAt":"2025-01-10T10:30:00Z","updatedAt":"2025-01-10T10:30:00Z"}'>
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="icon-button p-2 rounded" style="background: var(--destructive);">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Server Card 3 -->
+                            <div class="server-card mcp-server-card p-4 card-enter card-stagger-2">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-2xl">🔧</div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">database-server</h3>
+                                            <p class="text-sm" style="color: var(--muted-foreground);">
+                                                websocket • ws://localhost:8080/mcp
+                                            </p>
+                                            <p class="text-xs mt-1" style="color: var(--muted-foreground);">
+                                                Last seen: 5 minutes ago
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="status-indicator status-pending"></span>
+                                        <button class="icon-button p-2 rounded edit-server-btn" 
+                                                style="background: var(--secondary);"
+                                                data-server='{"id":"database-server","name":"database-server","type":"websocket","url":"ws://localhost:8080/mcp","enabled":true,"timeout":5000,"description":"Database access server","createdAt":"2025-01-10T10:30:00Z","updatedAt":"2025-01-10T10:30:00Z"}'>
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="icon-button p-2 rounded" style="background: var(--destructive);">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- Add Server Button -->
+                        <div class="mt-8 text-center">
+                            <button id="addServerBtn" class="btn-primary px-8 py-3 rounded-lg font-medium" 
+                                    style="background: var(--primary); color: var(--primary-foreground);">
+                                <i data-lucide="plus" class="w-5 h-5 inline mr-2"></i>
+                                Add Server
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Add New Server Tab Content -->
+                    <div id="addServerContent" class="tab-content hidden">
+                        <div class="space-y-6">
+                            
+                            <!-- Server Type Selection -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Server Type</label>
+                                <select id="serverType" class="w-full p-3 rounded-lg" 
+                                        style="background: var(--input); border: 1px solid var(--border); color: var(--foreground);">
+                                    <option value="stdio">stdio</option>
+                                    <option value="http">http</option>
+                                    <option value="websocket">websocket</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Server Name -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Server Name</label>
+                                <input type="text" id="serverName" placeholder="my-new-server" 
+                                       class="w-full p-3 rounded-lg" 
+                                       style="background: var(--input); border: 1px solid var(--border); color: var(--foreground);">
+                            </div>
+                            
+                            <!-- Command (stdio) -->
+                            <div id="commandField">
+                                <label class="block text-sm font-medium mb-2">Command</label>
+                                <input type="text" id="serverCommand" placeholder="/path/to/server" 
+                                       class="w-full p-3 rounded-lg" 
+                                       style="background: var(--input); border: 1px solid var(--border); color: var(--foreground);">
+                            </div>
+                            
+                            <!-- URL (http/websocket) -->
+                            <div id="urlField" class="hidden">
+                                <label class="block text-sm font-medium mb-2">URL</label>
+                                <input type="text" id="serverUrl" placeholder="https://api.example.com/mcp" 
+                                       class="w-full p-3 rounded-lg" 
+                                       style="background: var(--input); border: 1px solid var(--border); color: var(--foreground);">
+                            </div>
+                            
+                            <!-- Args -->
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Arguments</label>
+                                <input type="text" id="serverArgs" placeholder="--port 3000 --verbose" 
+                                       class="w-full p-3 rounded-lg" 
+                                       style="background: var(--input); border: 1px solid var(--border); color: var(--foreground);">
+                            </div>
+                            
+                            <!-- JSON Editor Button -->
+                            <div class="text-center">
+                                <button id="openJsonEditorBtn" class="template-btn">
+                                    <i data-lucide="code" class="w-4 h-4 inline mr-2"></i>
+                                    JSON Editor
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end space-x-4 p-6 border-t" style="border-color: var(--border);">
+                    <button id="cancelBtn" class="px-6 py-2 rounded-lg font-medium" 
+                            style="background: var(--secondary); color: var(--secondary-foreground);">
+                        Cancel
+                    </button>
+                    <button id="saveBtn" class="btn-primary px-6 py-2 rounded-lg font-medium" 
+                            style="background: var(--primary); color: var(--primary-foreground);">
+                        Save
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- JSON Editor Modal -->
+        <div id="jsonEditorModal" class="fixed inset-0 flex items-center justify-center p-4 z-60 hidden">
+            <div class="mcp-modal w-full max-w-5xl max-h-[90vh] overflow-hidden">
+                
+                <!-- Editor Header -->
+                <div class="flex items-center justify-between p-6 border-b" style="border-color: var(--border);">
+                    <h2 class="text-2xl font-semibold" id="editorTitle">Edit Server Configuration</h2>
+                    <button id="closeEditorBtn" class="icon-button p-2 rounded-lg" style="background: var(--secondary);">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Editor Content -->
+                <div class="p-6">
+                    
+                    <!-- JSON Editor -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Server Configuration</label>
+                        <textarea id="jsonEditor" class="json-editor w-full" rows="15" placeholder="Enter JSON configuration..."></textarea>
+                    </div>
+                    
+                    <!-- Validation Panel -->
+                    <div id="validationPanel" class="validation-panel">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+                            <span class="text-sm font-medium">Validation Status</span>
+                        </div>
+                        <div id="validationMessages" class="space-y-1 text-sm">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+                                <span>Valid JSON configuration</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+                                <span>All required fields present</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+                                <span>Schema validation passed</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Template Buttons -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium mb-2">Templates</label>
+                        <div class="flex space-x-2 flex-wrap gap-2">
+                            <button class="template-btn template-stdio">stdio</button>
+                            <button class="template-btn template-http">http</button>
+                            <button class="template-btn template-websocket">websocket</button>
+                            <button class="template-btn template-custom">custom</button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Editor Footer -->
+                <div class="flex items-center justify-end space-x-4 p-6 border-t" style="border-color: var(--border);">
+                    <button id="cancelEditorBtn" class="px-6 py-2 rounded-lg font-medium" 
+                            style="background: var(--secondary); color: var(--secondary-foreground);">
+                        Cancel
+                    </button>
+                    <button id="validateBtn" class="px-6 py-2 rounded-lg font-medium" 
+                            style="background: var(--accent); color: var(--accent-foreground);">
+                        Validate
+                    </button>
+                    <button id="saveEditorBtn" class="btn-primary px-6 py-2 rounded-lg font-medium" 
+                            style="background: var(--primary); color: var(--primary-foreground);">
+                        Save
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Modal Management
+        const openSettingsBtn = document.getElementById('openSettingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const jsonEditorModal = document.getElementById('jsonEditorModal');
+        const closeEditorBtn = document.getElementById('closeEditorBtn');
+        
+        // Tab Management
+        const currentServersTab = document.getElementById('currentServersTab');
+        const addServerTab = document.getElementById('addServerTab');
+        const currentServersContent = document.getElementById('currentServersContent');
+        const addServerContent = document.getElementById('addServerContent');
+        const addServerBtn = document.getElementById('addServerBtn');
+        
+        // Form Elements
+        const serverType = document.getElementById('serverType');
+        const commandField = document.getElementById('commandField');
+        const urlField = document.getElementById('urlField');
+        const jsonEditor = document.getElementById('jsonEditor');
+        const editorTitle = document.getElementById('editorTitle');
+        
+        // Edit Buttons
+        const editServerBtns = document.querySelectorAll('.edit-server-btn');
+        const openJsonEditorBtn = document.getElementById('openJsonEditorBtn');
+        
+        // Template Buttons
+        const templateBtns = document.querySelectorAll('.template-btn');
+        
+        // Open Settings Modal
+        openSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+            modalBackdrop.classList.remove('hidden');
+            settingsModal.querySelector('.mcp-modal').classList.add('modal-enter');
+        });
+        
+        // Close Settings Modal
+        function closeSettingsModal() {
+            const modal = settingsModal.querySelector('.mcp-modal');
+            modal.classList.remove('modal-enter');
+            modal.classList.add('modal-exit');
+            setTimeout(() => {
+                settingsModal.classList.add('hidden');
+                modalBackdrop.classList.add('hidden');
+                modal.classList.remove('modal-exit');
+            }, 200);
+        }
+        
+        closeModalBtn.addEventListener('click', closeSettingsModal);
+        modalBackdrop.addEventListener('click', closeSettingsModal);
+        document.getElementById('cancelBtn').addEventListener('click', closeSettingsModal);
+        
+        // Tab Switching
+        function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+            // Update tab styles
+            activeTab.classList.remove('tab-inactive');
+            activeTab.classList.add('tab-active');
+            inactiveTab.classList.remove('tab-active');
+            inactiveTab.classList.add('tab-inactive');
+            
+            // Show/hide content
+            activeContent.classList.remove('hidden');
+            inactiveContent.classList.add('hidden');
+        }
+        
+        currentServersTab.addEventListener('click', () => {
+            switchTab(currentServersTab, addServerTab, currentServersContent, addServerContent);
+        });
+        
+        addServerTab.addEventListener('click', () => {
+            switchTab(addServerTab, currentServersTab, addServerContent, currentServersContent);
+        });
+        
+        // Add Server Button - Switch to Add Tab
+        addServerBtn.addEventListener('click', () => {
+            switchTab(addServerTab, currentServersTab, addServerContent, currentServersContent);
+            addServerBtn.classList.add('bounce-animation');
+            setTimeout(() => addServerBtn.classList.remove('bounce-animation'), 500);
+        });
+        
+        // Server Type Change Handler
+        serverType.addEventListener('change', (e) => {
+            const type = e.target.value;
+            if (type === 'stdio') {
+                commandField.classList.remove('hidden');
+                urlField.classList.add('hidden');
+            } else {
+                commandField.classList.add('hidden');
+                urlField.classList.remove('hidden');
+            }
+        });
+        
+        // Edit Server Buttons
+        editServerBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const serverData = JSON.parse(btn.getAttribute('data-server'));
+                openJsonEditor('Edit Server: ' + serverData.name, JSON.stringify(serverData, null, 2));
+            });
+        });
+        
+        // Open JSON Editor
+        openJsonEditorBtn.addEventListener('click', () => {
+            const defaultConfig = {
+                id: "new-server",
+                name: "new-server",
+                type: serverType.value,
+                enabled: true,
+                timeout: 10000,
+                description: "",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (serverType.value === 'stdio') {
+                defaultConfig.command = "/path/to/server";
+                defaultConfig.args = [];
+            } else {
+                defaultConfig.url = "https://api.example.com/mcp";
+            }
+            
+            openJsonEditor('Add New Server', JSON.stringify(defaultConfig, null, 2));
+        });
+        
+        function openJsonEditor(title, content) {
+            editorTitle.textContent = title;
+            jsonEditor.value = content;
+            jsonEditorModal.classList.remove('hidden');
+            jsonEditorModal.querySelector('.mcp-modal').classList.add('modal-enter');
+            validateJSON();
+        }
+        
+        // Close JSON Editor
+        function closeJsonEditor() {
+            const modal = jsonEditorModal.querySelector('.mcp-modal');
+            modal.classList.remove('modal-enter');
+            modal.classList.add('modal-exit');
+            setTimeout(() => {
+                jsonEditorModal.classList.add('hidden');
+                modal.classList.remove('modal-exit');
+            }, 200);
+        }
+        
+        closeEditorBtn.addEventListener('click', closeJsonEditor);
+        document.getElementById('cancelEditorBtn').addEventListener('click', closeJsonEditor);
+        
+        // JSON Validation
+        function validateJSON() {
+            const validationPanel = document.getElementById('validationPanel');
+            const validationMessages = document.getElementById('validationMessages');
+            
+            try {
+                const parsed = JSON.parse(jsonEditor.value);
+                
+                // Clear previous messages
+                validationMessages.innerHTML = '';
+                
+                // Check required fields
+                const requiredFields = ['id', 'name', 'type', 'enabled'];
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (parsed.hasOwnProperty(field)) {
+                        validationMessages.innerHTML += `
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+                                <span>Field '${field}' is present</span>
+                            </div>
+                        `;
+                    } else {
+                        validationMessages.innerHTML += `
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="x" class="w-3 h-3 text-red-500"></i>
+                                <span>Missing required field '${field}'</span>
+                            </div>
+                        `;
+                        isValid = false;
+                    }
+                });
+                
+                if (isValid) {
+                    validationMessages.innerHTML += `
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="check" class="w-3 h-3 text-green-500"></i>
+                            <span>Valid JSON configuration</span>
+                        </div>
+                    `;
+                }
+                
+                // Re-initialize icons
+                lucide.createIcons();
+                
+            } catch (error) {
+                validationMessages.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="x" class="w-3 h-3 text-red-500"></i>
+                        <span>JSON Syntax Error: ${error.message}</span>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+        
+        // Real-time validation
+        jsonEditor.addEventListener('input', validateJSON);
+        
+        // Validate Button
+        document.getElementById('validateBtn').addEventListener('click', () => {
+            validateJSON();
+            document.getElementById('validateBtn').classList.add('bounce-animation');
+            setTimeout(() => document.getElementById('validateBtn').classList.remove('bounce-animation'), 500);
+        });
+        
+        // Template Buttons
+        const templates = {
+            stdio: {
+                id: "stdio-server",
+                name: "stdio-server",
+                type: "stdio",
+                command: "/path/to/server",
+                args: ["--arg1", "value1"],
+                enabled: true,
+                timeout: 10000,
+                description: "Standard I/O server",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            http: {
+                id: "http-server",
+                name: "http-server", 
+                type: "http",
+                url: "https://api.example.com/mcp",
+                enabled: true,
+                timeout: 15000,
+                description: "HTTP API server",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            websocket: {
+                id: "websocket-server",
+                name: "websocket-server",
+                type: "websocket", 
+                url: "ws://localhost:8080/mcp",
+                enabled: true,
+                timeout: 5000,
+                description: "WebSocket server",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            custom: {
+                id: "custom-server",
+                name: "custom-server",
+                type: "stdio",
+                command: "/custom/path/server",
+                args: ["--custom-arg"],
+                enabled: true,
+                timeout: 10000,
+                description: "Custom configuration",
+                customField: "custom-value",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }
+        };
+        
+        templateBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const templateType = btn.classList.contains('template-stdio') ? 'stdio' :
+                                   btn.classList.contains('template-http') ? 'http' :
+                                   btn.classList.contains('template-websocket') ? 'websocket' : 'custom';
+                
+                jsonEditor.value = JSON.stringify(templates[templateType], null, 2);
+                validateJSON();
+                
+                // Visual feedback
+                btn.classList.add('bounce-animation');
+                setTimeout(() => btn.classList.remove('bounce-animation'), 500);
+            });
+        });
+        
+        // Save Functionality
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            // Simulate save operation
+            document.getElementById('saveBtn').innerHTML = '<i class="spin-animation w-4 h-4 inline mr-2"></i>Saving...';
+            
+            setTimeout(() => {
+                document.getElementById('saveBtn').innerHTML = 'Save';
+                document.getElementById('saveBtn').classList.add('bounce-animation');
+                setTimeout(() => {
+                    document.getElementById('saveBtn').classList.remove('bounce-animation');
+                    closeSettingsModal();
+                }, 500);
+            }, 1500);
+        });
+        
+        document.getElementById('saveEditorBtn').addEventListener('click', () => {
+            try {
+                JSON.parse(jsonEditor.value); // Validate JSON
+                document.getElementById('saveEditorBtn').innerHTML = '<i class="spin-animation w-4 h-4 inline mr-2"></i>Saving...';
+                
+                setTimeout(() => {
+                    document.getElementById('saveEditorBtn').innerHTML = 'Save';
+                    document.getElementById('saveEditorBtn').classList.add('bounce-animation');
+                    setTimeout(() => {
+                        document.getElementById('saveEditorBtn').classList.remove('bounce-animation');
+                        closeJsonEditor();
+                    }, 500);
+                }, 1500);
+            } catch (error) {
+                // Show validation error
+                jsonEditor.classList.add('shake-animation');
+                setTimeout(() => jsonEditor.classList.remove('shake-animation'), 400);
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!jsonEditorModal.classList.contains('hidden')) {
+                    closeJsonEditor();
+                } else if (!settingsModal.classList.contains('hidden')) {
+                    closeSettingsModal();
+                }
+            }
+        });
+        
+    </script>
+</body>
+</html>

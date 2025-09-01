@@ -6,18 +6,19 @@ Welcome to the comprehensive documentation for the Multiple MCP Servers General 
 
 **New to the project?** Start here:
 
-1. **[📚 WHAT WE LEARNED THIS SESSION](./WHAT_WE_LEARNED_SESSION_2025-08-21.md)** - Key insights and lessons from authentication fix session ✅ **NEW!**
-2. **[🔍 TASK COMPLETION VALIDATION](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md)** - Professional validation of authentication fix completion ✅ **APPROVED!**
-3. **[✅ AUTHENTICATION FIX COMPLETE](./sessions/SESSION_2025-08-21_AUTHENTICATION_FIX_COMPLETION.md)** - DocFork MCP authentication fully resolved
-4. **[🔒 CRITICAL SECURITY FIX](./sessions/SESSION_2025-08-21_CRITICAL_SECURITY_FIX.md)** - Security vulnerability remediation completed
-5. **[🎉 DOCFORK MCP INTEGRATION](./sessions/SESSION_2025-08-20_DOCFORK_MCP_INTEGRATION.md)** - Documentation research with HTTP Streamable transport
-6. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - True full-screen responsive interface at http://localhost:3001/chat
-7. **[UI Responsive Full-Screen Handoff](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** - Complete responsive design implementation guide
-8. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide
-9. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
-10. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
-11. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
-12. **[API Reference](./API_REFERENCE.md)** - Comprehensive API documentation
+1. **[📚 WHAT WE LEARNED TODAY](./WHAT_WE_LEARNED_2025-09-01.md)** - Key insights from MCP Settings Add/Edit implementation ✅ **LATEST!**
+2. **[📚 WHAT WE LEARNED THIS SESSION](./WHAT_WE_LEARNED_SESSION_2025-08-21.md)** - Key insights and lessons from authentication fix session
+3. **[🔍 TASK COMPLETION VALIDATION](./TASK_COMPLETION_VALIDATION_REPORT_2025-08-21.md)** - Professional validation of authentication fix completion ✅ **APPROVED!**
+4. **[✅ AUTHENTICATION FIX COMPLETE](./sessions/SESSION_2025-08-21_AUTHENTICATION_FIX_COMPLETION.md)** - DocFork MCP authentication fully resolved
+5. **[🔒 CRITICAL SECURITY FIX](./sessions/SESSION_2025-08-21_CRITICAL_SECURITY_FIX.md)** - Security vulnerability remediation completed
+6. **[🎉 DOCFORK MCP INTEGRATION](./sessions/SESSION_2025-08-20_DOCFORK_MCP_INTEGRATION.md)** - Documentation research with HTTP Streamable transport
+7. **[🎉 PRODUCTION MCP UI](../mcp-agent-ui/README.md)** - True full-screen responsive interface at http://localhost:3001/chat
+8. **[UI Responsive Full-Screen Handoff](./UI_RESPONSIVE_FULLSCREEN_COMPLETION_HANDOFF.md)** - Complete responsive design implementation guide
+9. **[Phase 6 macOS UI Handoff](./PHASE_6_MACOS_UI_COMPLETION_HANDOFF.md)** - Complete macOS interface implementation guide
+10. **[Phase 3 Completion Handoff](./PHASE_3_PRODUCTION_MCP_COMPLETION_HANDOFF.md)** - Production integration guide
+11. **[Product Brief](./PRODUCT_BRIEF.md)** - Project overview and goals
+12. **[User Guide](./USER_GUIDE.md)** - Complete setup and usage guide
+13. **[API Reference](./API_REFERENCE.md)** - Comprehensive API documentation
 
 ## 📖 User Documentation
 

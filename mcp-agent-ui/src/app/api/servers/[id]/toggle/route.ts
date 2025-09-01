@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MCPConfigService } from '@/lib/mcp-config-service';
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function POST(
