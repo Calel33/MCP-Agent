@@ -71,6 +71,44 @@
           "line": "Confirmed. Generating the plan to implement the debounce logic now."
         }
       ]
+    },
+    {
+      "title": "Context-Aware Task Recommendation",
+      "scenario": "The user makes a vague request that could relate to current project tasks.",
+      "conversation": [
+        {
+          "speaker": "user",
+          "line": "add a settings button"
+        },
+        {
+          "speaker": "assistant",
+          "line": "I've scanned the project and found some interesting context. I see you have an active MCP Settings Interface task in docs/tasks/mcp-settings-interface/, and there's already a settings structure in place. Are you looking to add: 1) A settings button to open the MCP server management interface (which would advance your current task), 2) A general settings button in the main navigation, or 3) A settings button for a specific component? Based on your current project priorities, the MCP settings integration seems most relevant."
+        },
+        {
+          "speaker": "user",
+          "line": "yes, the MCP one"
+        },
+        {
+          "speaker": "assistant",
+          "line": "Perfect! I can see this project uses Radix UI components and has existing UI patterns in @/components/ui/. I also notice there's already a SettingsIcon component being used. For consistency with your existing code, should I create this as a Button component that opens the MCP settings dialog, following the same pattern as your other UI components?"
+        },
+        {
+          "speaker": "user",
+          "line": "exactly"
+        },
+        {
+          "speaker": "assistant",
+          "line": "Excellent. The task is now clear: Add a settings button to the chat interface that opens the MCP Settings dialog, using the existing Radix UI Button component pattern and SettingsIcon, consistent with the project's current UI architecture and advancing the MCP Settings Interface task. Is that correct?"
+        },
+        {
+          "speaker": "user",
+          "line": "perfect"
+        },
+        {
+          "speaker": "assistant",
+          "line": "Confirmed. I'll implement this following your established patterns and update the relevant task documentation."
+        }
+      ]
     }
   ],
   "definition": {
@@ -136,6 +174,92 @@
           "description": "Only after receiving confirmation do you exit the interactive mode and begin the standard execution workflow."
         }
       ]
+    },
+    "contextAwareRecommendations": {
+      "title": "Project Context-Aware Enhancement",
+      "summary": "During the clarification process, actively analyze project scope, current tasks, documentation, and architectural patterns to provide intelligent recommendations that align with the project's goals and existing implementations.",
+      "enhancementGoals": [
+        "Project Scope Analysis: Examine project documentation, README files, and task lists to understand current priorities and planned features.",
+        "Task Context Integration: Check existing task management systems (Archon, todo lists, documentation) to see how the vague request might relate to current work.",
+        "Architectural Pattern Recognition: Identify existing code patterns, frameworks, and conventions to recommend solutions that maintain consistency.",
+        "Priority-Based Suggestions: Recommend approaches that align with project priorities and current development phase.",
+        "Resource-Aware Recommendations: Consider the project's tech stack, dependencies, and existing utilities when suggesting solutions."
+      ],
+      "contextSources": [
+        {
+          "name": "Project Documentation",
+          "description": "Scan README.md, docs/ folder, and project documentation to understand goals, architecture, and current status.",
+          "files": ["README.md", "docs/**/*.md", "package.json", "tsconfig.json"]
+        },
+        {
+          "name": "Task Management Context",
+          "description": "Check task management systems, session logs, and progress documentation to understand current priorities.",
+          "files": ["docs/tasks/**/*.md", "docs/sessions/**/*.md", "docs/core/PROJECT_PROGRESS.md"]
+        },
+        {
+          "name": "Code Architecture Analysis",
+          "description": "Analyze existing code structure, patterns, and conventions to recommend consistent solutions.",
+          "files": ["src/**/*", "components/**/*", "lib/**/*", "utils/**/*"]
+        },
+        {
+          "name": "Configuration Context",
+          "description": "Examine project configuration to understand tech stack, build tools, and environment setup.",
+          "files": ["package.json", "next.config.*", "tailwind.config.*", "eslint.config.*", "tsconfig.json"]
+        }
+      ],
+      "recommendationStrategies": [
+        {
+          "name": "Task-Aligned Suggestions",
+          "description": "When clarifying vague requests, cross-reference with current tasks and suggest solutions that advance existing work.",
+          "example": "If user says 'add a button' and there's an active MCP Settings task, suggest 'Are you looking to add a button to the MCP Settings interface, like an Add Server button for the server management feature?'"
+        },
+        {
+          "name": "Pattern-Consistent Recommendations",
+          "description": "Analyze existing code patterns and recommend solutions that follow established conventions.",
+          "example": "If the project uses Radix UI components, suggest using existing UI patterns: 'I see this project uses Radix UI. Would you like me to create this using the existing Button component pattern from @/components/ui/button?'"
+        },
+        {
+          "name": "Priority-Aware Guidance",
+          "description": "Based on project documentation and current phase, suggest solutions that align with development priorities.",
+          "example": "If documentation shows focus on security features, recommend security-conscious implementations: 'Given this project's focus on secure MCP server management, should this include input validation and sanitization?'"
+        },
+        {
+          "name": "Resource-Optimized Suggestions",
+          "description": "Recommend solutions that leverage existing project resources and utilities rather than adding new dependencies.",
+          "example": "Instead of suggesting a new library, recommend: 'I see the project already has a utility for this in @/lib/utils.ts. Should we extend that existing functionality?'"
+        }
+      ],
+      "enhancedWorkflow": {
+        "name": "Context-Enhanced Clarification Process",
+        "integration": "These recommendations are integrated into the existing 7-step workflow, enhancing steps 2, 5, and 6 with project context.",
+        "enhancements": [
+          {
+            "step": "2 (Enhanced)",
+            "name": "Context-Aware Scanning",
+            "description": "In addition to finding candidates, analyze project documentation, current tasks, and architectural patterns to understand the broader context of the request."
+          },
+          {
+            "step": "5 (Enhanced)",
+            "name": "Project-Aligned Suggestions",
+            "description": "When suggesting specific changes, reference current project priorities, existing patterns, and available resources to recommend solutions that fit the project's direction."
+          },
+          {
+            "step": "6 (Enhanced)",
+            "name": "Context-Validated Confirmation",
+            "description": "Before final confirmation, validate that the proposed solution aligns with project goals, follows established patterns, and leverages existing resources appropriately."
+          }
+        ]
+      },
+      "universalApplicability": {
+        "principle": "These enhancements are designed to work with any project by dynamically analyzing the specific project's context rather than assuming fixed structures.",
+        "adaptiveFeatures": [
+          "Dynamic file pattern recognition (works with any project structure)",
+          "Flexible task management system detection (Archon, todos, documentation-based)",
+          "Framework-agnostic pattern analysis (React, Vue, vanilla JS, etc.)",
+          "Universal documentation standards (README, docs folders, inline comments)",
+          "Configurable context sources based on what's available in each project"
+        ]
+      }
     }
   }
 }

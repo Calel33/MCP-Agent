@@ -10,6 +10,9 @@ export interface MCPServer {
   url?: string;
   enabled: boolean;
   timeout: number;
+  description?: string;
+  priority?: number;
+  tags?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -128,22 +131,34 @@ export class MCPConfigService {
       }
 
       if (server.type === 'http' && server.url) {
-        // Use a much shorter timeout for health checks (5 seconds max)
-        const healthCheckTimeout = Math.min(server.timeout, 5000);
+        // Use a much shorter timeout for health checks (3 seconds max)
+        const healthCheckTimeout = Math.min(server.timeout, 3000);
 
-        const response = await fetch(server.url, {
-          method: 'HEAD',
-          signal: AbortSignal.timeout(healthCheckTimeout),
-        });
+        try {
+          const response = await fetch(server.url, {
+            method: 'HEAD',
+            signal: AbortSignal.timeout(healthCheckTimeout),
+          });
 
-        const responseTime = Date.now() - startTime;
+          const responseTime = Date.now() - startTime;
 
-        return {
-          id: server.id,
-          status: response.ok ? 'online' : 'error',
-          lastChecked: new Date().toISOString(),
-          responseTime,
-        };
+          return {
+            id: server.id,
+            status: response.ok ? 'online' : 'error',
+            lastChecked: new Date().toISOString(),
+            responseTime,
+            errorMessage: response.ok ? undefined : `HTTP ${response.status}: ${response.statusText}`,
+          };
+        } catch (fetchError) {
+          const responseTime = Date.now() - startTime;
+          return {
+            id: server.id,
+            status: 'error',
+            lastChecked: new Date().toISOString(),
+            responseTime,
+            errorMessage: fetchError instanceof Error ? fetchError.message : 'Network error',
+          };
+        }
       }
 
       // For stdio and websocket, assume online if enabled
@@ -185,7 +200,64 @@ export class MCPConfigService {
   private static async syncAgentConfig(): Promise<void> {
     try {
       const servers = await this.getAllServers();
+      
+      // Create the CLI-compatible agent config format
       const agentConfig = {
+        llm: {
+          provider: "openai",
+          model: "gpt-4o",
+          apiKey: "${OPENAI_API_KEY}",
+          temperature: 0.1,
+          maxTokens: 4096
+        },
+        agent: {
+          maxSteps: 10,
+          timeout: 60000,
+          autoInitialize: true,
+          verbose: true
+        },
+        serverManager: {
+          enabled: true,
+          maxConcurrentServers: 3,
+          serverStartupTimeout: 30,
+          healthMonitoring: true,
+          healthCheckInterval: 30000,
+          autoReconnect: true
+        },
+        servers: servers.map(server => ({
+          id: server.id,
+          name: server.name,
+          description: server.description || `${server.name} server`,
+          connectionType: server.type,
+          command: server.command,
+          args: server.args,
+          url: server.url,
+          enabled: server.enabled,
+          priority: server.priority || 5,
+          tags: server.tags || [server.type],
+          timeout: server.timeout,
+          retry: {
+            maxAttempts: 3,
+            delayMs: 1500,
+            backoffMultiplier: 2
+          },
+          ...(server.type === 'http' && server.url && {
+            preferSse: false,
+            requestInit: {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          })
+        })),
+        logging: {
+          level: "info",
+          format: "text"
+        }
+      };
+
+      // Also create the simplified mcpServers format for backward compatibility
+      const simplifiedConfig = {
         mcpServers: servers.reduce((acc, server) => {
           if (server.enabled) {
             acc[server.name] = {
@@ -201,7 +273,13 @@ export class MCPConfigService {
         updatedAt: new Date().toISOString(),
       };
 
+      // Write both formats
       await fs.writeFile(this.AGENT_CONFIG_PATH, JSON.stringify(agentConfig, null, 2));
+      
+      // Also create a simplified version for backward compatibility
+      const simplifiedPath = path.join(process.cwd(), 'mcp-agent-simple.config.json');
+      await fs.writeFile(simplifiedPath, JSON.stringify(simplifiedConfig, null, 2));
+      
     } catch (error) {
       console.error('Failed to sync agent config:', error);
     }

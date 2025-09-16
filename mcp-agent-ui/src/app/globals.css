@@ -54,20 +54,9 @@ input, textarea, select {
   background-color: #ffffff !important;
 }
 
-/* Defensive styling for all textareas to ensure text is always visible */
-textarea {
-  color: #1f2937 !important; /* Ensure dark text on light background */
-  background-color: #ffffff !important;
-}
-
 @media (prefers-color-scheme: dark) {
   .form-input, .form-textarea {
     color: #f9fafb !important; /* gray-50 */
-    background-color: #374151 !important; /* gray-700 */
-  }
-
-  textarea {
-    color: #f9fafb !important; /* Light text on dark background */
     background-color: #374151 !important; /* gray-700 */
   }
 }
@@ -180,4 +169,43 @@ textarea {
   100% {
     opacity: 0.1;
   }
+}
+
+/* Force word breaking for URLs and long text */
+.force-break-words {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.force-break-all {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground)) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
 }

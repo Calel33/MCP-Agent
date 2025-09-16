@@ -589,9 +589,18 @@ async function handleServerDisableCommand(serverIds: string[], options: any): Pr
  */
 async function loadConfigFromFile(): Promise<any> {
   const fs = await import('fs/promises');
-
-  // Try mcp-config.json first, then mcp-agent.config.json
-  const configPaths = ['mcp-config.json', 'mcp-agent.config.json'];
+  const { dirname, join } = await import('path');
+  
+  // Get the project root directory
+  const projectRoot = findProjectRootSync();
+  
+  // Define config file locations - check UI directory first, then root
+  const configPaths = [
+    join(projectRoot, 'mcp-agent-ui', 'mcp-config.json'),
+    join(projectRoot, 'mcp-agent-ui', 'mcp-agent.config.json'),
+    join(projectRoot, 'mcp-config.json'),
+    join(projectRoot, 'mcp-agent.config.json'),
+  ];
 
   for (const configPath of configPaths) {
     try {
@@ -607,6 +616,37 @@ async function loadConfigFromFile(): Promise<any> {
   // If no config files found, use default configuration
   const { loadConfig } = await import('@/config/loader.js');
   return loadConfig();
+}
+
+/**
+ * Find the project root directory by looking for package.json (synchronous version)
+ */
+function findProjectRootSync(): string {
+  const { dirname, join } = require('path');
+  const { readFileSync, existsSync } = require('fs');
+  
+  let currentDir = process.cwd();
+  
+  // Walk up the directory tree looking for package.json
+  while (currentDir !== dirname(currentDir)) {
+    const packageJsonPath = join(currentDir, 'package.json');
+    if (existsSync(packageJsonPath)) {
+      try {
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+        // Check if this is our project by looking for the name
+        if (packageJson.name === 'mcp-multi-agent' || 
+            (packageJson.scripts && packageJson.scripts.dev && packageJson.scripts.dev.includes('tsx'))) {
+          return currentDir;
+        }
+      } catch {
+        // Continue searching if package.json is invalid
+      }
+    }
+    currentDir = dirname(currentDir);
+  }
+  
+  // If we can't find the project root, use current working directory
+  return process.cwd();
 }
 
 /**

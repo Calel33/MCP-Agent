@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "DocFork MCP Server": {
+      "type": "http",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
+      "timeout": 30000
+    },
+    "Hustle HTTP MCP Server": {
+      "type": "http",
+      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
+      "timeout": 30000
+    }
+  },
+  "updatedAt": "2025-09-16T20:28:29.016Z"
+}

@@ -1,118 +1,123 @@
-# 📋 Universal Document Rules
+# 📋 Universal Document Rules - Concise Version
 
 ## 🔒 CRITICAL RULES - NEVER VIOLATE
 
-### **Rule 1: Check/Create Documentation First**
-Before ANY work: ✅ Check `docs/` exists → CREATE if missing → Read current status
-
-### **Rule 2: Session Documentation**
-- `/start session` - Initialize with context
-- `/session pause` - Document current state  
-- `/resume` - Continue from pause
-- `/session end` - Complete with summary
-
-### **Rule 3: Context Preservation**
-✅ Maintain project identity ✅ Preserve functionality ✅ Document changes ✅ Create audit trail
-
-### **Rule 4: Learning Documentation**
-✅ MUST create `WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md` for significant sessions
+1. **✅ ALWAYS Check/Create Documentation Structure First**
+2. **✅ MANDATORY Session Documentation** - Document start, pause, resume, end
+3. **✅ Context Preservation Across Sessions** - Maintain project identity and functionality
+4. **✅ MANDATORY Learning Documentation** - Capture insights and lessons learned
 
 ## 📁 Required Documentation Structure
+
 ```
 docs/
-├── README.md                    # Documentation index
-├── PROJECT_BRIEF.md            # Project overview  
-├── PROJECT_PROGRESS.md         # Current status
-├── SESSION_LOG.md              # Session tracking
-├── WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md  # Learning docs (REQUIRED)
-└── sessions/                   # Session-specific docs
-    ├── SESSION_YYYY-MM-DD_HH-MM.md
-    └── PAUSE_YYYY-MM-DD_HH-MM.md
+├── README.md                           # Documentation index & navigation
+├── SESSION_LOG.md                      # Master session tracking
+├── core/                              # Core project documentation
+│   ├── PRODUCT_BRIEF.md, ARCHITECTURE.md, PROJECT_PROGRESS.md
+│   ├── API_REFERENCE.md, DEVELOPMENT_GUIDE.md, USER_GUIDE.md, BUG_LOG.md
+├── guides/                            # Operational guides
+│   ├── Research guides, monitoring guides, optimization guides
+├── tasks/                             # Task-specific documentation
+│   ├── [task-name]/                   # Individual task folders
+│   │   ├── README.md                  # Task overview
+│   │   ├── [task-docs].md             # Task-specific docs
+│   │   ├── sessions/                  # Task-specific sessions
+│   │   ├── validation/                # Task validation reports
+│   │   └── learnings/                 # Task learning documentation
+└── sessions/                          # General/uncategorized sessions
+    ├── general/, pauses/, handoffs/, endings/
 ```
 
 ## 🎮 Session Commands
 
 ### `/start session`
-1. Check/create docs structure
-2. Read existing documentation  
-3. Create `docs/sessions/SESSION_YYYY-MM-DD_HH-MM.md`
-4. Update `docs/SESSION_LOG.md`
+1. Check docs structure (create if missing)
+2. Gather current context
+3. Create session document in appropriate location
+4. Update SESSION_LOG.md
 
 ### `/session pause`
-1. Create `docs/sessions/PAUSE_YYYY-MM-DD_HH-MM.md` with:
-   - Exact current state
-   - Next immediate steps
-   - Context needed to resume
-2. Update session log
+1. Create pause documentation with current state
+2. Update current session document
+3. Update session log
 
 ### `/resume`
-1. Find latest `PAUSE_*.md` file
+1. Find latest pause document
 2. Restore complete context
 3. Continue from documented state
 
 ### `/session end`
-1. Update session document with summary
+1. Create session summary
 2. Update project documentation
-3. Create `WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md`
-4. Mark session complete in log
+3. Create learning documentation if significant work
 
-## 📝 Standards
+## 📝 Key Standards
 
 ### **File Naming**
-- Core docs: `UPPERCASE_WITH_UNDERSCORES.md`
-- Sessions: `SESSION_YYYY-MM-DD_HH-MM.md`
-- Pauses: `PAUSE_YYYY-MM-DD_HH-MM.md`
+- **Core docs**: `UPPERCASE_WITH_UNDERSCORES.md`
+- **Sessions**: `SESSION_YYYY-MM-DD_[DESCRIPTION].md`
+- **Pauses**: `PAUSE_YYYY-MM-DD_[DESCRIPTION].md`
+- **Validation**: `TASK_COMPLETION_VALIDATION_REPORT_YYYY-MM-DD.md`
+- **Learning**: `WHAT_WE_LEARNED_SESSION_YYYY-MM-DD.md`
 
-### **Content Standards**
-- Headers: Emoji + text (`# 🎯 Purpose`)
-- Status: ✅ ❌ 🔄 ⏳
-- Dates: ISO format (YYYY-MM-DD)
-- Code blocks: Specify language
+### **Organization Principles**
+- **Task-based organization**: Group related documents by task/feature
+- **Session tracking**: All work sessions documented and organized
+- **Quality assurance**: Validation reports for significant implementations
+- **Learning capture**: Technical insights and lessons documented
 
-### **Session Document Sections**
+### **Location Rules**
+- **Task-specific work**: Use `docs/tasks/[task-name]/sessions/`
+- **General work**: Use `docs/sessions/general/`
+- **Learning docs**: Task-specific in `docs/tasks/[task-name]/learnings/` or general in `docs/sessions/learnings/`
+
+## 🚨 Never Do / Always Do
+
+### **❌ NEVER**
+- Start work without checking/creating docs structure
+- Skip session documentation for significant work
+- Pause work without documenting current state
+- Delete or overwrite session documentation
+
+### **✅ ALWAYS**
+- Check for docs folder and create if missing
+- Document session start, pause, resume, and end
+- Maintain project context across sessions
+- Update relevant documentation when making changes
+- Create clear handoffs for future work
+
+## 🎯 Quick Implementation
+
+### **Auto-Create Structure**
+```bash
+docs/
+├── core/ guides/ tasks/ sessions/
+└── sessions/{general,pauses,handoffs,endings}/
+```
+
+### **Session Document Template**
 ```markdown
-# 📅 Session YYYY-MM-DD HH:MM - [Description]
+# 📅 Session YYYY-MM-DD HH:MM - [Brief Description]
+
 ## 🎯 Session Overview
-## 📋 Project Context  
+- Start time, agent, planned work
+
+## 📋 Project Context
+- Current project state, recent changes, priorities
+
 ## 🔄 Work Completed
-## 🚧 Work In Progress
+- Detailed accomplishments, files modified, issues resolved
+
 ## 🎯 Next Session Recommendations
-## 📊 Session Summary
-```
-
-## 🚨 Never/Always Rules
-
-### **NEVER**
-❌ Start work without checking docs structure  
-❌ Skip session documentation  
-❌ Delete session documentation  
-❌ Change project fundamentals without docs  
-
-### **ALWAYS**  
-✅ Check for docs folder, create if missing  
-✅ Document session start/pause/resume/end  
-✅ Maintain project context across sessions  
-✅ Update documentation when making changes  
-
-## 🔧 Auto-Creation Templates
-
-### **PROJECT_BRIEF.md**
-```markdown
-# 📋 Project Brief - [Name]
-## 🎯 Overview: [Description]
-## 🏗️ Tech Stack: [Technologies]
-## 📊 Status: [Current phase]
-## 🎯 Goals: [Objectives]
-```
-
-### **SESSION_LOG.md**
-```markdown
-# 📅 Session Log
-| Date | Agent | Status | Description | Link |
-|------|-------|--------|-------------|------|
-| YYYY-MM-DD | Name | Complete | Brief desc | [Link](./sessions/SESSION_*.md) |
+- Suggested next steps, priority items, context for next agent
 ```
 
 ---
-**🔒 ENFORCEMENT**: MANDATORY for ALL agents on ANY project  
-**🚀 GOAL**: Professional documentation + seamless session management
+
+**🔒 ENFORCEMENT**: These rules are MANDATORY for ALL agents on ANY project.
+
+**🚀 GOAL**: Professional documentation with seamless session management.
+
+*Version: 2.0 - Concise*
+*Last Updated: 2025-09-08*

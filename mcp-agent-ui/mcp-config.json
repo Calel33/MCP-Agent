@@ -25,12 +25,12 @@
       "id": "docfork-mcp",
       "name": "DocFork MCP Server",
       "type": "http",
-      "url": "https://server.smithery.ai/@docfork/mcp/mcp?profile=${SMITHERY_PROFILE}",
-      "enabled": false,
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
+      "enabled": true,
       "timeout": 30000,
       "description": "Provides documentation and library research capabilities via DocFork MCP",
       "createdAt": "2025-01-10T19:30:00.000Z",
-      "updatedAt": "2025-09-01T15:28:17.057Z"
+      "updatedAt": "2025-09-16T20:28:28.687Z"
     },
     {
       "id": "hustle-http",
@@ -41,7 +41,18 @@
       "timeout": 30000,
       "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
       "createdAt": "2025-01-10T19:30:00.000Z",
-      "updatedAt": "2025-01-10T19:30:00.000Z"
+      "updatedAt": "2025-09-09T00:41:40.217Z"
+    },
+    {
+      "name": "stock-analysis-mcp",
+      "id": "stock-analysis-mcp",
+      "type": "http",
+      "url": "https://server.smithery.ai/@qubaomingg/stock-analysis-mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
+      "enabled": false,
+      "timeout": 30000,
+      "description": "Provides stock analysis capabilities via Stock Analysis MCP",
+      "createdAt": "2025-09-03T19:57:14.925Z",
+      "updatedAt": "2025-09-09T00:41:23.920Z"
     }
   ]
 }

@@ -25,7 +25,7 @@
       "id": "docfork-mcp",
       "name": "DocFork MCP Server", 
       "type": "http",
-      "url": "https://server.smithery.ai/@docfork/mcp/mcp?profile=${SMITHERY_PROFILE}",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
       "enabled": true,
       "timeout": 30000,
       "description": "Provides documentation and library research capabilities via DocFork MCP",

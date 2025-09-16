@@ -4,8 +4,8 @@
  * A simplified version of MultiServerAgent for CLI usage
  */
 
-import { OpenAIClient } from '@/llm/openai-client.js';
-import type { MCPMultiAgentConfig } from '@/config/types.js';
+import { OpenAIClient } from '@/llm/openai-client.ts';
+import type { MCPMultiAgentConfig } from '@/config/types.ts';
 import type { CoreMessage } from 'ai';
 
 export interface SimpleAgentResult {

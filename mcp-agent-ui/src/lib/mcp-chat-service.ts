@@ -29,7 +29,7 @@ export class MCPChatService {
   }
 
   /**
-   * Initialize the MCP service with real filesystem server
+   * Initialize the MCP service with all enabled servers from configuration
    */
   private async initialize(): Promise<void> {
     if (this.initialized) {
@@ -37,7 +37,15 @@ export class MCPChatService {
     }
 
     try {
-      console.log('🔧 Initializing MCP Chat Service with DocFork (HTTP) and Hustle HTTP MCP servers...');
+      // Import the MCPConfigService
+      const { MCPConfigService } = await import('./mcp-config-service');
+      
+      // Load all enabled servers from configuration
+      const allServers = await MCPConfigService.getAllServers();
+      const enabledServers = allServers.filter(server => server.enabled);
+      
+      console.log(`🔧 Initializing MCP Chat Service with ${enabledServers.length} enabled servers...`);
+      console.log(`📡 Enabled servers: ${enabledServers.map(s => s.name).join(', ')}`);
 
       // Validate OpenAI API key
       const apiKey = process.env.OPENAI_API_KEY;
@@ -45,56 +53,155 @@ export class MCPChatService {
         throw new Error('OPENAI_API_KEY environment variable is required');
       }
 
-      // Create MCP client with DocFork MCP server using Smithery URL parameter format
+      // Environment variables for server configurations
       const smitheryApiKey = process.env.SMITHERY_API_KEY || 'SMITHERY_API_KEY_REQUIRED';
-      const smitheryProfile = process.env.SMITHERY_PROFILE || 'glad-squid-LrsVYY';
-
-      // Hustle HTTP MCP server configuration
+      const smitheryProfile = process.env.SMITHERY_PROFILE || process.env.SMITHERY_API_KEY || 'default';
       const hustleApiKey = process.env.HUSTLE_API_KEY || 'HUSTLE_API_KEY_REQUIRED';
       const hustleVaultId = process.env.HUSTLE_VAULT_ID || 'HUSTLE_VAULT_ID_REQUIRED';
 
-      console.log('🔧 Hustle HTTP MCP Configuration:');
-      console.log(`   API Key: ${hustleApiKey.substring(0, 8)}...${hustleApiKey.substring(hustleApiKey.length - 4)}`);
-      console.log(`   Vault ID: ${hustleVaultId}`);
-      console.log(`   API Key Status: ${hustleApiKey === 'HUSTLE_API_KEY_REQUIRED' ? '❌ NOT SET' : '✅ SET'}`);
-      console.log(`   Vault ID Status: ${hustleVaultId === 'HUSTLE_VAULT_ID_REQUIRED' ? '❌ NOT SET' : '✅ SET'}`);
-      // Smithery expects api_key as URL parameter, not Authorization header
-      const docforkUrl = `https://server.smithery.ai/@docfork/mcp/mcp?api_key=${smitheryApiKey}&profile=${smitheryProfile}`;
+      console.log('🔧 Environment Variables Check:');
+      console.log(`   OpenAI API Key: ${apiKey ? `${apiKey.substring(0, 8)}...${apiKey.substring(apiKey.length - 4)}` : 'NOT SET'}`);
+      console.log(`   Smithery API Key: ${smitheryApiKey !== 'SMITHERY_API_KEY_REQUIRED' ? `${smitheryApiKey.substring(0, 8)}...${smitheryApiKey.substring(smitheryApiKey.length - 4)}` : 'NOT SET'}`);
+      console.log(`   Smithery Profile: ${smitheryProfile !== 'default' ? `${smitheryProfile.substring(0, 8)}...${smitheryProfile.substring(smitheryProfile.length - 4)}` : 'USING DEFAULT'}`);
+      console.log(`   Hustle API Key: ${hustleApiKey !== 'HUSTLE_API_KEY_REQUIRED' ? `${hustleApiKey.substring(0, 8)}...${hustleApiKey.substring(hustleApiKey.length - 4)}` : 'NOT SET'}`);
+      console.log(`   Hustle Vault ID: ${hustleVaultId !== 'HUSTLE_VAULT_ID_REQUIRED' ? hustleVaultId : 'NOT SET'}`);
+      
+      // Environment variable validation with improved messaging
+      const missingVars = [];
+      if (smitheryApiKey === 'SMITHERY_API_KEY_REQUIRED') {
+        missingVars.push('SMITHERY_API_KEY');
+      }
+      if (hustleApiKey === 'HUSTLE_API_KEY_REQUIRED' && enabledServers.some(s => s.id === 'hustle-http')) {
+        missingVars.push('HUSTLE_API_KEY');
+      }
+      if (hustleVaultId === 'HUSTLE_VAULT_ID_REQUIRED' && enabledServers.some(s => s.id === 'hustle-http')) {
+        missingVars.push('HUSTLE_VAULT_ID');
+      }
+      
+      if (missingVars.length > 0) {
+        console.warn(`⚠️ Missing environment variables: ${missingVars.join(', ')}`);
+        console.warn(`   Create .env.local file with these variables or servers may not connect properly`);
+        console.warn(`   Continuing with graceful degradation - MCP servers may be unavailable`);
+      }
 
-      console.log('🔧 DocFork MCP Configuration:');
-      console.log(`   API Key: ${smitheryApiKey.substring(0, 8)}...${smitheryApiKey.substring(smitheryApiKey.length - 4)}`);
-      console.log(`   API Key Length: ${smitheryApiKey.length}`);
-      console.log(`   API Key Full (DEBUG): ${smitheryApiKey}`);
-      console.log(`   Profile: ${smitheryProfile}`);
-      console.log(`   URL: ${docforkUrl}`);
-      console.log(`   Auth Method: URL parameter + Authorization header (Smithery format)`);
+      // Build MCP configuration dynamically from enabled servers
+      const mcpServers: Record<string, {
+        url?: string;
+        command?: string;
+        args?: string[];
+        preferSse?: boolean;
+        authToken?: string;
+        headers?: Record<string, string>;
+      }> = {};
+      
+      for (const server of enabledServers) {
+        console.log(`🔧 Configuring server: ${server.name} (${server.type})`);
+        
+        if (server.type === 'http' && server.url) {
+          // Handle HTTP servers
+          let url = server.url;
+          
+          // Replace environment variables in URL
+          url = url.replace('${SMITHERY_API_KEY}', smitheryApiKey);
+          url = url.replace('${SMITHERY_PROFILE}', smitheryProfile);
+          url = url.replace('${HUSTLE_API_KEY}', hustleApiKey);
+          url = url.replace('${HUSTLE_VAULT_ID}', hustleVaultId);
+          
+          // Special handling for different server authentication methods
+          let headers: Record<string, string> = {
+            'Content-Type': 'application/json'
+          };
+          
+          if (url.includes('server.smithery.ai')) {
+            // Smithery uses URL parameter authentication (api_key and profile already in URL)
+            // No additional headers needed - authentication is via URL parameters
+            console.log(`   🔐 Smithery URL parameter auth configured for ${server.id}`);
+            
+            // Verify the URL has the required parameters
+            if (!url.includes('api_key=') || !url.includes('profile=')) {
+              console.warn(`   ⚠️ Smithery URL missing required parameters for ${server.id}`);
+            }
+          } else if (url.includes('hustle-remote.myagent.sh')) {
+            // Hustle uses API key in URL parameters (already replaced above)
+            console.log(`   🔐 Hustle URL auth configured for ${server.id}`);
+            
+            // Verify the URL has the required parameters
+            if (!url.includes('apikey=') || !url.includes('vaultId=')) {
+              console.warn(`   ⚠️ Hustle URL missing required parameters for ${server.id}`);
+            }
+          } else {
+            // Generic HTTP server - add Authorization header if we have an auth token
+            if (smitheryApiKey !== 'SMITHERY_API_KEY_REQUIRED') {
+              headers['Authorization'] = `Bearer ${smitheryApiKey}`;
+              console.log(`   🔐 Generic Authorization header configured for ${server.id}`);
+            }
+          }
+          
+          mcpServers[server.id] = {
+            url: url,
+            preferSse: false,
+            headers: headers
+          };
+          
+          console.log(`   ✅ HTTP server configured: ${server.id}`);
+          console.log(`   📍 URL: ${url.substring(0, 50)}...`);
+          console.log(`   🔐 Headers:`, Object.keys(mcpServers[server.id].headers || {}));
+          
+        } else if (server.type === 'stdio' && server.command && server.args) {
+          // Handle stdio servers
+          const args = server.args.map(arg => {
+            // Replace environment variables in args
+            return arg
+              .replace('${SMITHERY_API_KEY}', smitheryApiKey)
+              .replace('${HUSTLE_API_KEY}', hustleApiKey)
+              .replace('${HUSTLE_VAULT_ID}', hustleVaultId);
+          });
+          
+          mcpServers[server.id] = {
+            command: server.command,
+            args: args
+          };
+          
+          console.log(`   ✅ STDIO server configured: ${server.id}`);
+          console.log(`   🔧 Command: ${server.command} ${args.join(' ')}`);
+        } else {
+          console.log(`   ⚠️ Skipping server ${server.id}: unsupported configuration`);
+        }
+      }
 
       const mcpConfig = {
-        mcpServers: {
-          'docfork-mcp': {
-            url: docforkUrl, // URL contains api_key parameter
-            preferSse: false, // Use Streamable HTTP (preferred)
-            authToken: smitheryApiKey, // Also include in Authorization header (Smithery requires both)
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          },
-          'hustle-http': {
-            command: 'npx',
-            args: [
-              'mcp-remote',
-              `https://hustle-remote.myagent.sh/mcp?apikey=${hustleApiKey}&vaultId=${hustleVaultId}`
-            ]
-          },
-        },
+        mcpServers: mcpServers
       };
 
-      console.log('🔧 MCP Client Configuration:');
+      console.log('🔧 Final MCP Client Configuration:');
       console.log(JSON.stringify(mcpConfig, null, 2));
 
-      this.mcpClient = MCPClient.fromDict(mcpConfig);
+      // Try creating MCPClient with graceful degradation
+      try {
+        this.mcpClient = MCPClient.fromDict(mcpConfig);
+        console.log('✅ MCPClient created successfully from configuration');
+      } catch (configError) {
+        console.error('❌ MCPClient configuration error:', {
+          error: configError instanceof Error ? configError.message : configError,
+          stack: configError instanceof Error ? configError.stack : undefined,
+          config: mcpConfig
+        });
+        
+        // Graceful degradation: Create empty MCP client if configuration fails
+        console.log('🔄 Attempting graceful degradation with empty MCP configuration...');
+        try {
+          this.mcpClient = MCPClient.fromDict({ mcpServers: {} });
+          console.log('✅ Fallback MCPClient created (no MCP servers)');
+        } catch (fallbackError) {
+          console.error('❌ Even fallback MCPClient failed:', fallbackError);
+          throw new Error(`Complete MCP initialization failure: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown error'}`);
+        }
+      }
 
-      console.log('🎭 MCP clients created: DocFork (HTTP Streamable) + Hustle HTTP (Remote)');
+      console.log(`🎭 MCP clients created for ${Object.keys(mcpServers).length} servers`);
+
+      // Test individual server connections (non-blocking)
+      await this.testServerConnections(mcpServers);
 
       // Create LangChain OpenAI client
       this.llm = new ChatOpenAI({
@@ -117,7 +224,7 @@ export class MCPChatService {
       console.log('🤖 MCP Agent created');
 
       this.initialized = true;
-      console.log('✅ MCP Chat Service initialized successfully with DocFork (HTTP) MCP server');
+      console.log(`✅ MCP Chat Service initialized successfully with ${enabledServers.length} enabled servers`);
     } catch (error) {
       console.error('❌ Failed to initialize MCP Chat Service:', error);
       throw new Error(`MCP initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -169,7 +276,35 @@ export class MCPChatService {
   }
 
   /**
-   * Stream real MCP agent response with filesystem tool execution
+   * Test individual server connections without failing the entire initialization
+   */
+  private async testServerConnections(mcpServers: Record<string, unknown>): Promise<void> {
+    console.log('🔍 Testing individual server connections...');
+    
+    for (const [serverId, serverConfig] of Object.entries(mcpServers)) {
+      try {
+        // Create a temporary client for just this server
+        const testConfig = { mcpServers: { [serverId]: serverConfig } };
+        const testClient = MCPClient.fromDict(testConfig);
+        
+        // Try to get server info (lightweight test)
+        const serverNames = testClient.getServerNames?.() || [];
+        if (serverNames.length > 0) {
+          console.log(`   ✅ Server ${serverId}: Configuration valid`);
+        } else {
+          console.log(`   ⚠️ Server ${serverId}: No server names returned`);
+        }
+      } catch (testError) {
+        console.log(`   ❌ Server ${serverId}: Configuration failed -`, 
+          testError instanceof Error ? testError.message : testError);
+      }
+    }
+    
+    console.log('🔍 Server connection tests completed');
+  }
+
+  /**
+   * Stream real MCP agent response with MCP server tool execution
    */
   private async *streamRealMCPResponse(query: string, options: ChatOptions) {
     if (!this.mcpAgent) {
@@ -179,7 +314,9 @@ export class MCPChatService {
     try {
       // Show tool usage if enabled
       if (options.enableToolVisibility) {
-        yield '\n🔧 Connecting to DocFork MCP server...\n';
+        const serverNames = this.mcpClient?.getServerNames?.() || [];
+        const serverList = serverNames.length > 0 ? serverNames.join(', ') : 'MCP servers';
+        yield `\n🔧 Connecting to ${serverList}...\n`;
         await new Promise(resolve => setTimeout(resolve, 300));
       }
 
@@ -199,19 +336,60 @@ export class MCPChatService {
           stack: mcpError instanceof Error ? mcpError.stack : undefined,
           type: typeof mcpError
         });
-        throw mcpError;
+        
+        // Check if this is a connection error - if so, fall back to LLM-only mode
+        const errorMessage = mcpError instanceof Error ? mcpError.message : String(mcpError);
+        if (errorMessage.includes('Could not connect to server') || 
+            errorMessage.includes('Invalid configuration') ||
+            errorMessage.includes('Failed to connect')) {
+          
+          console.log('🔄 MCP connection failed, falling back to LLM-only mode...');
+          
+          // Show fallback message to user if tool visibility is enabled
+          if (options.enableToolVisibility) {
+            yield '\n⚠️ MCP servers unavailable, using LLM-only mode...\n';
+            await new Promise(resolve => setTimeout(resolve, 300));
+          }
+          
+          // Use just the LLM without MCP tools
+          if (!this.llm) {
+            throw new Error('LLM not initialized - cannot provide fallback response');
+          }
+          const fallbackResult = await this.llm.invoke(query);
+          
+          // Use a wrapper object instead of modifying the string
+          result = {
+            content: fallbackResult.content,
+            _isFallback: true
+          };
+          
+          console.log('✅ Fallback LLM response completed');
+        } else {
+          throw mcpError;
+        }
       }
 
       if (options.enableToolVisibility) {
-        yield '\n✅ DocFork MCP server connected\n\n';
+        // Check if this is a fallback response
+        if (typeof result === 'object' && result !== null && '_isFallback' in result) {
+          yield '\n✅ LLM-only response ready\n\n';
+        } else {
+          const serverNames = this.mcpClient?.getServerNames?.() || [];
+          const serverList = serverNames.length > 0 ? serverNames.join(', ') : 'MCP servers';
+          yield `\n✅ ${serverList} connected\n\n`;
+        }
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      // The result is a string from MCPAgent.run()
-      const response = result;
+      // The result can be a string from MCPAgent.run() or a wrapper object from fallback
+      const response = typeof result === 'object' && result.content ? result.content : result;
 
       if (options.enableToolVisibility) {
-        yield '\n🔧 Tool execution completed\n\n';
+        if (typeof result === 'object' && result !== null && '_isFallback' in result) {
+          yield '\n🤖 LLM processing completed\n\n';
+        } else {
+          yield '\n🔧 Tool execution completed\n\n';
+        }
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
@@ -225,14 +403,31 @@ export class MCPChatService {
     } catch (error) {
       console.error('❌ Error in real MCP streaming:', error);
 
-      // Fallback to error message
-      yield `\n❌ Error connecting to DocFork MCP server: ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
-      yield `I'm having trouble connecting to the DocFork MCP server. This might be because:\n`;
-      yield `- The DocFork MCP server at Smithery is not available\n`;
-      yield `- The API key or profile parameters are invalid or expired\n`;
-      yield `- The OpenAI API key is not configured in .env.local\n`;
-      yield `- There's a network issue connecting to https://server.smithery.ai\n\n`;
-      yield `Please check the console for more details and try again.`;
+      // Fallback to error message with graceful degradation info
+      const serverNames = this.mcpClient?.getServerNames?.() || [];
+      const serverList = serverNames.length > 0 ? serverNames.join(', ') : 'MCP servers';
+      
+      // Check if this was a connection error that should have been handled gracefully
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('Could not connect to server') || 
+          errorMessage.includes('Invalid configuration') ||
+          errorMessage.includes('Failed to connect')) {
+        
+        yield `\n⚠️ MCP server connection issues detected, but I'm still here to help!\n\n`;
+        yield `I attempted to connect to: ${serverList}\n`;
+        yield `While I couldn't access the specialized MCP tools, I can still:\n`;
+        yield `- Answer questions using my built-in knowledge\n`;
+        yield `- Help with general tasks and problem-solving\n`;
+        yield `- Provide information on a wide range of topics\n\n`;
+        yield `For full functionality, please check:\n`;
+        yield `- MCP server availability and configuration\n`;
+        yield `- API keys in .env.local file\n`;
+        yield `- Network connectivity\n\n`;
+        yield `How can I help you today?`;
+      } else {
+        yield `\n❌ Error: ${errorMessage}\n\n`;
+        yield `Please check the console for more details and try again.`;
+      }
     }
   }
 

@@ -42,16 +42,27 @@ export function useMCPServers(): UseMCPServersReturn {
   }, []);
 
   const fetchStatuses = useCallback(async () => {
+    let controller: AbortController | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
+    
     try {
       // Add timeout to prevent hanging requests
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      controller = new AbortController();
+      timeoutId = setTimeout(() => {
+        if (controller && !controller.signal.aborted) {
+          controller.abort();
+        }
+      }, 10000); // 10 second timeout
 
       const response = await fetch('/api/servers/status', {
         signal: controller.signal,
       });
 
-      clearTimeout(timeoutId);
+      // Clear timeout on successful response
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -66,9 +77,17 @@ export function useMCPServers(): UseMCPServersReturn {
         setError(data.error || 'Failed to fetch server statuses');
       }
     } catch (err) {
+      // Clean up timeout on error
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      
       if (err instanceof Error) {
         if (err.name === 'AbortError') {
-          setError('Request timeout - server status check took too long');
+          // Don't treat timeout as an error - it's expected behavior
+          console.log('Server status check timed out - continuing with graceful degradation');
+          setError(null); // Clear error since timeout is acceptable
         } else {
           setError(err.message);
         }

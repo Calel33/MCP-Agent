@@ -4,8 +4,8 @@
  * Provides configurable retry logic with exponential backoff, jitter, and circuit breaker integration
  */
 
-import { MCPError, RecoveryStrategy } from './errors.js';
-import { ErrorHandler } from './error-handler.js';
+import { MCPError, RecoveryStrategy } from './errors.ts';
+import { ErrorHandler } from './error-handler.ts';
 
 /**
  * Retry configuration options

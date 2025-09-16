@@ -6,10 +6,13 @@ A stunning macOS-style ChatGPT interface for the Multiple MCP Servers General Pu
 
 - **🖥️ macOS ChatGPT Interface**: Beautiful ChatGPT-style design with traffic light window controls
 - **🎨 Professional Dark Theme**: Sophisticated gray color palette matching macOS aesthetics
-- **📱 Sidebar Layout**: Conversation history, user profile, and MCP status monitoring
+- **💬 Multi-Chat Management**: Create, rename, delete, and switch between multiple persistent chats
+- **✏️ Inline Chat Editing**: Click-to-edit chat names with keyboard navigation
+- **💾 localStorage Persistence**: Automatic chat history saving with cross-tab synchronization
+- **📱 Sidebar Layout**: Dynamic chat list with conversation history and MCP status monitoring
 - **⌨️ Enhanced Input**: Auto-resizing textarea with Enter/Shift+Enter keyboard shortcuts
 - **🔄 Smooth Animations**: Typing indicators, auto-scroll behavior, and fluid transitions
-- **🎯 Real-time Streaming**: Live AI responses with word-by-word streaming
+- **🎯 Real-time Streaming**: Live AI responses with word-by-word streaming preserved
 - **🔧 MCP Integration**: Full integration with MCP Multi-Agent backend and filesystem server
 - **📱 Responsive Design**: Desktop-optimized with macOS feel and professional typography
 - **⚡ Next.js 15 + React 19**: Latest versions with App Router and Server Components
@@ -58,15 +61,19 @@ A stunning macOS-style ChatGPT interface for the Multiple MCP Servers General Pu
 
 ## 🎯 Usage
 
-### Beautiful macOS ChatGPT Interface
+### Beautiful macOS ChatGPT Interface with Multi-Chat Management
 
 The application provides a stunning macOS-style ChatGPT interface where you can:
 
 - **🖥️ macOS Window Design**: Traffic light controls and professional dark theme
-- **💬 Natural Conversations**: Chat with AI assistant in familiar ChatGPT-style interface
+- **💬 Multi-Chat Management**: Create unlimited chats, rename them inline, and switch seamlessly
+- **✏️ Inline Editing**: Click any chat name to edit with keyboard navigation (Enter/Escape)
+- **🗑️ Safe Deletion**: Delete chats with confirmation dialog (cannot delete last remaining chat)
+- **💾 Persistent Storage**: All chats automatically saved to localStorage with 90-day expiry
+- **🔄 Cross-Tab Sync**: Chat changes synchronized across browser tabs in real-time
+- **📱 Sidebar Navigation**: Dynamic chat list with conversation history and MCP status
 - **⚡ Real-time Streaming**: Watch responses appear word-by-word with typing indicators
-- **📱 Sidebar Navigation**: Access conversation history and user profile
-- **⌨️ Keyboard Shortcuts**: Enter to send, Shift+Enter for new lines
+- **⌨️ Keyboard Shortcuts**: Enter to send, Shift+Enter for new lines, full keyboard navigation
 - **🔄 Auto-scroll**: Messages automatically scroll to bottom with smooth animations
 - **🔧 MCP Integration**: Real file operations and tool execution through MCP servers
 

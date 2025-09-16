@@ -20,13 +20,13 @@ export {
   ErrorCategory,
   RecoveryStrategy,
   type MCPErrorDetails
-} from './errors.js';
+} from './errors.ts';
 
 // Error handler
 export {
   ErrorHandler,
   type ErrorHandlerConfig
-} from './error-handler.js';
+} from './error-handler.ts';
 
 // Retry mechanism
 export {
@@ -35,7 +35,7 @@ export {
   type RetryAttempt,
   type RetryResult,
   type RetryContext
-} from './retry.js';
+} from './retry.ts';
 
 // Graceful degradation
 export {
@@ -43,7 +43,7 @@ export {
   DegradationStrategy,
   type DegradationConfig,
   type DegradationResult
-} from './graceful-degradation.js';
+} from './graceful-degradation.ts';
 
 // Error recovery orchestrator
 export {
@@ -52,44 +52,44 @@ export {
   type RecoveryMetrics,
   type OperationContext,
   type RecoveryResult
-} from './error-recovery.js';
+} from './error-recovery.ts';
 
 /**
  * Create a default error recovery orchestrator with sensible defaults
  */
 export function createErrorRecoveryOrchestrator(
-  config?: Partial<import('./error-recovery.js').ErrorRecoveryConfig>
-): import('./error-recovery.js').ErrorRecoveryOrchestrator {
-  return new (require('./error-recovery.js').ErrorRecoveryOrchestrator)(config);
+  config?: Partial<import('./error-recovery.ts').ErrorRecoveryConfig>
+): import('./error-recovery.ts').ErrorRecoveryOrchestrator {
+  return new (require('./error-recovery.ts').ErrorRecoveryOrchestrator)(config);
 }
 
 /**
  * Create a default error handler with sensible defaults
  */
 export function createErrorHandler(
-  config?: Partial<import('./error-handler.js').ErrorHandlerConfig>
-): import('./error-handler.js').ErrorHandler {
-  return new (require('./error-handler.js').ErrorHandler)(config);
+  config?: Partial<import('./error-handler.ts').ErrorHandlerConfig>
+): import('./error-handler.ts').ErrorHandler {
+  return new (require('./error-handler.ts').ErrorHandler)(config);
 }
 
 /**
  * Create a default retry mechanism with sensible defaults
  */
 export function createRetryMechanism(
-  config?: Partial<import('./retry.js').RetryConfig>,
-  errorHandler?: import('./error-handler.js').ErrorHandler
-): import('./retry.js').RetryMechanism {
-  return new (require('./retry.js').RetryMechanism)(config, errorHandler);
+  config?: Partial<import('./retry.ts').RetryConfig>,
+  errorHandler?: import('./error-handler.ts').ErrorHandler
+): import('./retry.ts').RetryMechanism {
+  return new (require('./retry.ts').RetryMechanism)(config, errorHandler);
 }
 
 /**
  * Create a default graceful degradation manager with sensible defaults
  */
 export function createGracefulDegradationManager(
-  config?: Partial<import('./graceful-degradation.js').DegradationConfig>,
-  errorHandler?: import('./error-handler.js').ErrorHandler
-): import('./graceful-degradation.js').GracefulDegradationManager {
-  return new (require('./graceful-degradation.js').GracefulDegradationManager)(config, errorHandler);
+  config?: Partial<import('./graceful-degradation.ts').DegradationConfig>,
+  errorHandler?: import('./error-handler.ts').ErrorHandler
+): import('./graceful-degradation.ts').GracefulDegradationManager {
+  return new (require('./graceful-degradation.ts').GracefulDegradationManager)(config, errorHandler);
 }
 
 /**
@@ -97,9 +97,9 @@ export function createGracefulDegradationManager(
  */
 export async function withErrorRecovery<T>(
   operation: () => Promise<T>,
-  context: import('./error-recovery.js').OperationContext,
-  config?: Partial<import('./error-recovery.js').ErrorRecoveryConfig>
-): Promise<import('./error-recovery.js').RecoveryResult<T>> {
+  context: import('./error-recovery.ts').OperationContext,
+  config?: Partial<import('./error-recovery.ts').ErrorRecoveryConfig>
+): Promise<import('./error-recovery.ts').RecoveryResult<T>> {
   const orchestrator = createErrorRecoveryOrchestrator(config);
   return await orchestrator.executeWithRecovery(operation, context);
 }
@@ -109,9 +109,9 @@ export async function withErrorRecovery<T>(
  */
 export async function withRetry<T>(
   operation: () => Promise<T>,
-  context: import('./retry.js').RetryContext,
-  config?: Partial<import('./retry.js').RetryConfig>
-): Promise<import('./retry.js').RetryResult<T>> {
+  context: import('./retry.ts').RetryContext,
+  config?: Partial<import('./retry.ts').RetryConfig>
+): Promise<import('./retry.ts').RetryResult<T>> {
   const retryMechanism = createRetryMechanism(config);
   return await retryMechanism.execute(operation, context);
 }
@@ -128,8 +128,8 @@ export function handleError(
     correlationId?: string;
     additionalContext?: Record<string, any>;
   } = {},
-  config?: Partial<import('./error-handler.js').ErrorHandlerConfig>
-): import('./errors.js').MCPError {
+  config?: Partial<import('./error-handler.ts').ErrorHandlerConfig>
+): import('./errors.ts').MCPError {
   const errorHandler = createErrorHandler(config);
   return errorHandler.handleError(error, context);
 }
@@ -161,7 +161,7 @@ export function isRetryableError(error: unknown): boolean {
 /**
  * Utility function to determine error severity
  */
-export function getErrorSeverity(error: unknown): import('./errors.js').ErrorSeverity {
+export function getErrorSeverity(error: unknown): import('./errors.ts').ErrorSeverity {
   if (error instanceof MCPError) {
     return error.details.severity;
   }
@@ -190,7 +190,7 @@ export function getErrorSeverity(error: unknown): import('./errors.js').ErrorSev
 /**
  * Utility function to get recommended recovery strategy
  */
-export function getRecoveryStrategy(error: unknown): import('./errors.js').RecoveryStrategy {
+export function getRecoveryStrategy(error: unknown): import('./errors.ts').RecoveryStrategy {
   if (error instanceof MCPError) {
     return error.getRecoveryStrategy();
   }

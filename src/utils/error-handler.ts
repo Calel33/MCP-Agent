@@ -18,7 +18,7 @@ import {
   ErrorCategory,
   ErrorSeverity,
   RecoveryStrategy
-} from './errors.js';
+} from './errors.ts';
 
 /**
  * Error classification patterns

@@ -30,6 +30,8 @@ const serverSchema = z.object({
   enabled: z.boolean().default(true),
   timeout: z.number().min(1000).max(300000).default(30000),
   description: z.string().optional(),
+  priority: z.number().min(1).max(10).optional(),
+  tags: z.array(z.string()).optional(),
   version: z.string().optional(),
 });
 
@@ -60,7 +62,8 @@ export function ServerEditor({ server, open, onOpenChange, onSave }: ServerEdito
           enabled: server.enabled,
           timeout: server.timeout,
           description: server.description,
-          version: server.version,
+          priority: server.priority,
+          tags: server.tags,
         };
         setJsonValue(JSON.stringify(editableData, null, 2));
       } else {
@@ -72,7 +75,9 @@ export function ServerEditor({ server, open, onOpenChange, onSave }: ServerEdito
           args: ["@example/mcp-server"],
           enabled: true,
           timeout: 30000,
-          description: "New MCP server configuration"
+          description: "New MCP server configuration",
+          priority: 5,
+          tags: ["mcp", "server"]
         };
         setJsonValue(JSON.stringify(template, null, 2));
       }

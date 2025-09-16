@@ -1,7 +1,8 @@
 ---
-type: "agent_requested"
+type: "manual"
 description: "Example description"
 ---
+
 # 🚨 MANDATORY MCP RESEARCH RULE - BEFORE ANY CODE
 
 ## 📋 Rule Overview

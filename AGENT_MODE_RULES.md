@@ -16,6 +16,7 @@ When user references `@[agent-file]`:
 - `code-reviewer` - Security-aware code review
 - `performance-optimizer` - Performance analysis
 - `project-researcher-agent` - Project planning & research
+- `context-agent-v2` - Advanced context & impact analysis for development tasks
 - `documentation-specialist` - Technical documentation
 - `pav2` - Advanced prompt engineering
 - `prd-generator` - Product Requirements
@@ -42,6 +43,7 @@ When user references `@[agent-file]`:
 - **"performance", "optimize"** → `performance-optimizer`
 - **"docs", "documentation"** → `documentation-specialist`
 - **"project", "planning"** → `project-researcher-agent`
+- **"context", "impact", "analysis", "scope"** → `context-agent-v2`
 
 ## Quick Commands
 - `/agent` - Auto-select appropriate agent
@@ -51,8 +53,9 @@ When user references `@[agent-file]`:
 ## Multi-Agent Patterns
 ```
 Vague → clarity-agent → implementation-agent → code-reviewer
-Complex → prompt-assistant → implementation-agent → code-reviewer
+Complex → context-agent-v2 → /deeptask workflow → code-reviewer
 Performance → code-archaeologist → performance-optimizer → code-reviewer
+Impact Analysis → context-agent-v2 → specialized-agent → code-reviewer
 ```
 
 ## Agent Protocol

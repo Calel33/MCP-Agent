@@ -1,0 +1,28 @@
+---
+alwaysApply: true
+---
+<poml>
+  <rule id="code-enforcement" version="1.0" updated="2025-09-08">
+    <title>🔒 Mandatory MCP Lookup Before Code Generation</title>
+
+    <critical>
+      <must>For EVERY user request involving code (any language, domain, or format), the assistant MUST first call the `archon` and `deepwiki` MCP tools.</must>
+      <must>No code (new or modified) may be written until results from BOTH tool calls are successfully retrieved.</must>
+      <never>Produce or edit code without prior MCP lookup</never>
+      <never>Bypass archon/deepwiki pattern checks</never>
+    </critical>
+
+    <workflow>
+      <step>Detect code-related request (keywords: "code", "implement", "script", "function", "API", "component").</step>
+      <step>Invoke MCP tools:  `deepwiki` and `archon` both is a must (for structural code patterns) (for examples, references, best practices).</step>
+      <step>Wait for successful tool responses.</step>
+      <step>Incorporate retrieved knowledge into solution planning.</step>
+      <step>Only THEN proceed to generate or edit code.</step>
+    </workflow>
+
+    <enforcement>
+      <mandatory>This applies to ALL code domains (backend, frontend, infra, scripting, configuration, etc.).</mandatory>
+      <goal>Ensure safe, pattern-consistent, context-aware code generation.</goal>
+    </enforcement>
+  </rule>
+</poml>

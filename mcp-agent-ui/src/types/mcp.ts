@@ -8,6 +8,8 @@ export interface MCPServer {
   enabled: boolean;
   timeout: number;
   description?: string;
+  priority?: number;
+  tags?: string[];
   version?: string;
   createdAt: string;
   updatedAt: string;

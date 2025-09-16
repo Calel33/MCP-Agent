@@ -1,10 +1,129 @@
 {
-  "mcpServers": {
-    "Hustle HTTP MCP Server": {
-      "type": "http",
-      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
-      "timeout": 30000
-    }
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "apiKey": "${OPENAI_API_KEY}",
+    "temperature": 0.1,
+    "maxTokens": 4096
   },
-  "updatedAt": "2025-09-01T15:28:17.069Z"
+  "agent": {
+    "maxSteps": 10,
+    "timeout": 60000,
+    "autoInitialize": true,
+    "verbose": true
+  },
+  "serverManager": {
+    "enabled": true,
+    "maxConcurrentServers": 3,
+    "serverStartupTimeout": 30,
+    "healthMonitoring": true,
+    "healthCheckInterval": 30000,
+    "autoReconnect": true
+  },
+  "servers": [
+    {
+      "id": "playwright-mcp",
+      "name": "Playwright MCP Server",
+      "description": "Provides browser automation capabilities via Microsoft Playwright MCP",
+      "connectionType": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@microsoft/playwright-mcp",
+        "--key",
+        "${SMITHERY_API_KEY}"
+      ],
+      "enabled": false,
+      "priority": 5,
+      "tags": [
+        "stdio"
+      ],
+      "timeout": 45000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
+        "backoffMultiplier": 2
+      }
+    },
+    {
+      "id": "docfork-mcp",
+      "name": "DocFork MCP Server",
+      "description": "Provides documentation and library research capabilities via DocFork MCP",
+      "connectionType": "http",
+      "url": "https://server.smithery.ai/@docfork/mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
+      "enabled": true,
+      "priority": 5,
+      "tags": [
+        "http"
+      ],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
+        "backoffMultiplier": 2
+      },
+      "preferSse": false,
+      "requestInit": {
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "hustle-http",
+      "name": "Hustle HTTP MCP Server",
+      "description": "Provides crypto agent capabilities via Hustle HTTP MCP",
+      "connectionType": "http",
+      "url": "https://hustle-remote.myagent.sh/mcp?apikey=${HUSTLE_API_KEY}&vaultId=${HUSTLE_VAULT_ID}",
+      "enabled": true,
+      "priority": 5,
+      "tags": [
+        "http"
+      ],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
+        "backoffMultiplier": 2
+      },
+      "preferSse": false,
+      "requestInit": {
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "stock-analysis-mcp",
+      "name": "stock-analysis-mcp",
+      "description": "Provides stock analysis capabilities via Stock Analysis MCP",
+      "connectionType": "http",
+      "url": "https://server.smithery.ai/@qubaomingg/stock-analysis-mcp/mcp?api_key=${SMITHERY_API_KEY}&profile=${SMITHERY_PROFILE}",
+      "enabled": false,
+      "priority": 5,
+      "tags": [
+        "http"
+      ],
+      "timeout": 30000,
+      "retry": {
+        "maxAttempts": 3,
+        "delayMs": 1500,
+        "backoffMultiplier": 2
+      },
+      "preferSse": false,
+      "requestInit": {
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ],
+  "logging": {
+    "level": "info",
+    "format": "text"
+  }
 }

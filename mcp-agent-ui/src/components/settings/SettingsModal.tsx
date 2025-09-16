@@ -39,7 +39,7 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl h-[80vh] flex flex-col">
+      <DialogContent className="max-w-6xl w-[90vw] h-[80vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
@@ -47,22 +47,24 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
           <TabsList>
             <TabsTrigger value="servers">Current Servers</TabsTrigger>
             <TabsTrigger value="add">Add New Server</TabsTrigger>
             <TabsTrigger value="advanced">Advanced Settings</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="servers" className="flex-1">
-            <ServerList
-              servers={servers}
-              isLoading={isLoading}
-              error={error}
-              selectedServerId={selectedServerId}
-              onSelectServer={setSelectedServerId}
-              onSwitchToAddTab={() => setActiveTab("add")}
-            />
+          <TabsContent value="servers" className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+            <div className="max-w-full overflow-hidden pr-2">
+              <ServerList
+                servers={servers}
+                isLoading={isLoading}
+                error={error}
+                selectedServerId={selectedServerId}
+                onSelectServer={setSelectedServerId}
+                onSwitchToAddTab={() => setActiveTab("add")}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="add" className="flex-1">

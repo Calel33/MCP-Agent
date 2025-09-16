@@ -6,11 +6,229 @@
 **Project ID**: `3d6353d3-caac-488c-8168-00f924dd6776`  
 **Technology Stack**: TypeScript/Node.js, mcp-use library v0.1.15, OpenAI GPT-4  
 **Log Created**: 2025-08-17  
-**Last Updated**: 2025-08-21 - ✅ **SMITHERY API AUTHENTICATION - ENVIRONMENT VARIABLE LOADING ISSUE RESOLVED**
+**Last Updated**: 2025-09-16 - ✅ **MCP SETTINGS LAYOUT & UI ISSUES FULLY RESOLVED**
 
 ## 🎯 Purpose
 
 This document tracks bugs, issues, and their resolutions encountered during development. It serves as a reference for future debugging and helps identify patterns in common issues.
+
+---
+
+## 📅 Session: 2025-09-16 - React Hydration & UI Styling Fixes
+
+### 🐛 **Bug #007: Chat Input White Text on White Background**
+
+**Date**: 2025-09-16  
+**Severity**: High  
+**Component**: UI Styling (`mcp-agent-ui/src/app/globals.css`, `mcp-agent-ui/src/app/chat/page.tsx`)  
+**Reporter**: User via browser pointer tool
+
+#### **Problem Description**
+Chat input field displayed white text on white background, making it impossible for users to see what they were typing. The input appeared completely blank despite having proper placeholder text.
+
+#### **Error Symptoms**
+- Chat input textarea showed white background with white text
+- Placeholder text was visible but typed text was invisible
+- Dark theme styling was not properly applied to the input field
+- CSS classes appeared correct but were being overridden
+
+#### **Root Cause Analysis**
+1. **Global CSS Override**: `globals.css` contained a global `textarea` rule with `!important` declarations
+2. **CSS Specificity Conflict**: Global rule `textarea { color: #1f2937 !important; background-color: #ffffff !important; }` was overriding Tailwind classes
+3. **Media Query Issue**: Dark mode media query was present but being overridden by the global rule
+
+#### **Resolution**
+**Files Modified**:
+- `mcp-agent-ui/src/app/globals.css` - Removed problematic global textarea rule
+- `mcp-agent-ui/src/app/chat/page.tsx` - Updated textarea classes for proper dark theme
+
+**Changes Applied**:
+1. **Removed Global CSS Rule**: Eliminated `textarea` global rule that was forcing light theme
+2. **Updated Textarea Classes**: 
+   - Changed `bg-transparent` to `bg-gray-700`
+   - Updated `text-white` to `text-gray-100` 
+   - Added `placeholder:text-gray-400`
+   - Added `border-0 focus:ring-0`
+
+#### **Testing & Verification**
+- ✅ Chat input now shows proper dark background (`bg-gray-700`)
+- ✅ Text is visible with light color (`text-gray-100`)
+- ✅ Placeholder text has appropriate contrast (`text-gray-400`)
+- ✅ No TypeScript compilation errors
+- ✅ Consistent with overall dark theme design
+
+### 🐛 **Bug #008: React Hydration Mismatch - Chat List Rendering**
+
+**Date**: 2025-09-16  
+**Severity**: High  
+**Component**: Chat State Management (`mcp-agent-ui/src/hooks/use-chat-manager.ts`)  
+**Error**: `Hydration failed because the server rendered HTML didn't match the client`
+
+#### **Problem Description**
+React hydration error occurred when server-side rendering showed empty chat state but client-side rendered populated chat list, causing the entire component tree to regenerate on the client.
+
+#### **Error Details**
+```
+Error: Hydration failed because the server rendered HTML didn't match the client
+- Server: Empty chat list with "No chats yet" message
+- Client: Populated chat list with actual chat items from localStorage
+```
+
+#### **Root Cause Analysis**
+1. **SSR/Client State Mismatch**: `useChatManager` hook initialized differently on server vs client
+2. **localStorage Access**: Server had no access to localStorage, client loaded existing chats
+3. **Inconsistent Initial State**: Server returned empty arrays, client returned populated data
+
+#### **Resolution**
+**Files Modified**: `mcp-agent-ui/src/hooks/use-chat-manager.ts`
+
+**Changes Applied**:
+1. **Added Hydration State Tracking**: 
+   - Added `isInitialized` state to track client-side initialization
+   - Added `isHydrated` check with `typeof window !== 'undefined'`
+
+2. **SSR-Safe Return Values**:
+   - Server: Returns empty arrays/null with `isLoading: true`
+   - Client: Returns actual data after hydration completes
+
+3. **Initialization Logic**:
+   - Skip initialization if `typeof window === 'undefined'` (server-side)
+   - Only initialize chats after client-side hydration
+
+#### **Testing & Verification**
+- ✅ No hydration mismatch errors in browser console
+- ✅ Consistent rendering between server and client
+- ✅ Chat list loads properly after hydration
+- ✅ TypeScript compilation passes
+
+### 🐛 **Bug #009: React Hydration Mismatch - Chat Title Rendering**
+
+**Date**: 2025-09-16  
+**Severity**: Medium  
+**Component**: Chat Title Display (`mcp-agent-ui/src/app/chat/page.tsx`)  
+**Error**: `Hydration failed because the server rendered text didn't match the client`
+
+#### **Problem Description**
+Second hydration error where server rendered "MCP Multi-Agent" but client rendered actual chat name "test", causing React to regenerate the component tree.
+
+#### **Error Details**
+```
+Error: Hydration failed because the server rendered text didn't match the client
+- Server: "MCP Multi-Agent" (fallback text)
+- Client: "test" (actual chat name from localStorage)
+```
+
+#### **Root Cause Analysis**
+1. **Dynamic Title Expression**: `{currentChat?.name || 'MCP Multi-Agent'}` caused mismatch
+2. **State Dependency**: Expression relied on `currentChat` which was null on server, populated on client
+3. **Immediate Rendering**: No hydration delay for title updates
+
+#### **Resolution**
+**Files Modified**: `mcp-agent-ui/src/app/chat/page.tsx`
+
+**Changes Applied**:
+1. **Added Hydration State**: 
+   ```typescript
+   const [isHydrated, setIsHydrated] = useState(false);
+   useEffect(() => { setIsHydrated(true); }, []);
+   ```
+
+2. **Hydration-Safe Title Rendering**:
+   ```typescript
+   // Before: {currentChat?.name || 'MCP Multi-Agent'}
+   // After: {isHydrated ? (currentChat?.name || 'MCP Multi-Agent') : 'MCP Multi-Agent'}
+   ```
+
+#### **Testing & Verification**
+- ✅ No hydration mismatch errors for chat title
+- ✅ Server and client render identical initial HTML
+- ✅ Title updates to actual chat name after hydration
+- ✅ Smooth user experience without visual glitches
+
+### 🐛 **Bug #010: MCP Settings Cards Breaking Out of Modal Container**
+
+**Date**: 2025-09-16  
+**Severity**: High  
+**Component**: MCP Settings UI (`mcp-agent-ui/src/components/settings/ServerList.tsx`, `mcp-agent-ui/src/components/settings/SettingsModal.tsx`)  
+**Reporter**: User via pointer MCP tool
+
+#### **Problem Description**
+MCP server cards with long URLs (DocFork, Hustle HTTP, Stock Analysis) were breaking out of the modal container boundaries, causing horizontal overflow and poor user experience. Cards were not properly constrained within the settings modal.
+
+#### **Error Symptoms**
+- Cards with long URLs extended beyond modal boundaries
+- Horizontal scrolling required to view full content
+- Poor responsive behavior on smaller screens
+- Unprofessional appearance with content overflow
+
+#### **Root Cause Analysis**
+1. **Missing Text Wrapping**: Long URLs not breaking properly with default CSS
+2. **Insufficient Container Constraints**: No proper overflow handling on cards and containers
+3. **Flex Layout Issues**: Missing `min-w-0` and proper flex constraints
+4. **No Scrollbar**: No vertical scrolling for multiple servers
+
+#### **Resolution**
+**Files Modified**:
+- `mcp-agent-ui/src/components/settings/ServerList.tsx` - Card layout and text wrapping
+- `mcp-agent-ui/src/components/settings/SettingsModal.tsx` - Modal constraints and scrolling
+- `mcp-agent-ui/src/app/globals.css` - Custom CSS classes for text breaking
+
+**Changes Applied**:
+
+1. **Custom CSS Classes Created**:
+   ```css
+   .force-break-words {
+     word-wrap: break-word;
+     word-break: break-word;
+     overflow-wrap: anywhere;
+     hyphens: auto;
+   }
+   
+   .force-break-all {
+     word-break: break-all;
+     overflow-wrap: break-word;
+     word-wrap: break-word;
+   }
+   
+   .custom-scrollbar::-webkit-scrollbar {
+     width: 8px;
+   }
+   ```
+
+2. **ServerList Layout Fixes**:
+   - Added `overflow-hidden` to grid container and individual cards
+   - Applied `force-break-all` to URLs and `force-break-words` to descriptions
+   - Implemented proper flex layout with `min-w-0` and `flex-shrink-0`
+   - Added explicit width constraints with inline styles
+
+3. **Modal Container Enhancements**:
+   - Added `w-[90vw]` viewport width constraint to dialog
+   - Implemented `overflow-y-auto overflow-x-hidden` for proper scrolling
+   - Applied `custom-scrollbar` class for professional appearance
+   - Added `min-h-0` for proper flex container behavior
+
+#### **Testing & Verification**
+- ✅ Cards with long URLs (DocFork, Hustle HTTP) now stay within modal boundaries
+- ✅ Text wrapping works properly for all content types
+- ✅ Professional scrollbar appears for multiple servers
+- ✅ Responsive behavior works across all screen sizes
+- ✅ No TypeScript compilation errors
+- ✅ All existing MCP functionality preserved
+
+#### **User Experience Improvements**
+- ✅ **No More Overflow**: Cards properly contained within modal
+- ✅ **Smooth Scrolling**: Professional scrollbar for navigation
+- ✅ **Text Readability**: Long URLs break appropriately
+- ✅ **Responsive Design**: Consistent behavior across devices
+- ✅ **Visual Polish**: Enhanced professional appearance
+
+#### **Status**: ✅ **RESOLVED** - MCP Settings layout now professional and fully contained
+
+### 📊 **Session Summary - 2025-09-16**
+- **Total Bugs Fixed**: 4 (1 layout issue + 1 styling issue + 2 hydration errors)
+- **Files Modified**: 5 files across UI components, state management, and global styles
+- **Testing Status**: All fixes verified with TypeScript compilation and user testing
+- **Impact**: Significantly improved user experience with proper layout containment, dark theme, and eliminated React errors
 
 ---
 

@@ -2,19 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useMCPStatus } from '@/hooks/use-mcp-status';
+import { useChatManager } from '@/hooks/use-chat-manager';
 import { SettingsButton } from '@/components/settings/SettingsModal';
-
-interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-interface Conversation {
-  id: string;
-  title: string;
-  lastMessage: string;
-}
+import { ChatList, ChatListLoading, ChatListError } from '@/components/chat/ChatList';
+import { ChatMessage } from '@/types/chat';
 
 export default function ChatPage() {
   // Use a ref to track message ID counter to ensure consistency between server and client
@@ -24,27 +15,47 @@ export default function ChatPage() {
     return `msg-${messageIdCounter.current++}`;
   }, []);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome-1',
-      role: 'assistant',
-      content: "Hello! I'm your MCP Multi-Agent AI assistant. I'm here to provide information, answer questions, assist with tasks, and engage in conversations on a wide range of topics. I can help with file operations, web research, project management, and more through integrated MCP servers. How can I help you today?"
-    }
-  ]);
+  // Enhanced chat management with useChatManager
+  const {
+    chats,
+    currentChat,
+    createChat,
+    switchToChat,
+    updateChatName,
+    deleteChat,
+    addMessageToCurrentChat,
+    getCurrentChatMessages,
+    updateChatWithMessages,
+    isLoading: chatLoading,
+    error: chatError,
+    clearError
+  } = useChatManager();
+
+  // Use current chat messages instead of hardcoded messages
+  const messages = getCurrentChatMessages();
+  
+  // Hydration-safe chat title rendering
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  
+  // UI state
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [conversations, setConversations] = useState<Conversation[]>([
-    { id: '1', title: 'Explaining quantum computing', lastMessage: 'What is quantum computing?' },
-    { id: '2', title: 'Creative writing prompts', lastMessage: 'Give me some writing ideas' }
-  ]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // MCP status
   const { status: mcpStatus, isLoading: mcpLoading, refresh: refreshMCP } = useMCPStatus();
+  
+  // Refs
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatMessagesRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !currentChat) return;
 
     const userMessage = input.trim();
     const userMessageObj: ChatMessage = {
@@ -53,7 +64,8 @@ export default function ChatPage() {
       content: userMessage,
     };
 
-    setMessages(prev => [...prev, userMessageObj]);
+    // Add user message to current chat
+    addMessageToCurrentChat(userMessageObj);
     setInput('');
     setIsLoading(true);
 
@@ -83,7 +95,8 @@ export default function ChatPage() {
         content: '',
       };
 
-      setMessages(prev => [...prev, assistantMessageObj]);
+      // Add initial assistant message to chat
+      addMessageToCurrentChat(assistantMessageObj);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -92,14 +105,9 @@ export default function ChatPage() {
         const chunk = new TextDecoder().decode(value);
         assistantMessage += chunk;
 
-        // Update the assistant message in real-time
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === assistantMessageObj.id
-              ? { ...msg, content: assistantMessage }
-              : msg
-          )
-        );
+        // Update the assistant message in real-time in current chat
+        const updatedMessages = [...messages, userMessageObj, { ...assistantMessageObj, content: assistantMessage }];
+        updateChatWithMessages(updatedMessages);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -108,7 +116,7 @@ export default function ChatPage() {
         role: 'assistant',
         content: 'Sorry, I encountered an error while processing your request. Please try again.',
       };
-      setMessages(prev => [...prev, errorMessage]);
+      addMessageToCurrentChat(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -155,14 +163,18 @@ export default function ChatPage() {
     }
   };
 
-  const clearChat = () => {
-    // Reset the message counter and create new welcome message
-    messageIdCounter.current = 1;
-    setMessages([{
-      id: 'welcome-1',
-      role: 'assistant',
-      content: "Hello! I'm your MCP Multi-Agent AI assistant. I'm here to provide information, answer questions, assist with tasks, and engage in conversations on a wide range of topics. I can help with file operations, web research, project management, and more through integrated MCP servers. How can I help you today?"
-    }]);
+  const handleNewChat = async () => {
+    try {
+      const result = await createChat();
+      if (result.success) {
+        // Reset message counter for new chat
+        messageIdCounter.current = 1;
+        setInput('');
+        clearError();
+      }
+    } catch (error) {
+      console.error('Error creating new chat:', error);
+    }
   };
 
   return (
@@ -208,38 +220,25 @@ export default function ChatPage() {
               </button>
             </div>
 
-            {/* New Chat Button */}
-            <div className="p-4">
-              <button
-                onClick={clearChat}
-                className="w-full flex items-center justify-between rounded-md border border-gray-600 px-3 py-2 text-sm font-medium hover:bg-gray-700 text-white"
-              >
-                <span className="flex items-center">
-                  <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4.5v15m7.5-7.5h-15"></path>
-                  </svg>
-                  New chat
-                </span>
-              </button>
-            </div>
-
-            {/* Recent Conversations */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="px-3 py-2">
-                <h3 className="text-xs text-gray-400 font-medium mb-2">Today</h3>
-                <div className="space-y-1">
-                  {conversations.map((conversation) => (
-                    <button
-                      key={conversation.id}
-                      className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-gray-700 flex items-center justify-between group text-gray-300"
-                    >
-                      <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-                        {conversation.title}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Chat Management */}
+            <div className="flex-1 overflow-hidden">
+              {chatLoading && <ChatListLoading />}
+              {chatError && (
+                <ChatListError 
+                  error={chatError} 
+                  onRetry={clearError}
+                />
+              )}
+              {!chatLoading && !chatError && (
+                <ChatList
+                  chats={chats}
+                  currentChatId={currentChat?.id || null}
+                  onChatSelect={switchToChat}
+                  onChatRename={updateChatName}
+                  onChatDelete={deleteChat}
+                  onNewChat={handleNewChat}
+                />
+              )}
             </div>
 
             {/* User Profile */}
@@ -316,7 +315,9 @@ export default function ChatPage() {
                     <path d="M3 12h18M3 6h18M3 18h18"></path>
                   </svg>
                 </button>
-                <span className="font-medium text-white truncate">MCP Multi-Agent</span>
+                <span className="font-medium text-white truncate">
+                  {isHydrated ? (currentChat?.name || 'MCP Multi-Agent') : 'MCP Multi-Agent'}
+                </span>
                 <span className="ml-2 px-2 py-1 rounded-md bg-gray-700 text-xs text-gray-300 flex-shrink-0">AI</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -392,7 +393,7 @@ export default function ChatPage() {
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  className="w-full p-3 pr-12 text-sm bg-transparent focus:outline-none resize-none text-white min-h-[44px]"
+                  className="w-full p-3 pr-12 text-sm bg-gray-700 focus:outline-none resize-none text-gray-100 placeholder:text-gray-400 min-h-[44px] border-0 focus:ring-0"
                   rows={1}
                   placeholder="Message MCP Multi-Agent..."
                   disabled={isLoading}
